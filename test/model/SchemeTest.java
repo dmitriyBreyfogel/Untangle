@@ -9,6 +9,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -141,5 +142,68 @@ class SchemeTest {
         new GameField(100, 100, scheme);
 
         assertThrows(UnsupportedOperationException.class, () -> scheme.getIntersectingEdges().add(scheme.getEdges().get(0)));
+    }
+
+    @Test
+    @DisplayName("Список граней схемы неизменяемый")
+    void edgesListIsUnmodifiable() {
+        Scheme scheme = Scheme.create(
+                List.of(new Point2D.Double(0, 0), new Point2D.Double(10, 0), new Point2D.Double(0, 10)),
+                Map.of(0, List.of(1, 2), 1, List.of(2))
+        );
+
+        assertThrows(UnsupportedOperationException.class, () -> scheme.getEdges().clear());
+    }
+
+    @Test
+    @DisplayName("Список граней узла неизменяемый")
+    void edgesOfNodeListIsUnmodifiable() {
+        Scheme scheme = Scheme.create(
+                List.of(new Point2D.Double(0, 0), new Point2D.Double(10, 0), new Point2D.Double(0, 10)),
+                Map.of(0, List.of(1, 2), 1, List.of(2))
+        );
+        Node node = scheme.getNodes().getFirst();
+
+        assertThrows(UnsupportedOperationException.class, () -> scheme.getEdgesOfNode(node).clear());
+    }
+
+    @Test
+    @DisplayName("Схема без поля позволяет перемещать узел в любую конечную точку")
+    void moveWithoutFieldAllowsFinitePoint() {
+        Scheme scheme = Scheme.create(
+                List.of(
+                        new Point2D.Double(10, 10),
+                        new Point2D.Double(90, 90),
+                        new Point2D.Double(10, 90),
+                        new Point2D.Double(90, 10)
+                ),
+                Map.of(
+                        0, List.of(1, 2),
+                        2, List.of(3),
+                        1, List.of(3)
+                )
+        );
+        Node node = scheme.getNodes().get(1);
+
+        scheme.moveNode(node, new Point2D.Double(1000, 5));
+
+        assertEquals(1000, node.getX());
+        assertEquals(5, node.getY());
+        assertFalse(scheme.hasIntersections());
+    }
+
+    @Test
+    @DisplayName("Схема возвращает те же узлы в связанных гранях")
+    void edgesReferenceSchemeNodes() {
+        Scheme scheme = Scheme.create(
+                List.of(new Point2D.Double(0, 0), new Point2D.Double(10, 0), new Point2D.Double(0, 10)),
+                Map.of(0, List.of(1, 2), 1, List.of(2))
+        );
+
+        Edge edge = scheme.getEdges().getFirst();
+
+        assertTrue(scheme.getNodes().contains(edge.getNodeA()));
+        assertTrue(scheme.getNodes().contains(edge.getNodeB()));
+        assertSame(edge.getNodeA(), scheme.getEdgesOfNode(edge.getNodeA()).getFirst().getNodeA());
     }
 }

@@ -146,5 +146,31 @@ class GameTest {
         assertFalse(game.started());
         assertNull(game.currentLevel());
     }
-}
 
+    @Test
+    @DisplayName("Проверка хода без текущего уровня ничего не меняет")
+    void validateMoveWithoutCurrentLevelDoesNothing() {
+        Game game = new Game();
+
+        game.validateMove();
+
+        assertFalse(game.started());
+        assertNull(game.currentLevel());
+        assertEquals(0, game.maxCompletedLevelNumber());
+        assertEquals(0, game.moveCounter());
+    }
+
+    @Test
+    @DisplayName("Повторное завершение уже пройденного уровня не уменьшает прогресс")
+    void completeLevelDoesNotDecreaseProgress() {
+        Game game = new Game();
+        game.start();
+        game.loadLevel(2);
+        game.completeLevel();
+
+        game.loadLevel(1);
+        game.completeLevel();
+
+        assertEquals(2, game.maxCompletedLevelNumber());
+    }
+}

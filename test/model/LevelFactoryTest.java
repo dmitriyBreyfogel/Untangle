@@ -17,9 +17,18 @@ class LevelFactoryTest {
     }
 
     @Test
+    @DisplayName("Фабрика создаёт второй уровень")
+    void createsSecondLevel() {
+        Level level = new LevelFactory().createLevel(2);
+
+        assertEquals(2, level.number());
+        assertTrue(level.scheme().hasIntersections());
+        assertEquals(5, level.scheme().getNodes().size());
+    }
+
+    @Test
     @DisplayName("Фабрика отклоняет неизвестный номер уровня")
     void unknownLevelRejected() {
         assertThrows(IllegalArgumentException.class, () -> new LevelFactory().createLevel(999));
     }
 }
-

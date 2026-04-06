@@ -44,6 +44,15 @@ class EdgeTest {
     }
 
     @Test
+    @DisplayName("Грань не принимает null узлы")
+    void edgeRejectsNullNodes() {
+        Node node = new Node(new Point2D.Double(0, 0));
+
+        assertThrows(NullPointerException.class, () -> new Edge(null, node));
+        assertThrows(NullPointerException.class, () -> new Edge(node, null));
+    }
+
+    @Test
     @DisplayName("Грань корректно сообщает о принадлежности узла")
     void containsNodeWorks() {
         Node a = new Node(new Point2D.Double(0, 0));
@@ -85,6 +94,22 @@ class EdgeTest {
         Edge b = new Edge(
                 new Node(new Point2D.Double(10, 0)),
                 new Node(new Point2D.Double(10, 10))
+        );
+
+        assertFalse(a.intersects(b));
+        assertFalse(b.intersects(a));
+    }
+
+    @Test
+    @DisplayName("Коллинеарные грани не считаются пересекающимися")
+    void collinearEdgesAreNotIntersecting() {
+        Edge a = new Edge(
+                new Node(new Point2D.Double(0, 0)),
+                new Node(new Point2D.Double(10, 0))
+        );
+        Edge b = new Edge(
+                new Node(new Point2D.Double(2, 0)),
+                new Node(new Point2D.Double(8, 0))
         );
 
         assertFalse(a.intersects(b));

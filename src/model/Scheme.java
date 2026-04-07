@@ -155,7 +155,7 @@ public final class Scheme {
     private List<Edge> buildEdges() {
         int nodeCount = nodes.size();
 
-        Set<Long> uniqueEdges = new HashSet<>();
+        Set<String> uniqueEdges = new HashSet<>();
         List<Edge> result = new ArrayList<>();
 
         for (Map.Entry<Integer, List<Integer>> entry : nodeConnections.entrySet()) {
@@ -172,7 +172,7 @@ public final class Scheme {
                 }
                 int a = Math.min(from, to);
                 int b = Math.max(from, to);
-                long key = (((long) a) << 32) | (b & 0xffffffffL);
+                String key = a + ":" + b;
                 if (uniqueEdges.add(key)) {
                     result.add(new Edge(nodes.get(a), nodes.get(b)));
                 }

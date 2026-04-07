@@ -10,7 +10,7 @@ public final class GameField {
 
     public GameField(double width, double height, Scheme scheme) {
         if (!Double.isFinite(width) || !Double.isFinite(height) || width <= 0 || height <= 0) {
-            throw new IllegalArgumentException("Width and height must be positive finite numbers.");
+            throw new IllegalArgumentException("Ширина и высота должны быть конечными положительными величинами");
         }
         this.width = width;
         this.height = height;

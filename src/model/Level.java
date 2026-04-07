@@ -15,7 +15,7 @@ public final class Level {
 
     Level(int number, List<Point2D> initialNodeCoordinates, Map<Integer, List<Integer>> nodeConnections, double fieldWidth, double fieldHeight) {
         if (number <= 0) {
-            throw new IllegalArgumentException("Level number must be positive.");
+            throw new IllegalArgumentException("Номер уровня должен быть положительным");
         }
         this.number = number;
         this.initialNodeCoordinates = List.copyOf(Objects.requireNonNull(initialNodeCoordinates, "initialNodeCoordinates"));

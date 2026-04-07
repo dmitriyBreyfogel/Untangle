@@ -16,7 +16,7 @@ public final class Edge {
         this.nodeA = Objects.requireNonNull(nodeA, "nodeA");
         this.nodeB = Objects.requireNonNull(nodeB, "nodeB");
         if (nodeA == nodeB) {
-            throw new IllegalArgumentException("Edge cannot connect a node to itself.");
+            throw new IllegalArgumentException("Грань не может состоять из двух одинаковых узлов");
         }
         updateGeometry();
     }

@@ -31,7 +31,7 @@ public final class Node {
         double x = p.getX();
         double y = p.getY();
         if (!Double.isFinite(x) || !Double.isFinite(y)) {
-            throw new IllegalArgumentException(paramName + " must have finite coordinates.");
+            throw new IllegalArgumentException(paramName + " должен иметь конечное значение");
         }
         return new Point2D.Double(x, y);
     }

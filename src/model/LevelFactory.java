@@ -44,7 +44,7 @@ public final class LevelFactory {
                     FIELD_WIDTH,
                     FIELD_HEIGHT
             );
-            default -> throw new IllegalArgumentException("Unknown level number: " + number);
+            default -> throw new IllegalArgumentException("Неизвестный номер уровня: " + number);
         };
     }
 }

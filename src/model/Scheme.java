@@ -30,7 +30,7 @@ public final class Scheme {
         this.nodeConnections = deepCopy(Objects.requireNonNull(nodeConnections, "nodeConnections"));
 
         if (this.initialNodeCoordinates.size() < 3) {
-            throw new IllegalArgumentException("Scheme must contain at least 3 nodes.");
+            throw new IllegalArgumentException("Смеха должна состоять минимум из трёх узлов");
         }
 
         this.nodes = new ArrayList<>(this.initialNodeCoordinates.size());
@@ -161,14 +161,14 @@ public final class Scheme {
         for (Map.Entry<Integer, List<Integer>> entry : nodeConnections.entrySet()) {
             int from = entry.getKey();
             if (from < 0 || from >= nodeCount) {
-                throw new IllegalArgumentException("Node index out of range: " + from);
+                throw new IllegalArgumentException("Индекс узла вышел из диапазона списка: " + from);
             }
             for (int to : entry.getValue()) {
                 if (to < 0 || to >= nodeCount) {
-                    throw new IllegalArgumentException("Node index out of range: " + to);
+                    throw new IllegalArgumentException("Индекс узла вышел из диапазона списка: " + to);
                 }
                 if (to == from) {
-                    throw new IllegalArgumentException("Node cannot connect to itself: " + from);
+                    throw new IllegalArgumentException("Узел не может соединиться с самим собой: " + from);
                 }
                 int a = Math.min(from, to);
                 int b = Math.max(from, to);
@@ -180,7 +180,7 @@ public final class Scheme {
         }
 
         if (result.size() < 3) {
-            throw new IllegalArgumentException("Scheme must contain at least 3 edges.");
+            throw new IllegalArgumentException("Схема должна содержать минимум три грани");
         }
 
         return result;
@@ -201,7 +201,7 @@ public final class Scheme {
         }
         for (int i = 0; i < degree.length; i++) {
             if (degree[i] <= 0) {
-                throw new IllegalArgumentException("Node " + i + " has no connections.");
+                throw new IllegalArgumentException("Узел " + i + " не имеет соединений");
             }
         }
     }
@@ -219,7 +219,7 @@ public final class Scheme {
         double x = p.getX();
         double y = p.getY();
         if (!Double.isFinite(x) || !Double.isFinite(y)) {
-            throw new IllegalArgumentException(paramName + " must contain only finite coordinates.");
+            throw new IllegalArgumentException(paramName + " должен содержать конечное значение");
         }
         return new Point2D.Double(x, y);
     }

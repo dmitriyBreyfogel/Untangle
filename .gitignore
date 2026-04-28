@@ -5,6 +5,7 @@ out/
 
 ### Maven ###
 target/
+.m2repo/
 
 ### Eclipse ###
 .apt_generated

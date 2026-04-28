@@ -29,15 +29,15 @@ public final class Level {
         scheme.reset();
     }
 
-    int number() {
+    public int number() {
         return number;
     }
 
-    GameField gameField() {
+    public GameField gameField() {
         return gameField;
     }
 
-    Scheme scheme() {
+    public Scheme scheme() {
         return scheme;
     }
 }

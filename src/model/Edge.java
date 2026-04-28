@@ -49,11 +49,11 @@ public final class Edge {
         this.intersecting = intersecting;
     }
 
-    Node getNodeA() {
+    public Node getNodeA() {
         return nodeA;
     }
 
-    Node getNodeB() {
+    public Node getNodeB() {
         return nodeB;
     }
 

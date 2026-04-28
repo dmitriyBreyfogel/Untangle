@@ -105,11 +105,11 @@ public final class Scheme {
         return List.copyOf(result);
     }
 
-    List<Node> getNodes() {
+    public List<Node> getNodes() {
         return List.copyOf(nodes);
     }
 
-    List<Edge> getEdges() {
+    public List<Edge> getEdges() {
         return List.copyOf(edges);
     }
 

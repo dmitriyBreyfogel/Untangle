@@ -25,15 +25,15 @@ public final class GameField {
         return Double.isFinite(x) && Double.isFinite(y) && x >= 0 && x <= width && y >= 0 && y <= height;
     }
 
-    double width() {
+    public double width() {
         return width;
     }
 
-    double height() {
+    public double height() {
         return height;
     }
 
-    Scheme scheme() {
+    public Scheme scheme() {
         return scheme;
     }
 }

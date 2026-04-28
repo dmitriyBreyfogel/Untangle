@@ -91,23 +91,23 @@ public final class Game {
         moveCounter = 0;
     }
 
-    int currentLevelNumber() {
+    public int currentLevelNumber() {
         return currentLevelNumber;
     }
 
-    int maxCompletedLevelNumber() {
+    public int maxCompletedLevelNumber() {
         return maxCompletedLevelNumber;
     }
 
-    int moveCounter() {
+    public int moveCounter() {
         return moveCounter;
     }
 
-    boolean started() {
+    public boolean started() {
         return started;
     }
 
-    Level currentLevel() {
+    public Level currentLevel() {
         return currentLevel;
     }
 }

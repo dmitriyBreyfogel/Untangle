@@ -32,7 +32,8 @@ public final class Node {
 
     public Point2D resolveMove(Point2D destination) {
         Point2D requestedPosition = copyOf(destination, "destination");
-        Point2D resolvedPosition = movementStrategy.resolveMove(this, requestedPosition);
+        Point2D currentPosition = copyOf(position, "currentPosition");
+        Point2D resolvedPosition = movementStrategy.resolveMove(currentPosition, requestedPosition);
         return copyOf(resolvedPosition, "resolvedPosition");
     }
 

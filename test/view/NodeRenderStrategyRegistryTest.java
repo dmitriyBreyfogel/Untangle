@@ -70,7 +70,7 @@ class NodeRenderStrategyRegistryTest {
 
     private static final class CustomMovementStrategy implements MovementStrategy {
         @Override
-        public java.awt.geom.Point2D resolveMove(Node node, java.awt.geom.Point2D requestedPosition) {
+        public java.awt.geom.Point2D resolveMove(java.awt.geom.Point2D currentPosition, java.awt.geom.Point2D requestedPosition) {
             return requestedPosition;
         }
     }

@@ -110,6 +110,7 @@ public final class LevelFactory {
                             Map.entry(5, List.of(6)),
                             Map.entry(6, List.of(7))
                     ),
+                    Map.of(1, new HorizontalMovementStrategy()),
                     FIELD_WIDTH,
                     FIELD_HEIGHT
             );
@@ -135,6 +136,10 @@ public final class LevelFactory {
                             Map.entry(5, List.of(8)),
                             Map.entry(6, List.of(7)),
                             Map.entry(7, List.of(8))
+                    ),
+                    Map.of(
+                            4, new FixedMovementStrategy(),
+                            6, new HorizontalMovementStrategy()
                     ),
                     FIELD_WIDTH,
                     FIELD_HEIGHT
@@ -163,6 +168,11 @@ public final class LevelFactory {
                             Map.entry(6, List.of(7)),
                             Map.entry(7, List.of(8)),
                             Map.entry(8, List.of(9))
+                    ),
+                    Map.of(
+                            0, new FixedMovementStrategy(),
+                            6, new HorizontalMovementStrategy(),
+                            8, new FixedMovementStrategy()
                     ),
                     FIELD_WIDTH,
                     FIELD_HEIGHT
@@ -193,6 +203,10 @@ public final class LevelFactory {
                             Map.entry(7, List.of(9)),
                             Map.entry(8, List.of(10)),
                             Map.entry(9, List.of(10))
+                    ),
+                    Map.of(
+                            3, new HorizontalMovementStrategy(),
+                            10, new FixedMovementStrategy()
                     ),
                     FIELD_WIDTH,
                     FIELD_HEIGHT
@@ -226,6 +240,11 @@ public final class LevelFactory {
                             Map.entry(9, List.of(10)),
                             Map.entry(10, List.of(11))
                     ),
+                    Map.of(
+                            1, new HorizontalMovementStrategy(),
+                            4, new HorizontalMovementStrategy(),
+                            9, new HorizontalMovementStrategy()
+                    ),
                     FIELD_WIDTH,
                     FIELD_HEIGHT
             );
@@ -258,6 +277,11 @@ public final class LevelFactory {
                             Map.entry(8, List.of(9, 12, 10)),
                             Map.entry(9, List.of(10)),
                             Map.entry(10, List.of(11, 12))
+                    ),
+                    Map.of(
+                            2, new HorizontalMovementStrategy(),
+                            10, new HorizontalMovementStrategy(),
+                            12, new FixedMovementStrategy()
                     ),
                     FIELD_WIDTH,
                     FIELD_HEIGHT

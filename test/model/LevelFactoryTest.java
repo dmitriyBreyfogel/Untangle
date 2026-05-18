@@ -46,13 +46,15 @@ class LevelFactoryTest {
     @Test
     @DisplayName("Фабрика задаёт разные стратегии движения узлов")
     void createsNodesWithDifferentMovementStrategies() {
-        Level level = new LevelFactory().createLevel(1);
-        List<Node> nodes = level.scheme().getNodes();
+        LevelFactory factory = new LevelFactory();
 
-        assertInstanceOf(FreeMovementStrategy.class, nodes.get(0).getMovementStrategy());
-        assertInstanceOf(FreeMovementStrategy.class, nodes.get(1).getMovementStrategy());
-        assertInstanceOf(FixedMovementStrategy.class, nodes.get(2).getMovementStrategy());
-        assertInstanceOf(HorizontalMovementStrategy.class, nodes.get(3).getMovementStrategy());
+        assertMovementStrategies(factory.createLevel(1), List.of(2), List.of(3));
+        assertMovementStrategies(factory.createLevel(5), List.of(), List.of(1));
+        assertMovementStrategies(factory.createLevel(6), List.of(4), List.of(6));
+        assertMovementStrategies(factory.createLevel(7), List.of(0, 8), List.of(6));
+        assertMovementStrategies(factory.createLevel(8), List.of(10), List.of(3));
+        assertMovementStrategies(factory.createLevel(9), List.of(), List.of(1, 4, 9));
+        assertMovementStrategies(factory.createLevel(10), List.of(12), List.of(2, 10));
     }
 
     @Test
@@ -64,6 +66,19 @@ class LevelFactoryTest {
     private static void assertAllNodesConnected(Scheme scheme) {
         for (Node node : scheme.getNodes()) {
             assertTrue(scheme.getEdgesOfNode(node).size() > 0);
+        }
+    }
+
+    private static void assertMovementStrategies(Level level, List<Integer> fixedNodeIndexes, List<Integer> horizontalNodeIndexes) {
+        List<Node> nodes = level.scheme().getNodes();
+        for (int i = 0; i < nodes.size(); i++) {
+            if (fixedNodeIndexes.contains(i)) {
+                assertInstanceOf(FixedMovementStrategy.class, nodes.get(i).getMovementStrategy());
+            } else if (horizontalNodeIndexes.contains(i)) {
+                assertInstanceOf(HorizontalMovementStrategy.class, nodes.get(i).getMovementStrategy());
+            } else {
+                assertInstanceOf(FreeMovementStrategy.class, nodes.get(i).getMovementStrategy());
+            }
         }
     }
 

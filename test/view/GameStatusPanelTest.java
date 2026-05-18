@@ -22,9 +22,9 @@ class GameStatusPanelTest {
         JLabel moveLabel = SwingTestSupport.readField(panel, "moveCountLabel", JLabel.class);
         JLabel statusLabel = SwingTestSupport.readField(panel, "gameStatusLabel", JLabel.class);
 
-        assertEquals("Уровень: -", levelLabel.getText());
-        assertEquals("Ходы: 0", moveLabel.getText());
-        assertEquals("Статус: Игра не запущена", statusLabel.getText());
+        assertEquals("Уровень -", levelLabel.getText());
+        assertEquals("Ходы 0", moveLabel.getText());
+        assertEquals("Подготовка", statusLabel.getText());
     }
 
     @Test
@@ -42,9 +42,9 @@ class GameStatusPanelTest {
         JLabel moveLabel = SwingTestSupport.readField(panel, "moveCountLabel", JLabel.class);
         JLabel statusLabel = SwingTestSupport.readField(panel, "gameStatusLabel", JLabel.class);
 
-        assertEquals("Уровень: 1", levelLabel.getText());
-        assertEquals("Ходы: 1", moveLabel.getText());
-        assertEquals("Статус: Есть пересечения", statusLabel.getText());
+        assertEquals("Уровень 1", levelLabel.getText());
+        assertEquals("Ходы 1", moveLabel.getText());
+        assertEquals("Распутывание", statusLabel.getText());
     }
 
     @Test
@@ -67,9 +67,9 @@ class GameStatusPanelTest {
         JLabel moveLabel = SwingTestSupport.readField(panel, "moveCountLabel", JLabel.class);
         JLabel statusLabel = SwingTestSupport.readField(panel, "gameStatusLabel", JLabel.class);
 
-        assertEquals("Уровень: -", levelLabel.getText());
-        assertEquals("Ходы: 0", moveLabel.getText());
-        assertEquals("Статус: Игра не запущена", statusLabel.getText());
+        assertEquals("Уровень -", levelLabel.getText());
+        assertEquals("Ходы 0", moveLabel.getText());
+        assertEquals("Подготовка", statusLabel.getText());
     }
 
     @Test
@@ -87,9 +87,9 @@ class GameStatusPanelTest {
         JLabel moveLabel = SwingTestSupport.readField(panel, "moveCountLabel", JLabel.class);
         JLabel statusLabel = SwingTestSupport.readField(panel, "gameStatusLabel", JLabel.class);
 
-        assertEquals("Уровень: 1", levelLabel.getText());
-        assertEquals("Ходы: 0", moveLabel.getText());
-        assertEquals("Статус: Есть пересечения", statusLabel.getText());
+        assertEquals("Уровень 1", levelLabel.getText());
+        assertEquals("Ходы 0", moveLabel.getText());
+        assertEquals("Распутывание", statusLabel.getText());
     }
 
     @Test
@@ -107,9 +107,22 @@ class GameStatusPanelTest {
         JLabel moveLabel = SwingTestSupport.readField(panel, "moveCountLabel", JLabel.class);
         JLabel statusLabel = SwingTestSupport.readField(panel, "gameStatusLabel", JLabel.class);
 
-        assertEquals("Уровень: 2", levelLabel.getText());
-        assertEquals("Ходы: 0", moveLabel.getText());
-        assertEquals("Статус: Есть пересечения", statusLabel.getText());
+        assertEquals("Уровень 2", levelLabel.getText());
+        assertEquals("Ходы 0", moveLabel.getText());
+        assertEquals("Распутывание", statusLabel.getText());
+    }
+
+    @Test
+    @DisplayName("Status panel can show completed scheme state")
+    void showsCompletedSchemeState() {
+        Game game = new Game();
+        GameStatusPanel panel = SwingTestSupport.callOnEdt(() -> new GameStatusPanel(game));
+
+        SwingTestSupport.runOnEdt(panel::showCompletedState);
+
+        JLabel statusLabel = SwingTestSupport.readField(panel, "gameStatusLabel", JLabel.class);
+
+        assertEquals("Схема распутана", statusLabel.getText());
     }
 
     @Test

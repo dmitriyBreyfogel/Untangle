@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.HashSet;
 import java.util.List;
@@ -59,7 +60,6 @@ public final class EdgeRenderer {
                 ? collectPreviewIntersectingEdges(edges, selectedNode, selectedNodePosition)
                 : null;
 
-        graphics.setStroke(new BasicStroke(3f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         for (Edge edge : edges) {
             boolean intersecting = previewIntersectingEdges == null
                     ? edge.isIntersecting()
@@ -70,7 +70,8 @@ public final class EdgeRenderer {
                     edge,
                     selectedNode,
                     selectedNodePosition,
-                    intersecting ? intersectingEdgeColor : normalEdgeColor
+                    intersecting ? intersectingEdgeColor : normalEdgeColor,
+                    intersecting
             );
         }
     }
@@ -140,12 +141,31 @@ public final class EdgeRenderer {
             Edge edge,
             Node selectedNode,
             Point2D selectedNodePosition,
-            Color color
+            Color color,
+            boolean intersecting
     ) {
         Point start = toScreenPoint(gameModel, edge.getNodeA(), selectedNode, selectedNodePosition);
         Point end = toScreenPoint(gameModel, edge.getNodeB(), selectedNode, selectedNodePosition);
+        Line2D edgeLine = new Line2D.Float(start.x, start.y, end.x, end.y);
+        Line2D shadowLine = new Line2D.Float(start.x + 2.5f, start.y + 3.5f, end.x + 2.5f, end.y + 3.5f);
+
+        graphics.setStroke(new BasicStroke(9f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        graphics.setColor(new Color(4, 10, 18, 52));
+        graphics.draw(shadowLine);
+
+        if (intersecting) {
+            graphics.setStroke(new BasicStroke(10f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            graphics.setColor(withAlpha(color, 72));
+            graphics.draw(edgeLine);
+        }
+
+        graphics.setStroke(new BasicStroke(4.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         graphics.setColor(color);
-        graphics.drawLine(start.x, start.y, end.x, end.y);
+        graphics.draw(edgeLine);
+    }
+
+    private Color withAlpha(Color color, int alpha) {
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
     }
 
     private Point toScreenPoint(Game gameModel, Node node, Node selectedNode, Point2D selectedNodePosition) {

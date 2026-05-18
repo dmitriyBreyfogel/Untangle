@@ -33,10 +33,10 @@ public final class GameFieldPanel extends JPanel {
     public GameFieldPanel(Game gameModel) {
         this.gameModel = Objects.requireNonNull(gameModel, "gameModel");
         fieldParameters = new FieldParameters(12, 28);
-        normalEdgeColor = new Color(66, 63, 60);
-        intersectingEdgeColor = new Color(198, 59, 59);
-        nodeColor = new Color(53, 111, 179);
-        selectedNodeColor = new Color(230, 155, 44);
+        normalEdgeColor = new Color(106, 126, 152);
+        intersectingEdgeColor = new Color(226, 97, 76);
+        nodeColor = new Color(74, 163, 180);
+        selectedNodeColor = new Color(243, 188, 65);
         gameFieldRenderer = new GameFieldRenderer(
                 fieldParameters,
                 normalEdgeColor,
@@ -62,10 +62,10 @@ public final class GameFieldPanel extends JPanel {
     private void configurePanel() {
         setOpaque(true);
         setDoubleBuffered(true);
-        setBackground(new Color(243, 239, 233));
+        setBackground(new Color(14, 22, 32));
         setBorder(BorderFactory.createEmptyBorder(4, 0, 4, 0));
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        setToolTipText("Перетаскивайте узлы, чтобы убрать пересечения");
+        setToolTipText("Перетаскивайте узлы, чтобы распутать схему");
         setPreferredSize(new Dimension(700, 700));
         setMinimumSize(new Dimension(320, 320));
     }

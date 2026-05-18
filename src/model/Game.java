@@ -29,7 +29,16 @@ public final class Game {
         }
         started = true;
         resetMoveCounter();
-        loadLevel(currentLevelNumber);
+        loadLevel(1);
+    }
+
+    public void continueGame() {
+        if (started || !hasProgressToContinue()) {
+            return;
+        }
+        started = true;
+        resetMoveCounter();
+        loadLevel(continueLevelNumber());
     }
 
     public void finish() {
@@ -91,6 +100,20 @@ public final class Game {
         moveCounter = 0;
     }
 
+    public boolean hasProgressToContinue() {
+        return maxCompletedLevelNumber > 0;
+    }
+
+    public int continueLevelNumber() {
+        if (!hasProgressToContinue()) {
+            return 1;
+        }
+        int nextUnlockedLevelNumber = maxCompletedLevelNumber + 1;
+        return levelExists(nextUnlockedLevelNumber)
+                ? nextUnlockedLevelNumber
+                : maxCompletedLevelNumber;
+    }
+
     public int currentLevelNumber() {
         return currentLevelNumber;
     }
@@ -109,5 +132,14 @@ public final class Game {
 
     public Level currentLevel() {
         return currentLevel;
+    }
+
+    private boolean levelExists(int levelNumber) {
+        try {
+            levelFactory.createLevel(levelNumber);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }

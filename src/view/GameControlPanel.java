@@ -22,12 +22,12 @@ public final class GameControlPanel extends JPanel {
 
     public GameControlPanel() {
         configurePanel();
-        startGameButton = new JButton("Начать игру");
-        restartLevelButton = new JButton("Перезапустить уровень");
-        finishGameButton = new JButton("Завершить игру");
+        startGameButton = new JButton("Новая игра");
+        restartLevelButton = new JButton();
+        finishGameButton = new JButton("Закончить партию");
         createButtons();
         connectButtonHandlers();
-        updateButtonAvailability(false);
+        updateButtonAvailability(false, false, 1);
     }
 
     public void setStartGameAction(Runnable startGameAction) {
@@ -43,27 +43,58 @@ public final class GameControlPanel extends JPanel {
     }
 
     public void updateButtonAvailability(boolean gameStarted) {
+        updateButtonAvailability(gameStarted, false, 1);
+    }
+
+    public void updateButtonAvailability(boolean gameStarted, boolean canContinue, int continueLevelNumber) {
+        configureButtonCopy(gameStarted, continueLevelNumber);
         startGameButton.setEnabled(!gameStarted);
-        restartLevelButton.setEnabled(gameStarted);
+        restartLevelButton.setEnabled(gameStarted || canContinue);
         finishGameButton.setEnabled(gameStarted);
-        startGameButton.setBackground(gameStarted ? new Color(219, 215, 207) : new Color(41, 53, 69));
-        startGameButton.setForeground(gameStarted ? new Color(143, 137, 128) : new Color(248, 245, 240));
-        restartLevelButton.setBackground(gameStarted ? new Color(246, 241, 233) : new Color(229, 224, 216));
-        restartLevelButton.setForeground(gameStarted ? new Color(56, 54, 51) : new Color(150, 143, 134));
-        finishGameButton.setBackground(gameStarted ? new Color(234, 218, 214) : new Color(229, 224, 216));
-        finishGameButton.setForeground(gameStarted ? new Color(120, 52, 43) : new Color(150, 143, 134));
+        applyButtonState(
+                startGameButton,
+                !gameStarted,
+                new Color(35, 54, 79),
+                new Color(248, 244, 236),
+                new Color(84, 111, 145),
+                new Color(57, 67, 81),
+                new Color(141, 150, 161),
+                new Color(86, 95, 107)
+        );
+        applyButtonState(
+                restartLevelButton,
+                gameStarted || canContinue,
+                gameStarted ? new Color(234, 226, 214) : new Color(62, 86, 118),
+                gameStarted ? new Color(45, 52, 63) : new Color(244, 240, 232),
+                gameStarted ? new Color(191, 181, 166) : new Color(97, 126, 161),
+                new Color(57, 67, 81),
+                new Color(141, 150, 161),
+                new Color(86, 95, 107)
+        );
+        applyButtonState(
+                finishGameButton,
+                gameStarted,
+                new Color(128, 56, 54),
+                new Color(250, 241, 239),
+                new Color(171, 101, 97),
+                new Color(57, 67, 81),
+                new Color(141, 150, 161),
+                new Color(86, 95, 107)
+        );
     }
 
     private void configurePanel() {
         setOpaque(false);
-        setBorder(new EmptyBorder(8, 0, 0, 0));
-        setLayout(new FlowLayout(FlowLayout.CENTER, 14, 0));
+        setBorder(new EmptyBorder(12, 0, 0, 0));
+        setLayout(new FlowLayout(FlowLayout.CENTER, 16, 0));
     }
 
     private void createButtons() {
-        styleButton(startGameButton, 204);
-        styleButton(restartLevelButton, 224);
-        styleButton(finishGameButton, 196);
+        startGameButton.setToolTipText("Запустить новую партию");
+        finishGameButton.setToolTipText("Закрыть текущую партию");
+        styleButton(startGameButton, 186);
+        styleButton(restartLevelButton, 254);
+        styleButton(finishGameButton, 208);
         add(startGameButton);
         add(restartLevelButton);
         add(finishGameButton);
@@ -95,12 +126,49 @@ public final class GameControlPanel extends JPanel {
 
     private void styleButton(JButton button, int preferredWidth) {
         button.setFocusPainted(false);
+        button.setFocusable(false);
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        button.setPreferredSize(new Dimension(preferredWidth, 42));
+        button.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        button.setPreferredSize(new Dimension(preferredWidth, 48));
+        button.putClientProperty("JButton.buttonType", "roundRect");
+        button.setOpaque(true);
         button.setBorder(new CompoundBorder(
-                BorderFactory.createLineBorder(new Color(206, 200, 190), 1, true),
-                new EmptyBorder(8, 18, 8, 18)
+                BorderFactory.createLineBorder(new Color(86, 95, 107), 1, true),
+                new EmptyBorder(10, 18, 10, 18)
+        ));
+    }
+
+    private void configureButtonCopy(boolean gameStarted, int continueLevelNumber) {
+        restartLevelButton.setText(gameStarted
+                ? "Перезапустить уровень"
+                : "Продолжить с уровня " + formatLevelNumber(continueLevelNumber));
+        restartLevelButton.setToolTipText(gameStarted
+                ? "Собрать текущий уровень заново"
+                : "Продолжить с ближайшего доступного уровня");
+        finishGameButton.setToolTipText(gameStarted
+                ? "Закрыть текущую партию"
+                : "Нет активной партии");
+    }
+
+    private String formatLevelNumber(int levelNumber) {
+        return Integer.toString(levelNumber);
+    }
+
+    private void applyButtonState(
+            JButton button,
+            boolean enabled,
+            Color enabledBackground,
+            Color enabledForeground,
+            Color enabledBorder,
+            Color disabledBackground,
+            Color disabledForeground,
+            Color disabledBorder
+    ) {
+        button.setBackground(enabled ? enabledBackground : disabledBackground);
+        button.setForeground(enabled ? enabledForeground : disabledForeground);
+        button.setBorder(new CompoundBorder(
+                BorderFactory.createLineBorder(enabled ? enabledBorder : disabledBorder, 1, true),
+                new EmptyBorder(10, 18, 10, 18)
         ));
     }
 }

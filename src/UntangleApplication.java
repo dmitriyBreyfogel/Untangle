@@ -1,6 +1,5 @@
-package view;
-
 import model.Game;
+import view.GameWindow;
 
 import javax.swing.SwingUtilities;
 

@@ -33,11 +33,17 @@ public final class GameWindow extends JFrame {
     public void refreshView() {
         gameStatusPanel.refreshState();
         gameFieldPanel.refreshField();
-        gameControlPanel.updateButtonAvailability(gameModel.started());
+        gameControlPanel.updateButtonAvailability(
+                gameModel.started(),
+                gameModel.hasProgressToContinue(),
+                gameModel.continueLevelNumber()
+        );
     }
 
     void handleMoveResult(int previousLevelNumber, int previousMaxCompletedLevelNumber) {
         if (gameModel.maxCompletedLevelNumber() > previousMaxCompletedLevelNumber) {
+            gameStatusPanel.showCompletedState();
+            gameStatusPanel.paintImmediately(gameStatusPanel.getVisibleRect());
             showVictoryMessage(previousLevelNumber, !gameModel.started());
         }
         refreshView();
@@ -46,12 +52,13 @@ public final class GameWindow extends JFrame {
     private void configureWindow() {
         setTitle("Untangle");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout(0, 16));
-        setMinimumSize(new Dimension(840, 920));
-        setBackground(new Color(243, 239, 233));
+        setLayout(new BorderLayout(0, 20));
+        setMinimumSize(new Dimension(900, 940));
+        Color windowBackground = new Color(14, 22, 32);
+        setBackground(windowBackground);
         setLocationByPlatform(true);
-        ((JComponent) getContentPane()).setBorder(BorderFactory.createEmptyBorder(18, 18, 18, 18));
-        getContentPane().setBackground(new Color(243, 239, 233));
+        ((JComponent) getContentPane()).setBorder(BorderFactory.createEmptyBorder(24, 24, 22, 24));
+        getContentPane().setBackground(windowBackground);
     }
 
     private void assembleLayout() {
@@ -67,12 +74,25 @@ public final class GameWindow extends JFrame {
 
     private void bindControlActions() {
         gameControlPanel.setStartGameAction(this::startNewGame);
-        gameControlPanel.setRestartLevelAction(this::restartCurrentLevel);
+        gameControlPanel.setRestartLevelAction(this::handleSecondaryAction);
         gameControlPanel.setFinishGameAction(this::finishGame);
     }
 
     private void startNewGame() {
         gameModel.start();
+        refreshView();
+    }
+
+    private void handleSecondaryAction() {
+        if (gameModel.started()) {
+            restartCurrentLevel();
+            return;
+        }
+        continueGame();
+    }
+
+    private void continueGame() {
+        gameModel.continueGame();
         refreshView();
     }
 

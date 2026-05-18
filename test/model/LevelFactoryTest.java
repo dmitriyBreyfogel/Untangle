@@ -27,6 +27,36 @@ class LevelFactoryTest {
     }
 
     @Test
+    @DisplayName("Фабрика создаёт третий уровень")
+    void createsThirdLevel() {
+        Level level = new LevelFactory().createLevel(3);
+
+        assertEquals(3, level.number());
+        assertTrue(level.scheme().hasIntersections());
+        assertEquals(5, level.scheme().getNodes().size());
+    }
+
+    @Test
+    @DisplayName("Фабрика создаёт четвёртый уровень")
+    void createsFourthLevel() {
+        Level level = new LevelFactory().createLevel(4);
+
+        assertEquals(4, level.number());
+        assertTrue(level.scheme().hasIntersections());
+        assertEquals(6, level.scheme().getNodes().size());
+    }
+
+    @Test
+    @DisplayName("Фабрика создаёт пятый уровень")
+    void createsFifthLevel() {
+        Level level = new LevelFactory().createLevel(5);
+
+        assertEquals(5, level.number());
+        assertTrue(level.scheme().hasIntersections());
+        assertEquals(7, level.scheme().getNodes().size());
+    }
+
+    @Test
     @DisplayName("Фабрика отклоняет неизвестный номер уровня")
     void unknownLevelRejected() {
         assertThrows(IllegalArgumentException.class, () -> new LevelFactory().createLevel(999));

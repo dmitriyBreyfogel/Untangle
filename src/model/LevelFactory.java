@@ -44,6 +44,62 @@ public final class LevelFactory {
                     FIELD_WIDTH,
                     FIELD_HEIGHT
             );
+            case 3 -> new Level(
+                    3,
+                    List.of(
+                            new Point2D.Double(10, 10),
+                            new Point2D.Double(90, 90),
+                            new Point2D.Double(10, 90),
+                            new Point2D.Double(90, 10),
+                            new Point2D.Double(5, 50)
+                    ),
+                    Map.of(
+                            0, List.of(1, 2, 4),
+                            2, List.of(3, 4),
+                            1, List.of(3)
+                    ),
+                    FIELD_WIDTH,
+                    FIELD_HEIGHT
+            );
+            case 4 -> new Level(
+                    4,
+                    List.of(
+                            new Point2D.Double(10, 10),
+                            new Point2D.Double(90, 90),
+                            new Point2D.Double(10, 90),
+                            new Point2D.Double(90, 10),
+                            new Point2D.Double(5, 50),
+                            new Point2D.Double(95, 50)
+                    ),
+                    Map.of(
+                            0, List.of(1, 2, 4),
+                            2, List.of(3, 4),
+                            1, List.of(3),
+                            3, List.of(5)
+                    ),
+                    FIELD_WIDTH,
+                    FIELD_HEIGHT
+            );
+            case 5 -> new Level(
+                    5,
+                    List.of(
+                            new Point2D.Double(10, 10),
+                            new Point2D.Double(90, 90),
+                            new Point2D.Double(10, 90),
+                            new Point2D.Double(90, 10),
+                            new Point2D.Double(5, 50),
+                            new Point2D.Double(95, 50),
+                            new Point2D.Double(50, 5)
+                    ),
+                    Map.of(
+                            0, List.of(1, 2, 4, 6),
+                            2, List.of(3, 4),
+                            1, List.of(3),
+                            3, List.of(5)
+                    ),
+                    FIELD_WIDTH,
+                    FIELD_HEIGHT
+            );
             default -> throw new IllegalArgumentException("Неизвестный номер уровня: " + number);
         };
     }

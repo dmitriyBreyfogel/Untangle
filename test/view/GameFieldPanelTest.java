@@ -100,11 +100,11 @@ class GameFieldPanelTest {
         GameFieldPanel panel = panel(new Game());
 
         assertTrue(panel.isOpaque());
-        assertEquals(new Color(243, 239, 233), panel.getBackground());
+        assertEquals(new Color(14, 22, 32), panel.getBackground());
         assertEquals(new Dimension(700, 700), panel.getPreferredSize());
         assertEquals(new Dimension(320, 320), panel.getMinimumSize());
         assertEquals(Cursor.HAND_CURSOR, panel.getCursor().getType());
-        assertEquals("Перетаскивайте узлы, чтобы убрать пересечения", panel.getToolTipText());
+        assertEquals("Перетаскивайте узлы, чтобы распутать схему", panel.getToolTipText());
     }
 
     @Test
@@ -181,7 +181,7 @@ class GameFieldPanelTest {
 
         Point edgePoint = SwingTestSupport.toScreenPoint(parameters, game, 50, 7.5, image.getWidth(), image.getHeight());
 
-        assertEquals(new Color(66, 63, 60).getRGB(), image.getRGB(edgePoint.x, edgePoint.y));
+        assertEquals(new Color(106, 126, 152).getRGB(), image.getRGB(edgePoint.x, edgePoint.y));
         assertEquals(0, game.moveCounter());
     }
 

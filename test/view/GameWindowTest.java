@@ -48,6 +48,29 @@ class GameWindowTest {
     }
 
     @Test
+    @DisplayName("Game window continue button starts from unlocked level")
+    void continueButtonStartsFromUnlockedLevel() {
+        requireWindowEnvironment();
+
+        Game game = new Game();
+        game.start();
+        game.currentLevel().scheme().moveNode(game.currentLevel().scheme().getNodes().get(1), new java.awt.geom.Point2D.Double(90, 5));
+        game.finish();
+
+        window = createWindow(game);
+        GameControlPanel controlPanel = SwingTestSupport.readField(window, "gameControlPanel", GameControlPanel.class);
+        JButton continueButton = SwingTestSupport.readField(controlPanel, "restartLevelButton", JButton.class);
+
+        assertTrue(continueButton.isEnabled());
+        assertEquals("Продолжить с уровня 2", continueButton.getText());
+
+        SwingTestSupport.runOnEdt(continueButton::doClick);
+
+        assertTrue(game.started());
+        assertEquals(2, game.currentLevelNumber());
+    }
+
+    @Test
     @DisplayName("Game window rejects null game")
     void rejectsNullGame() {
         requireWindowEnvironment();
@@ -139,8 +162,8 @@ class GameWindowTest {
         JLabel levelLabel = SwingTestSupport.readField(statusPanel, "levelNumberLabel", JLabel.class);
         JLabel moveLabel = SwingTestSupport.readField(statusPanel, "moveCountLabel", JLabel.class);
 
-        assertEquals("Уровень: 1", levelLabel.getText());
-        assertEquals("Ходы: 0", moveLabel.getText());
+        assertEquals("Уровень 1", levelLabel.getText());
+        assertEquals("Ходы 0", moveLabel.getText());
     }
 
     @Test
@@ -193,7 +216,7 @@ class GameWindowTest {
         GameStatusPanel statusPanel = SwingTestSupport.readField(window, "gameStatusPanel", GameStatusPanel.class);
         JLabel statusLabel = SwingTestSupport.readField(statusPanel, "gameStatusLabel", JLabel.class);
 
-        assertEquals("Статус: Игра не запущена", statusLabel.getText());
+        assertEquals("Подготовка", statusLabel.getText());
     }
 
     @Test

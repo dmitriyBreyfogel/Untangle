@@ -32,23 +32,23 @@ public final class GameStatusPanel extends JPanel {
     public void refreshState() {
         refreshLevelNumber();
         refreshMoveCount();
-        refreshStatusText();
+        refreshStageLabel();
     }
 
     private void configurePanel() {
         setOpaque(true);
-        setBackground(new Color(251, 248, 242));
+        setBackground(new Color(19, 29, 41));
         setBorder(new CompoundBorder(
-                BorderFactory.createLineBorder(new Color(221, 214, 202), 1, true),
-                new EmptyBorder(14, 18, 14, 18)
+                BorderFactory.createLineBorder(new Color(58, 73, 91), 1, true),
+                new EmptyBorder(14, 14, 14, 14)
         ));
-        setLayout(new GridLayout(1, 3, 18, 0));
+        setLayout(new GridLayout(1, 3, 12, 0));
     }
 
     private void createLabels() {
-        styleLabel(levelNumberLabel);
-        styleLabel(moveCountLabel);
-        styleLabel(gameStatusLabel);
+        styleMetricLabel(levelNumberLabel);
+        styleMetricLabel(moveCountLabel);
+        styleStageLabel(gameStatusLabel);
         add(levelNumberLabel);
         add(moveCountLabel);
         add(gameStatusLabel);
@@ -57,38 +57,78 @@ public final class GameStatusPanel extends JPanel {
     private void refreshLevelNumber() {
         String levelText = gameModel.currentLevel() == null
                 ? "-"
-                : Integer.toString(gameModel.currentLevelNumber());
-        levelNumberLabel.setForeground(new Color(53, 50, 47));
-        levelNumberLabel.setText("Уровень: " + levelText);
+                : formatNumber(gameModel.currentLevelNumber());
+        levelNumberLabel.setForeground(new Color(241, 236, 228));
+        levelNumberLabel.setText("Уровень " + levelText);
     }
 
     private void refreshMoveCount() {
-        moveCountLabel.setForeground(new Color(53, 50, 47));
-        moveCountLabel.setText("Ходы: " + gameModel.moveCounter());
+        moveCountLabel.setForeground(new Color(241, 236, 228));
+        moveCountLabel.setText("Ходы " + formatNumber(gameModel.moveCounter()));
     }
 
-    private void refreshStatusText() {
+    private void refreshStageLabel() {
         if (!gameModel.started()) {
-            gameStatusLabel.setForeground(new Color(124, 117, 109));
+            applyStoppedStageStyle();
         } else if (gameModel.currentLevel().scheme().hasIntersections()) {
-            gameStatusLabel.setForeground(new Color(168, 67, 67));
+            applyUntanglingStageStyle();
         } else {
-            gameStatusLabel.setForeground(new Color(58, 121, 86));
+            applySolvedStageStyle();
         }
-        gameStatusLabel.setText("Статус: " + getStatusText());
+        gameStatusLabel.setText(getMomentText());
     }
 
-    private String getStatusText() {
+    void showCompletedState() {
+        applySolvedStageStyle();
+        gameStatusLabel.setText("Схема распутана");
+    }
+
+    private String getMomentText() {
         if (!gameModel.started()) {
-            return "Игра не запущена";
+            return "Подготовка";
         }
         return gameModel.currentLevel().scheme().hasIntersections()
-                ? "Есть пересечения"
-                : "Уровень завершён";
+                ? "Распутывание"
+                : "Схема распутана";
     }
 
-    private void styleLabel(JLabel label) {
+    private String formatNumber(int value) {
+        return Integer.toString(value);
+    }
+
+    private void applyStoppedStageStyle() {
+        gameStatusLabel.setBackground(new Color(66, 77, 93));
+        gameStatusLabel.setForeground(new Color(234, 230, 223));
+    }
+
+    private void applyUntanglingStageStyle() {
+        gameStatusLabel.setBackground(new Color(140, 63, 58));
+        gameStatusLabel.setForeground(new Color(252, 242, 239));
+    }
+
+    private void applySolvedStageStyle() {
+        gameStatusLabel.setBackground(new Color(54, 113, 89));
+        gameStatusLabel.setForeground(new Color(238, 247, 241));
+    }
+
+    private void styleMetricLabel(JLabel label) {
+        label.setOpaque(true);
         label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        label.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        label.setBackground(new Color(28, 41, 57));
+        label.setBorder(new CompoundBorder(
+                BorderFactory.createLineBorder(new Color(70, 88, 109), 1, true),
+                new EmptyBorder(14, 16, 14, 16)
+        ));
+    }
+
+    private void styleStageLabel(JLabel label) {
+        label.setOpaque(true);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        label.setBorder(new CompoundBorder(
+                BorderFactory.createLineBorder(new Color(70, 88, 109), 1, true),
+                new EmptyBorder(14, 16, 14, 16)
+        ));
     }
 }

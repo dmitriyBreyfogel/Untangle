@@ -61,15 +61,15 @@ class GameTest {
         Game game = new Game();
         game.start();
 
-        Scheme scheme1 = game.currentLevel().scheme();
-        scheme1.moveNode(scheme1.getNodes().get(1), new Point2D.Double(90, 5));
-
-        Scheme scheme2 = game.currentLevel().scheme();
-        scheme2.moveNode(scheme2.getNodes().getFirst(), new Point2D.Double(0, 80));
+        solveCurrentLevel(game);
+        solveCurrentLevel(game);
+        solveCurrentLevel(game);
+        solveCurrentLevel(game);
+        solveCurrentLevel(game);
 
         assertFalse(game.started());
         assertNull(game.currentLevel());
-        assertEquals(2, game.maxCompletedLevelNumber());
+        assertEquals(5, game.maxCompletedLevelNumber());
         assertEquals(0, game.moveCounter());
     }
 
@@ -102,6 +102,55 @@ class GameTest {
         assertEquals(1, game.moveCounter());
         assertEquals(1, game.currentLevelNumber());
         assertNotNull(game.currentLevel());
+    }
+
+    @Test
+    @DisplayName("Новая игра после прогресса снова запускается с первого уровня")
+    void startAfterProgressLoadsFirstLevel() {
+        Game game = new Game();
+        game.start();
+
+        Scheme scheme = game.currentLevel().scheme();
+        scheme.moveNode(scheme.getNodes().get(1), new Point2D.Double(90, 5));
+        assertEquals(2, game.currentLevelNumber());
+
+        game.finish();
+        game.start();
+
+        assertTrue(game.started());
+        assertEquals(1, game.currentLevelNumber());
+        assertEquals(0, game.moveCounter());
+    }
+
+    @Test
+    @DisplayName("Продолжение игры открывает следующий доступный уровень")
+    void continueGameLoadsNextUnlockedLevel() {
+        Game game = new Game();
+        game.start();
+
+        Scheme scheme = game.currentLevel().scheme();
+        scheme.moveNode(scheme.getNodes().get(1), new Point2D.Double(90, 5));
+        game.finish();
+
+        game.continueGame();
+
+        assertTrue(game.started());
+        assertEquals(2, game.currentLevelNumber());
+        assertNotNull(game.currentLevel());
+        assertEquals(0, game.moveCounter());
+    }
+
+    @Test
+    @DisplayName("Продолжение без прогресса ничего не делает")
+    void continueWithoutProgressDoesNothing() {
+        Game game = new Game();
+
+        game.continueGame();
+
+        assertFalse(game.started());
+        assertNull(game.currentLevel());
+        assertEquals(1, game.continueLevelNumber());
+        assertFalse(game.hasProgressToContinue());
     }
 
     @Test
@@ -139,8 +188,8 @@ class GameTest {
         Game game = new Game();
         game.start();
 
-        game.loadLevel(2);
-        assertEquals(2, game.currentLevelNumber());
+        game.loadLevel(5);
+        assertEquals(5, game.currentLevelNumber());
 
         game.goToNextLevel();
         assertFalse(game.started());
@@ -172,5 +221,14 @@ class GameTest {
         game.completeLevel();
 
         assertEquals(2, game.maxCompletedLevelNumber());
+    }
+
+    private static void solveCurrentLevel(Game game) {
+        Scheme scheme = game.currentLevel().scheme();
+        switch (game.currentLevelNumber()) {
+            case 1, 3, 4, 5 -> scheme.moveNode(scheme.getNodes().get(1), new Point2D.Double(90, 5));
+            case 2 -> scheme.moveNode(scheme.getNodes().getFirst(), new Point2D.Double(0, 80));
+            default -> throw new IllegalStateException("Unexpected level number: " + game.currentLevelNumber());
+        }
     }
 }

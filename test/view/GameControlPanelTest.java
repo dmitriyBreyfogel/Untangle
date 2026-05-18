@@ -34,6 +34,18 @@ class GameControlPanelTest {
     }
 
     @Test
+    @DisplayName("Control panel enables continue button when progress exists")
+    void enablesContinueButtonWhenProgressExists() {
+        GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
+        JButton restartButton = SwingTestSupport.readField(panel, "restartLevelButton", JButton.class);
+
+        SwingTestSupport.runOnEdt(() -> panel.updateButtonAvailability(false, true, 2));
+
+        assertTrue(restartButton.isEnabled());
+        assertEquals("Продолжить с уровня 2", restartButton.getText());
+    }
+
+    @Test
     @DisplayName("Control panel runs configured actions")
     void runsConfiguredActions() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
@@ -65,9 +77,9 @@ class GameControlPanelTest {
 
         assertTrue(panel.getLayout() instanceof FlowLayout);
         assertEquals(3, panel.getComponentCount());
-        assertEquals("Начать игру", startButton.getText());
-        assertEquals("Перезапустить уровень", restartButton.getText());
-        assertEquals("Завершить игру", finishButton.getText());
+        assertEquals("Новая игра", startButton.getText());
+        assertEquals("Продолжить с уровня 1", restartButton.getText());
+        assertEquals("Закончить партию", finishButton.getText());
     }
 
     @Test

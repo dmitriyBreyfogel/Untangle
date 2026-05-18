@@ -18,19 +18,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class NodeRendererTest {
     @Test
-    @DisplayName("Node renderer rejects null field parameters")
+    @DisplayName("Рендерер узлов не принимает null параметры поля")
     void rejectsNullFieldParameters() {
         assertThrows(NullPointerException.class, () -> new NodeRenderer(null));
     }
 
     @Test
-    @DisplayName("Node renderer rejects null graphics")
+    @DisplayName("Рендерер узлов не принимает null graphics")
     void rejectsNullGraphics() {
         assertThrows(NullPointerException.class, () -> new NodeRenderer(new FieldParameters(12, 28)).drawNodes(null, new Game()));
     }
 
     @Test
-    @DisplayName("Node renderer rejects null game")
+    @DisplayName("Рендерер узлов не принимает null игру")
     void rejectsNullGame() {
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
@@ -42,7 +42,7 @@ class NodeRendererTest {
     }
 
     @Test
-    @DisplayName("Node renderer draws regular node with node color")
+    @DisplayName("Рендерер узлов рисует обычный узел цветом узла")
     void drawsRegularNodeWithNodeColor() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
@@ -66,7 +66,7 @@ class NodeRendererTest {
     }
 
     @Test
-    @DisplayName("Node renderer draws selected node with selected color")
+    @DisplayName("Рендерер узлов рисует выбранный узел выбранным цветом")
     void drawsSelectedNodeWithSelectedColor() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
@@ -90,7 +90,7 @@ class NodeRendererTest {
     }
 
     @Test
-    @DisplayName("Node renderer draws fixed node with lock marker")
+    @DisplayName("Рендерер узлов рисует неподвижный узел с маркером замка")
     void drawsFixedNodeWithLockMarker() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
@@ -113,7 +113,7 @@ class NodeRendererTest {
     }
 
     @Test
-    @DisplayName("Node renderer draws horizontal node with arrow marker")
+    @DisplayName("Рендерер узлов рисует горизонтальный узел с маркером стрелки")
     void drawsHorizontalNodeWithArrowMarker() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
@@ -136,7 +136,7 @@ class NodeRendererTest {
     }
 
     @Test
-    @DisplayName("Node renderer can use custom render strategy registry")
+    @DisplayName("Рендерер узлов может использовать кастомный реестр стратегий рендера")
     void usesCustomRenderStrategyRegistry() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
@@ -163,7 +163,7 @@ class NodeRendererTest {
     }
 
     @Test
-    @DisplayName("Node renderer leaves image unchanged when game is not started")
+    @DisplayName("Рендерер узлов не меняет изображение, когда игра не запущена")
     void leavesImageUnchangedWhenGameIsNotStarted() {
         Game game = new Game();
         NodeRenderer renderer = new NodeRenderer(new FieldParameters(12, 28));
@@ -179,7 +179,7 @@ class NodeRendererTest {
     }
 
     @Test
-    @DisplayName("Node renderer can draw without explicit clip")
+    @DisplayName("Рендерер узлов может рисовать без явного clip")
     void canDrawWithoutExplicitClip() {
         Game game = startedGame();
         NodeRenderer renderer = new NodeRenderer(new FieldParameters(12, 28));
@@ -193,7 +193,7 @@ class NodeRendererTest {
     }
 
     @Test
-    @DisplayName("Node renderer package method rejects null colors")
+    @DisplayName("Пакетный метод рендерера узлов не принимает null цвета")
     void packageMethodRejectsNullColors() {
         Game game = startedGame();
         NodeRenderer renderer = new NodeRenderer(new FieldParameters(12, 28));
@@ -210,7 +210,7 @@ class NodeRendererTest {
     }
 
     @Test
-    @DisplayName("Node renderer rejects null render strategy registry")
+    @DisplayName("Рендерер узлов не принимает null реестр стратегий рендера")
     void rejectsNullRenderStrategyRegistry() {
         assertThrows(NullPointerException.class, () -> new NodeRenderer(new FieldParameters(12, 28), null));
     }

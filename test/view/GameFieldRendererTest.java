@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GameFieldRendererTest {
     @Test
-    @DisplayName("Renderer draws selected node with selected color")
+    @DisplayName("Рендерер поля рисует выбранный узел выбранным цветом")
     void drawsSelectedNodeWithSelectedColor() {
         Game game = startedGame();
         Node selectedNode = game.currentLevel().scheme().getNodes().getFirst();
@@ -40,7 +40,7 @@ class GameFieldRendererTest {
     }
 
     @Test
-    @DisplayName("Renderer paints field even when game is not started")
+    @DisplayName("Рендерер поля рисует поле, даже когда игра не запущена")
     void paintsFieldWhenGameIsStopped() {
         Game game = new Game();
         GameFieldRenderer renderer = renderer(new FieldParameters(12, 28), new Color(230, 155, 44));
@@ -57,13 +57,13 @@ class GameFieldRendererTest {
     }
 
     @Test
-    @DisplayName("Renderer rejects null field parameters")
+    @DisplayName("Рендерер поля не принимает null параметры поля")
     void rejectsNullFieldParameters() {
         assertThrows(NullPointerException.class, () -> new GameFieldRenderer(null, Color.BLACK, Color.RED, Color.BLUE, Color.ORANGE));
     }
 
     @Test
-    @DisplayName("Renderer rejects null colors")
+    @DisplayName("Рендерер поля не принимает null цвета")
     void rejectsNullColors() {
         FieldParameters parameters = new FieldParameters(12, 28);
         assertThrows(NullPointerException.class, () -> new GameFieldRenderer(parameters, null, Color.RED, Color.BLUE, Color.ORANGE));
@@ -73,13 +73,13 @@ class GameFieldRendererTest {
     }
 
     @Test
-    @DisplayName("Renderer rejects null graphics")
+    @DisplayName("Рендерер поля не принимает null graphics")
     void rejectsNullGraphics() {
         assertThrows(NullPointerException.class, () -> renderer(new FieldParameters(12, 28), Color.ORANGE).drawField(null, new Game(), null));
     }
 
     @Test
-    @DisplayName("Renderer rejects null game")
+    @DisplayName("Рендерер поля не принимает null игру")
     void rejectsNullGame() {
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
@@ -91,7 +91,7 @@ class GameFieldRendererTest {
     }
 
     @Test
-    @DisplayName("Renderer paints background and board with different colors")
+    @DisplayName("Рендерер поля рисует фон и доску разными цветами")
     void paintsBackgroundAndBoardWithDifferentColors() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
@@ -111,7 +111,7 @@ class GameFieldRendererTest {
     }
 
     @Test
-    @DisplayName("Renderer uses regular node color for unselected node")
+    @DisplayName("Рендерер поля использует обычный цвет для невыбранного узла")
     void usesRegularNodeColorForUnselectedNode() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
@@ -139,7 +139,7 @@ class GameFieldRendererTest {
     }
 
     @Test
-    @DisplayName("Renderer updates edge color in preview before mouse release")
+    @DisplayName("Рендерер поля обновляет цвет грани в preview до отпускания мыши")
     void updatesEdgeColorInPreviewBeforeMouseRelease() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
@@ -169,7 +169,7 @@ class GameFieldRendererTest {
     }
 
     @Test
-    @DisplayName("Renderer can draw without explicit clip")
+    @DisplayName("Рендерер поля может рисовать без явного clip")
     void canDrawWithoutExplicitClip() {
         GameFieldRenderer renderer = renderer(new FieldParameters(12, 28), new Color(230, 155, 44));
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);

@@ -30,7 +30,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Game window binds control actions to model flow")
+    @DisplayName("Окно игры связывает действия панели управления с потоком модели")
     void bindsControlActionsToModelFlow() {
         requireWindowEnvironment();
 
@@ -48,7 +48,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Game window continue button starts from unlocked level")
+    @DisplayName("Окно игры запускает продолжение с открытого уровня")
     void continueButtonStartsFromUnlockedLevel() {
         requireWindowEnvironment();
 
@@ -71,7 +71,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Game window rejects null game")
+    @DisplayName("Окно игры не принимает null игру")
     void rejectsNullGame() {
         requireWindowEnvironment();
 
@@ -79,7 +79,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Game window configures frame")
+    @DisplayName("Окно игры настраивает frame")
     void configuresFrame() {
         requireWindowEnvironment();
 
@@ -91,7 +91,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Game window assembles all panels")
+    @DisplayName("Окно игры собирает все панели")
     void assemblesAllPanels() {
         requireWindowEnvironment();
 
@@ -104,7 +104,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Game window starts with stopped state buttons")
+    @DisplayName("Окно игры стартует с кнопками остановленного состояния")
     void startsWithStoppedStateButtons() {
         requireWindowEnvironment();
 
@@ -120,7 +120,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Game window show window makes frame visible")
+    @DisplayName("Окно игры делает frame видимым при showWindow")
     void showWindowMakesFrameVisible() {
         requireWindowEnvironment();
 
@@ -131,7 +131,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Game window refresh updates buttons after game start")
+    @DisplayName("Окно игры обновляет кнопки после старта игры")
     void refreshUpdatesButtonsAfterGameStart() {
         requireWindowEnvironment();
 
@@ -150,7 +150,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Game window refresh updates status labels")
+    @DisplayName("Окно игры обновляет label статуса при refresh")
     void refreshUpdatesStatusLabels() {
         requireWindowEnvironment();
 
@@ -167,7 +167,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Game window restart button resets move counter")
+    @DisplayName("Окно игры сбрасывает счётчик ходов кнопкой перезапуска")
     void restartButtonResetsMoveCounter() {
         requireWindowEnvironment();
 
@@ -186,7 +186,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Game window finish button clears current level")
+    @DisplayName("Окно игры очищает текущий уровень кнопкой завершения")
     void finishButtonClearsCurrentLevel() {
         requireWindowEnvironment();
 
@@ -204,7 +204,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Game window refresh after finish restores stopped state")
+    @DisplayName("Окно игры восстанавливает остановленное состояние после завершения")
     void refreshAfterFinishRestoresStoppedState() {
         requireWindowEnvironment();
 
@@ -220,7 +220,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Game window refresh when level is absent does not throw")
+    @DisplayName("Окно игры не падает при refresh без текущего уровня")
     void refreshWhenLevelIsAbsentDoesNotThrow() {
         requireWindowEnvironment();
 

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameControlPanelTest {
     @Test
-    @DisplayName("Control panel updates button availability")
+    @DisplayName("Панель управления обновляет доступность кнопок")
     void updatesButtonAvailability() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
 
@@ -34,7 +34,7 @@ class GameControlPanelTest {
     }
 
     @Test
-    @DisplayName("Control panel enables continue button when progress exists")
+    @DisplayName("Панель управления включает кнопку продолжения при наличии прогресса")
     void enablesContinueButtonWhenProgressExists() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
         JButton restartButton = SwingTestSupport.readField(panel, "restartLevelButton", JButton.class);
@@ -46,7 +46,7 @@ class GameControlPanelTest {
     }
 
     @Test
-    @DisplayName("Control panel runs configured actions")
+    @DisplayName("Панель управления выполняет настроенные действия")
     void runsConfiguredActions() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
         JButton startButton = SwingTestSupport.readField(panel, "startGameButton", JButton.class);
@@ -68,7 +68,7 @@ class GameControlPanelTest {
     }
 
     @Test
-    @DisplayName("Control panel configures layout and buttons")
+    @DisplayName("Панель управления настраивает layout и кнопки")
     void configuresLayoutAndButtons() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
         JButton startButton = SwingTestSupport.readField(panel, "startGameButton", JButton.class);
@@ -83,7 +83,7 @@ class GameControlPanelTest {
     }
 
     @Test
-    @DisplayName("Control panel ignores click when start action is missing")
+    @DisplayName("Панель управления игнорирует клик без start action")
     void ignoresClickWhenStartActionIsMissing() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
         JButton startButton = SwingTestSupport.readField(panel, "startGameButton", JButton.class);
@@ -92,7 +92,7 @@ class GameControlPanelTest {
     }
 
     @Test
-    @DisplayName("Control panel runs only start action for start button")
+    @DisplayName("Панель управления выполняет только start action для кнопки старта")
     void runsOnlyStartActionForStartButton() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
         JButton startButton = SwingTestSupport.readField(panel, "startGameButton", JButton.class);
@@ -113,7 +113,7 @@ class GameControlPanelTest {
     }
 
     @Test
-    @DisplayName("Control panel runs only restart action for restart button")
+    @DisplayName("Панель управления выполняет только restart action для кнопки перезапуска")
     void runsOnlyRestartActionForRestartButton() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
         JButton restartButton = SwingTestSupport.readField(panel, "restartLevelButton", JButton.class);
@@ -135,7 +135,7 @@ class GameControlPanelTest {
     }
 
     @Test
-    @DisplayName("Control panel runs only finish action for finish button")
+    @DisplayName("Панель управления выполняет только finish action для кнопки завершения")
     void runsOnlyFinishActionForFinishButton() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
         JButton finishButton = SwingTestSupport.readField(panel, "finishGameButton", JButton.class);
@@ -157,7 +157,7 @@ class GameControlPanelTest {
     }
 
     @Test
-    @DisplayName("Control panel can toggle button availability back and forth")
+    @DisplayName("Панель управления может переключать доступность кнопок туда и обратно")
     void togglesButtonAvailabilityBackAndForth() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
         JButton startButton = SwingTestSupport.readField(panel, "startGameButton", JButton.class);

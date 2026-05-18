@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GameFieldNavigatorTest {
     @Test
-    @DisplayName("Navigator selects moves and clears node")
+    @DisplayName("Навигатор выбирает, перемещает и очищает узел")
     void selectsMovesAndClearsNode() {
         Game game = startedGame();
         GameFieldNavigator navigator = navigator(game, 400, 400);
@@ -39,7 +39,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Navigator converts coordinates both ways")
+    @DisplayName("Навигатор преобразует координаты в обе стороны")
     void convertsCoordinatesBothWays() {
         Game game = startedGame();
         GameFieldNavigator navigator = navigator(game, 420, 360);
@@ -53,25 +53,25 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Navigator rejects null field parameters")
+    @DisplayName("Навигатор не принимает null параметры поля")
     void rejectsNullFieldParameters() {
         assertThrows(NullPointerException.class, () -> new GameFieldNavigator(null, new Game(), () -> new Dimension(100, 100)));
     }
 
     @Test
-    @DisplayName("Navigator rejects null game")
+    @DisplayName("Навигатор не принимает null игру")
     void rejectsNullGame() {
         assertThrows(NullPointerException.class, () -> new GameFieldNavigator(new FieldParameters(12, 28), null, () -> new Dimension(100, 100)));
     }
 
     @Test
-    @DisplayName("Navigator rejects null size supplier")
+    @DisplayName("Навигатор не принимает null поставщик размера")
     void rejectsNullSizeSupplier() {
         assertThrows(NullPointerException.class, () -> new GameFieldNavigator(new FieldParameters(12, 28), new Game(), null));
     }
 
     @Test
-    @DisplayName("Navigator rejects null point in find node")
+    @DisplayName("Навигатор не принимает null точку при поиске узла")
     void rejectsNullPointInFindNode() {
         GameFieldNavigator navigator = navigator(new Game(), 400, 400);
 
@@ -79,7 +79,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Navigator rejects null point in convert to screen")
+    @DisplayName("Навигатор не принимает null точку при переводе в экранные координаты")
     void rejectsNullPointInConvertToScreen() {
         GameFieldNavigator navigator = navigator(new Game(), 400, 400);
 
@@ -87,7 +87,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Navigator rejects null point in convert to model")
+    @DisplayName("Навигатор не принимает null точку при переводе в координаты модели")
     void rejectsNullPointInConvertToModel() {
         GameFieldNavigator navigator = navigator(new Game(), 400, 400);
 
@@ -95,7 +95,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Navigator finds no node when game is not started")
+    @DisplayName("Навигатор не находит узел, когда игра не запущена")
     void findsNoNodeWhenGameIsNotStarted() {
         GameFieldNavigator navigator = navigator(new Game(), 400, 400);
 
@@ -103,7 +103,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Navigator selects null when point is outside every node")
+    @DisplayName("Навигатор выбирает null, когда точка вне всех узлов")
     void selectsNullWhenPointIsOutsideEveryNode() {
         Game game = startedGame();
         GameFieldNavigator navigator = navigator(game, 400, 400);
@@ -114,7 +114,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Navigator move without selected node does nothing")
+    @DisplayName("Навигатор ничего не перемещает без выбранного узла")
     void moveWithoutSelectedNodeDoesNothing() {
         Game game = startedGame();
         Node node = game.currentLevel().scheme().getNodes().getFirst();
@@ -128,7 +128,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Navigator move after finish does nothing")
+    @DisplayName("Навигатор ничего не перемещает после завершения игры")
     void moveAfterFinishDoesNothing() {
         Game game = startedGame();
         Node node = game.currentLevel().scheme().getNodes().getFirst();
@@ -143,7 +143,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Navigator clamps model coordinates to field bounds")
+    @DisplayName("Навигатор ограничивает координаты модели границами поля")
     void clampsModelCoordinatesToFieldBounds() {
         GameFieldNavigator navigator = navigator(startedGame(), 400, 400);
 
@@ -157,7 +157,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Navigator works with zero panel size supplier")
+    @DisplayName("Навигатор работает с нулевым размером панели")
     void worksWithZeroPanelSizeSupplier() {
         Game game = startedGame();
         GameFieldNavigator navigator = new GameFieldNavigator(new FieldParameters(12, 28), game, () -> new Dimension(0, 0));
@@ -166,7 +166,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Navigator rejects null panel size from supplier")
+    @DisplayName("Навигатор не принимает null размер панели от поставщика")
     void rejectsNullPanelSizeFromSupplier() {
         GameFieldNavigator navigator = new GameFieldNavigator(new FieldParameters(12, 28), new Game(), () -> null);
 
@@ -174,7 +174,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Navigator returns same node when clicking exactly on node center")
+    @DisplayName("Навигатор возвращает тот же узел при клике точно по центру")
     void returnsSameNodeWhenClickingOnNodeCenter() {
         Game game = startedGame();
         GameFieldNavigator navigator = navigator(game, 400, 400);

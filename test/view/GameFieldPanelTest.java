@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameFieldPanelTest {
     @Test
-    @DisplayName("Dragging node through panel moves model node and clears selection")
+    @DisplayName("Перетаскивание узла через панель перемещает узел модели и очищает выбор")
     void draggingNodeMovesModelNodeAndClearsSelection() {
         Game game = startedGame();
         GameFieldPanel panel = panel(game);
@@ -44,7 +44,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Dragging node with multiple mouse dragged events counts as one move")
+    @DisplayName("Перетаскивание с несколькими mouse dragged событиями считается одним ходом")
     void draggingNodeWithMultipleMouseDraggedEventsCountsAsOneMove() {
         Game game = startedGame();
         GameFieldPanel panel = panel(game);
@@ -70,7 +70,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Winning drag through panel advances to next level")
+    @DisplayName("Победное перетаскивание через панель переводит на следующий уровень")
     void winningDragAdvancesToNextLevel() {
         Game game = startedGame();
         GameFieldPanel panel = panel(game);
@@ -89,13 +89,13 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Field panel rejects null game")
+    @DisplayName("Панель поля не принимает null игру")
     void rejectsNullGame() {
         assertThrows(NullPointerException.class, () -> new GameFieldPanel(null));
     }
 
     @Test
-    @DisplayName("Field panel configures visual properties")
+    @DisplayName("Панель поля настраивает визуальные свойства")
     void configuresVisualProperties() {
         GameFieldPanel panel = panel(new Game());
 
@@ -108,7 +108,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Field panel attaches mouse listeners")
+    @DisplayName("Панель поля подключает mouse listeners")
     void attachesMouseListeners() {
         GameFieldPanel panel = panel(new Game());
 
@@ -117,7 +117,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Pressing outside node keeps selection empty")
+    @DisplayName("Нажатие вне узла оставляет выбор пустым")
     void pressingOutsideNodeKeepsSelectionEmpty() {
         GameFieldPanel panel = panel(startedGame());
 
@@ -127,7 +127,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Dragging without selected node does not change model")
+    @DisplayName("Перетаскивание без выбранного узла не меняет модель")
     void draggingWithoutSelectedNodeDoesNotChangeModel() {
         Game game = startedGame();
         GameFieldPanel panel = panel(game);
@@ -141,7 +141,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Releasing mouse clears selected node")
+    @DisplayName("Отпускание мыши очищает выбранный узел")
     void releasingMouseClearsSelectedNode() {
         Game game = startedGame();
         GameFieldPanel panel = panel(game);
@@ -156,7 +156,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Dragging node updates edge color before mouse release")
+    @DisplayName("Перетаскивание узла обновляет цвет грани до отпускания мыши")
     void draggingNodeUpdatesEdgeColorBeforeMouseRelease() {
         Game game = startedGame();
         GameFieldPanel panel = panel(game);
@@ -186,7 +186,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Click without drag does not count as move")
+    @DisplayName("Клик без перетаскивания не считается ходом")
     void clickWithoutDragDoesNotCountAsMove() {
         Game game = startedGame();
         GameFieldPanel panel = panel(game);
@@ -203,7 +203,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Dragging beyond field clamps node to boundary")
+    @DisplayName("Перетаскивание за пределы поля ограничивает узел границей")
     void draggingBeyondFieldClampsNodeToBoundary() {
         Game game = startedGame();
         GameFieldPanel panel = panel(game);
@@ -222,7 +222,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Field panel paints field into graphics")
+    @DisplayName("Панель поля рисует поле в graphics")
     void paintsFieldIntoGraphics() {
         GameFieldPanel panel = panel(startedGame());
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
@@ -241,7 +241,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Field panel refresh does not throw")
+    @DisplayName("Панель поля не падает при refresh")
     void refreshDoesNotThrow() {
         GameFieldPanel panel = panel(new Game());
 

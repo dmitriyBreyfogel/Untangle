@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FieldParametersTest {
     @Test
-    @DisplayName("Field parameters store node radius and field padding")
+    @DisplayName("Параметры поля хранят радиус узла и отступ поля")
     void storesValues() {
         FieldParameters parameters = new FieldParameters(12, 28);
 
@@ -17,7 +17,7 @@ class FieldParametersTest {
     }
 
     @Test
-    @DisplayName("Field parameters reject invalid values")
+    @DisplayName("Параметры поля отклоняют некорректные значения")
     void rejectsInvalidValues() {
         assertThrows(IllegalArgumentException.class, () -> new FieldParameters(0, 10));
         assertThrows(IllegalArgumentException.class, () -> new FieldParameters(-1, 10));

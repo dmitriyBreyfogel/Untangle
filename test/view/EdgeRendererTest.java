@@ -17,19 +17,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class EdgeRendererTest {
     @Test
-    @DisplayName("Edge renderer rejects null field parameters")
+    @DisplayName("Рендерер граней не принимает null параметры поля")
     void rejectsNullFieldParameters() {
         assertThrows(NullPointerException.class, () -> new EdgeRenderer(null));
     }
 
     @Test
-    @DisplayName("Edge renderer rejects null graphics")
+    @DisplayName("Рендерер граней не принимает null graphics")
     void rejectsNullGraphics() {
         assertThrows(NullPointerException.class, () -> new EdgeRenderer(new FieldParameters(12, 28)).drawEdges(null, new Game()));
     }
 
     @Test
-    @DisplayName("Edge renderer rejects null game")
+    @DisplayName("Рендерер граней не принимает null игру")
     void rejectsNullGame() {
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
@@ -41,7 +41,7 @@ class EdgeRendererTest {
     }
 
     @Test
-    @DisplayName("Edge renderer draws intersecting edge with intersecting color")
+    @DisplayName("Рендерер граней рисует пересекающуюся грань цветом пересечения")
     void drawsIntersectingEdgeWithIntersectingColor() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
@@ -64,7 +64,7 @@ class EdgeRendererTest {
     }
 
     @Test
-    @DisplayName("Edge renderer draws non intersecting edge with normal color")
+    @DisplayName("Рендерер граней рисует непересекающуюся грань обычным цветом")
     void drawsNonIntersectingEdgeWithNormalColor() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
@@ -87,7 +87,7 @@ class EdgeRendererTest {
     }
 
     @Test
-    @DisplayName("Edge renderer leaves image unchanged when game is not started")
+    @DisplayName("Рендерер граней не меняет изображение, когда игра не запущена")
     void leavesImageUnchangedWhenGameIsNotStarted() {
         Game game = new Game();
         EdgeRenderer renderer = new EdgeRenderer(new FieldParameters(12, 28));
@@ -103,7 +103,7 @@ class EdgeRendererTest {
     }
 
     @Test
-    @DisplayName("Edge renderer can draw without explicit clip")
+    @DisplayName("Рендерер граней может рисовать без явного clip")
     void canDrawWithoutExplicitClip() {
         Game game = startedGame();
         EdgeRenderer renderer = new EdgeRenderer(new FieldParameters(12, 28));
@@ -117,7 +117,7 @@ class EdgeRendererTest {
     }
 
     @Test
-    @DisplayName("Edge renderer package method rejects null colors")
+    @DisplayName("Пакетный метод рендерера граней не принимает null цвета")
     void packageMethodRejectsNullColors() {
         Game game = startedGame();
         EdgeRenderer renderer = new EdgeRenderer(new FieldParameters(12, 28));

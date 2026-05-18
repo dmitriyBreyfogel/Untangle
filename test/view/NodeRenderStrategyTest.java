@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class NodeRenderStrategyTest {
     @Test
-    @DisplayName("Render strategies draw visible markers")
+    @DisplayName("Стратегии рендера рисуют видимые маркеры")
     void strategiesDrawVisibleMarkers() {
         BufferedImage image = SwingTestSupport.createCanvas(80, 80);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
@@ -38,7 +38,7 @@ class NodeRenderStrategyTest {
     }
 
     @Test
-    @DisplayName("Render strategies reject invalid parameters")
+    @DisplayName("Стратегии рендера отклоняют некорректные параметры")
     void strategiesRejectInvalidArgs() {
         BufferedImage image = SwingTestSupport.createCanvas(80, 80);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);

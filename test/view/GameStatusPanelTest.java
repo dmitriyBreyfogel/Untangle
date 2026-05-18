@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GameStatusPanelTest {
     @Test
-    @DisplayName("Status panel shows stopped game")
+    @DisplayName("Панель статуса показывает остановленную игру")
     void showsStoppedGame() {
         GameStatusPanel panel = SwingTestSupport.callOnEdt(() -> new GameStatusPanel(new Game()));
 
@@ -28,7 +28,7 @@ class GameStatusPanelTest {
     }
 
     @Test
-    @DisplayName("Status panel reflects current game state")
+    @DisplayName("Панель статуса отражает текущее состояние игры")
     void reflectsCurrentGameState() {
         Game game = new Game();
         game.start();
@@ -48,13 +48,13 @@ class GameStatusPanelTest {
     }
 
     @Test
-    @DisplayName("Status panel rejects null game")
+    @DisplayName("Панель статуса не принимает null игру")
     void rejectsNullGame() {
         assertThrows(NullPointerException.class, () -> new GameStatusPanel(null));
     }
 
     @Test
-    @DisplayName("Status panel updates after game finish")
+    @DisplayName("Панель статуса обновляется после завершения игры")
     void updatesAfterGameFinish() {
         Game game = new Game();
         game.start();
@@ -73,7 +73,7 @@ class GameStatusPanelTest {
     }
 
     @Test
-    @DisplayName("Status panel updates after restart")
+    @DisplayName("Панель статуса обновляется после перезапуска")
     void updatesAfterRestart() {
         Game game = new Game();
         game.start();
@@ -93,7 +93,7 @@ class GameStatusPanelTest {
     }
 
     @Test
-    @DisplayName("Status panel shows second level after winning move")
+    @DisplayName("Панель статуса показывает второй уровень после победного хода")
     void showsSecondLevelAfterWinningMove() {
         Game game = new Game();
         game.start();
@@ -113,7 +113,7 @@ class GameStatusPanelTest {
     }
 
     @Test
-    @DisplayName("Status panel can show completed scheme state")
+    @DisplayName("Панель статуса может показать состояние распутанной схемы")
     void showsCompletedSchemeState() {
         Game game = new Game();
         GameStatusPanel panel = SwingTestSupport.callOnEdt(() -> new GameStatusPanel(game));
@@ -126,7 +126,7 @@ class GameStatusPanelTest {
     }
 
     @Test
-    @DisplayName("Status panel configures three labels")
+    @DisplayName("Панель статуса настраивает три label")
     void configuresThreeLabels() {
         GameStatusPanel panel = SwingTestSupport.callOnEdt(() -> new GameStatusPanel(new Game()));
 
@@ -134,7 +134,7 @@ class GameStatusPanelTest {
     }
 
     @Test
-    @DisplayName("Status panel can refresh multiple times")
+    @DisplayName("Панель статуса может обновляться несколько раз")
     void canRefreshMultipleTimes() {
         Game game = new Game();
         GameStatusPanel panel = SwingTestSupport.callOnEdt(() -> new GameStatusPanel(game));

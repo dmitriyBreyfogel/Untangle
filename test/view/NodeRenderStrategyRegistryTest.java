@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class NodeRenderStrategyRegistryTest {
     @Test
-    @DisplayName("Registry resolves default movement strategies")
+    @DisplayName("Реестр находит стратегии рендера для стандартных стратегий движения")
     void resolvesDefaultMovementStrategies() {
         NodeRenderStrategyRegistry registry = NodeRenderStrategyRegistry.createDefault();
 
@@ -25,7 +25,7 @@ class NodeRenderStrategyRegistryTest {
     }
 
     @Test
-    @DisplayName("Registry returns default strategy for unknown movement")
+    @DisplayName("Реестр возвращает стратегию по умолчанию для неизвестного движения")
     void resolvesUnknownMovementWithDefaultStrategy() {
         NodeRenderStrategy defaultStrategy = new DefaultNodeRenderStrategy();
         NodeRenderStrategyRegistry registry = new NodeRenderStrategyRegistry(defaultStrategy);
@@ -34,7 +34,7 @@ class NodeRenderStrategyRegistryTest {
     }
 
     @Test
-    @DisplayName("Registry supports custom movement strategy registration")
+    @DisplayName("Реестр поддерживает регистрацию кастомной стратегии движения")
     void supportsCustomRegistration() {
         NodeRenderStrategyRegistry registry = new NodeRenderStrategyRegistry(new DefaultNodeRenderStrategy());
         NodeRenderStrategy renderStrategy = (graphics, center, radius, color, selected) -> {
@@ -46,7 +46,7 @@ class NodeRenderStrategyRegistryTest {
     }
 
     @Test
-    @DisplayName("Registry resolves strategy from node")
+    @DisplayName("Реестр находит стратегию рендера по узлу")
     void resolvesStrategyFromNode() {
         NodeRenderStrategyRegistry registry = NodeRenderStrategyRegistry.createDefault();
         Game game = new Game();
@@ -57,7 +57,7 @@ class NodeRenderStrategyRegistryTest {
     }
 
     @Test
-    @DisplayName("Registry rejects null parameters")
+    @DisplayName("Реестр не принимает null параметры")
     void rejectsNullArgs() {
         NodeRenderStrategyRegistry registry = new NodeRenderStrategyRegistry(new DefaultNodeRenderStrategy());
 

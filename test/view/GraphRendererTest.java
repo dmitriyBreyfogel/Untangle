@@ -17,19 +17,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GraphRendererTest {
     @Test
-    @DisplayName("Graph renderer rejects null field parameters")
+    @DisplayName("Рендерер графа не принимает null параметры поля")
     void rejectsNullFieldParameters() {
         assertThrows(NullPointerException.class, () -> new GraphRenderer(null));
     }
 
     @Test
-    @DisplayName("Graph renderer rejects null graphics")
+    @DisplayName("Рендерер графа не принимает null graphics")
     void rejectsNullGraphics() {
         assertThrows(NullPointerException.class, () -> new GraphRenderer(new FieldParameters(12, 28)).drawGraph(null, new Game()));
     }
 
     @Test
-    @DisplayName("Graph renderer rejects null game")
+    @DisplayName("Рендерер графа не принимает null игру")
     void rejectsNullGame() {
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
@@ -41,7 +41,7 @@ class GraphRendererTest {
     }
 
     @Test
-    @DisplayName("Graph renderer draws graph with default colors")
+    @DisplayName("Рендерер графа рисует граф цветами по умолчанию")
     void drawsGraphWithDefaultColors() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
@@ -63,7 +63,7 @@ class GraphRendererTest {
     }
 
     @Test
-    @DisplayName("Graph renderer package method uses custom colors")
+    @DisplayName("Пакетный метод рендерера графа использует кастомные цвета")
     void packageMethodUsesCustomColors() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
@@ -90,7 +90,7 @@ class GraphRendererTest {
     }
 
     @Test
-    @DisplayName("Graph renderer does not fail when game is not started")
+    @DisplayName("Рендерер графа не падает, когда игра не запущена")
     void doesNotFailWhenGameIsNotStarted() {
         GraphRenderer renderer = new GraphRenderer(new FieldParameters(12, 28));
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);

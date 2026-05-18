@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -72,5 +73,26 @@ class LevelTest {
         assertEquals(0, level.scheme().getNodes().getFirst().getX());
         assertEquals(0, level.scheme().getNodes().getFirst().getY());
         assertEquals(3, level.scheme().getEdges().size());
+    }
+
+    @Test
+    @DisplayName("Уровень передаёт стратегии движения в схему")
+    void levelPassesMovementStrategiesToScheme() {
+        Level level = new Level(
+                1,
+                List.of(
+                        new Point2D.Double(0, 0),
+                        new Point2D.Double(1, 0),
+                        new Point2D.Double(0, 1)
+                ),
+                Map.of(0, List.of(1, 2), 1, List.of(2)),
+                Map.of(0, new FixedMovementStrategy(), 1, new HorizontalMovementStrategy()),
+                100,
+                100
+        );
+
+        assertInstanceOf(FixedMovementStrategy.class, level.scheme().getNodes().get(0).getMovementStrategy());
+        assertInstanceOf(HorizontalMovementStrategy.class, level.scheme().getNodes().get(1).getMovementStrategy());
+        assertInstanceOf(FreeMovementStrategy.class, level.scheme().getNodes().get(2).getMovementStrategy());
     }
 }

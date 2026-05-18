@@ -15,6 +15,13 @@ class LevelValidationTest {
     void levelRejectsNullArgs() {
         assertThrows(NullPointerException.class, () -> new Level(1, null, Map.of(), 100, 100));
         assertThrows(NullPointerException.class, () -> new Level(1, List.of(new Point2D.Double(0, 0), new Point2D.Double(1, 0), new Point2D.Double(0, 1)), null, 100, 100));
+        assertThrows(NullPointerException.class, () -> new Level(
+                1,
+                List.of(new Point2D.Double(0, 0), new Point2D.Double(1, 0), new Point2D.Double(0, 1)),
+                Map.of(0, List.of(1, 2), 1, List.of(2)),
+                null,
+                100,
+                100
+        ));
     }
 }
-

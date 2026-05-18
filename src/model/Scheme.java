@@ -11,8 +11,11 @@ import java.util.Objects;
 import java.util.Set;
 
 public final class Scheme {
+    private static final MovementStrategy DEFAULT_MOVEMENT_STRATEGY = new FreeMovementStrategy();
+
     private final List<Point2D.Double> initialNodeCoordinates;
     private final Map<Integer, List<Integer>> nodeConnections;
+    private final Map<Integer, MovementStrategy> nodeMovementStrategies;
 
     private final List<Node> nodes;
     private final List<Edge> edges;
@@ -20,7 +23,11 @@ public final class Scheme {
     private GameField gameField;
     private Game game;
 
-    private Scheme(List<Point2D> initialNodeCoordinates, Map<Integer, List<Integer>> nodeConnections) {
+    private Scheme(
+            List<Point2D> initialNodeCoordinates,
+            Map<Integer, List<Integer>> nodeConnections,
+            Map<Integer, MovementStrategy> nodeMovementStrategies
+    ) {
         Objects.requireNonNull(initialNodeCoordinates, "initialNodeCoordinates");
         List<Point2D.Double> copies = new ArrayList<>(initialNodeCoordinates.size());
         for (Point2D p : initialNodeCoordinates) {
@@ -28,14 +35,17 @@ public final class Scheme {
         }
         this.initialNodeCoordinates = List.copyOf(copies);
         this.nodeConnections = deepCopy(Objects.requireNonNull(nodeConnections, "nodeConnections"));
+        this.nodeMovementStrategies = Map.copyOf(Objects.requireNonNull(nodeMovementStrategies, "nodeMovementStrategies"));
 
         if (this.initialNodeCoordinates.size() < 3) {
             throw new IllegalArgumentException("Смеха должна состоять минимум из трёх узлов");
         }
+        verifyMovementStrategyIndexes();
 
         this.nodes = new ArrayList<>(this.initialNodeCoordinates.size());
-        for (Point2D p : this.initialNodeCoordinates) {
-            nodes.add(new Node(p));
+        for (int i = 0; i < this.initialNodeCoordinates.size(); i++) {
+            MovementStrategy movementStrategy = this.nodeMovementStrategies.getOrDefault(i, DEFAULT_MOVEMENT_STRATEGY);
+            nodes.add(new Node(this.initialNodeCoordinates.get(i), movementStrategy));
         }
 
         this.edges = buildEdges();
@@ -46,12 +56,20 @@ public final class Scheme {
     }
 
     public static Scheme create(List<Point2D> initialNodeCoordinates, Map<Integer, List<Integer>> nodeConnections) {
-        return new Scheme(initialNodeCoordinates, nodeConnections);
+        return create(initialNodeCoordinates, nodeConnections, Map.of());
+    }
+
+    public static Scheme create(
+            List<Point2D> initialNodeCoordinates,
+            Map<Integer, List<Integer>> nodeConnections,
+            Map<Integer, MovementStrategy> nodeMovementStrategies
+    ) {
+        return new Scheme(initialNodeCoordinates, nodeConnections, nodeMovementStrategies);
     }
 
     public void reset() {
         for (int i = 0; i < nodes.size(); i++) {
-            nodes.get(i).moveTo(initialNodeCoordinates.get(i));
+            nodes.get(i).moveDirectlyTo(initialNodeCoordinates.get(i));
         }
         updateSchemeGeometry();
         updateIntersections();
@@ -61,11 +79,15 @@ public final class Scheme {
         Objects.requireNonNull(node, "node");
         Objects.requireNonNull(destination, "destination");
 
-        if (gameField != null && !gameField.canPlace(destination)) {
+        Point2D resolvedDestination = node.resolveMove(destination);
+        if (gameField != null && !gameField.canPlace(resolvedDestination)) {
+            return;
+        }
+        if (node.isAt(resolvedDestination)) {
             return;
         }
 
-        node.moveTo(destination);
+        node.moveDirectlyTo(resolvedDestination);
         updateIncidentEdges(node);
         updateIntersections();
 
@@ -202,6 +224,15 @@ public final class Scheme {
         for (int i = 0; i < degree.length; i++) {
             if (degree[i] <= 0) {
                 throw new IllegalArgumentException("Узел " + i + " не имеет соединений");
+            }
+        }
+    }
+
+    private void verifyMovementStrategyIndexes() {
+        int nodeCount = initialNodeCoordinates.size();
+        for (int nodeIndex : nodeMovementStrategies.keySet()) {
+            if (nodeIndex < 0 || nodeIndex >= nodeCount) {
+                throw new IllegalArgumentException("Индекс стратегии движения вышел из диапазона списка: " + nodeIndex);
             }
         }
     }

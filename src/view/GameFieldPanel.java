@@ -105,7 +105,7 @@ public final class GameFieldPanel extends JPanel {
         if (selectedNode == null || gameModel.currentLevel() == null) {
             return;
         }
-        selectedNodePreviewPosition = gameFieldNavigator.convertToModelCoordinates(screenPoint);
+        selectedNodePreviewPosition = selectedNode.resolveMove(gameFieldNavigator.convertToModelCoordinates(screenPoint));
         refreshField();
     }
 

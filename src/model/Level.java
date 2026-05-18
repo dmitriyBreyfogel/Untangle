@@ -9,19 +9,32 @@ public final class Level {
     private final int number;
     private final List<Point2D> initialNodeCoordinates;
     private final Map<Integer, List<Integer>> nodeConnections;
+    private final Map<Integer, MovementStrategy> nodeMovementStrategies;
 
     private final Scheme scheme;
     private final GameField gameField;
 
     Level(int number, List<Point2D> initialNodeCoordinates, Map<Integer, List<Integer>> nodeConnections, double fieldWidth, double fieldHeight) {
+        this(number, initialNodeCoordinates, nodeConnections, Map.of(), fieldWidth, fieldHeight);
+    }
+
+    Level(
+            int number,
+            List<Point2D> initialNodeCoordinates,
+            Map<Integer, List<Integer>> nodeConnections,
+            Map<Integer, MovementStrategy> nodeMovementStrategies,
+            double fieldWidth,
+            double fieldHeight
+    ) {
         if (number <= 0) {
             throw new IllegalArgumentException("Номер уровня должен быть положительным");
         }
         this.number = number;
         this.initialNodeCoordinates = List.copyOf(Objects.requireNonNull(initialNodeCoordinates, "initialNodeCoordinates"));
         this.nodeConnections = Map.copyOf(Objects.requireNonNull(nodeConnections, "nodeConnections"));
+        this.nodeMovementStrategies = Map.copyOf(Objects.requireNonNull(nodeMovementStrategies, "nodeMovementStrategies"));
 
-        this.scheme = Scheme.create(this.initialNodeCoordinates, this.nodeConnections);
+        this.scheme = Scheme.create(this.initialNodeCoordinates, this.nodeConnections, this.nodeMovementStrategies);
         this.gameField = new GameField(fieldWidth, fieldHeight, scheme);
     }
 

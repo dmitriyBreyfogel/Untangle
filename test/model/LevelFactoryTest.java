@@ -5,9 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayDeque;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -39,6 +41,18 @@ class LevelFactoryTest {
             assertAllNodesConnected(level.scheme());
             assertGraphIsConnected(level.scheme());
         }
+    }
+
+    @Test
+    @DisplayName("Фабрика задаёт разные стратегии движения узлов")
+    void createsNodesWithDifferentMovementStrategies() {
+        Level level = new LevelFactory().createLevel(1);
+        List<Node> nodes = level.scheme().getNodes();
+
+        assertInstanceOf(FreeMovementStrategy.class, nodes.get(0).getMovementStrategy());
+        assertInstanceOf(FreeMovementStrategy.class, nodes.get(1).getMovementStrategy());
+        assertInstanceOf(FixedMovementStrategy.class, nodes.get(2).getMovementStrategy());
+        assertInstanceOf(HorizontalMovementStrategy.class, nodes.get(3).getMovementStrategy());
     }
 
     @Test

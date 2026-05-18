@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.awt.geom.Point2D;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class NodeTest {
@@ -16,6 +18,38 @@ class NodeTest {
         node.moveTo(new Point2D.Double(20, 30));
         assertEquals(20, node.getX());
         assertEquals(30, node.getY());
+        assertInstanceOf(FreeMovementStrategy.class, node.getMovementStrategy());
+    }
+
+    @Test
+    @DisplayName("Узел хранит переданную стратегию движения")
+    void nodeKeepsMovementStrategy() {
+        MovementStrategy movementStrategy = new HorizontalMovementStrategy();
+        Node node = new Node(new Point2D.Double(10, 10), movementStrategy);
+
+        assertSame(movementStrategy, node.getMovementStrategy());
+    }
+
+    @Test
+    @DisplayName("Неподвижная стратегия оставляет узел на месте")
+    void fixedStrategyKeepsNodeInPlace() {
+        Node node = new Node(new Point2D.Double(10, 10), new FixedMovementStrategy());
+
+        node.moveTo(new Point2D.Double(20, 30));
+
+        assertEquals(10, node.getX());
+        assertEquals(10, node.getY());
+    }
+
+    @Test
+    @DisplayName("Горизонтальная стратегия меняет только X координату")
+    void horizontalStrategyMovesOnlyHorizontally() {
+        Node node = new Node(new Point2D.Double(10, 10), new HorizontalMovementStrategy());
+
+        node.moveTo(new Point2D.Double(20, 30));
+
+        assertEquals(20, node.getX());
+        assertEquals(10, node.getY());
     }
 
     @Test
@@ -38,6 +72,7 @@ class NodeTest {
     @DisplayName("Узел не принимает null позицию")
     void nodeRejectsNull() {
         assertThrows(NullPointerException.class, () -> new Node(null));
+        assertThrows(NullPointerException.class, () -> new Node(new Point2D.Double(0, 0), null));
         Node node = new Node(new Point2D.Double(0, 0));
         assertThrows(NullPointerException.class, () -> node.moveTo(null));
     }

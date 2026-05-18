@@ -193,6 +193,95 @@ class SchemeTest {
     }
 
     @Test
+    @DisplayName("Схема применяет стратегию движения узла")
+    void moveAppliesNodeMovementStrategy() {
+        Scheme scheme = Scheme.create(
+                List.of(
+                        new Point2D.Double(0, 0),
+                        new Point2D.Double(20, 0),
+                        new Point2D.Double(0, 20)
+                ),
+                Map.of(0, List.of(1, 2), 1, List.of(2)),
+                Map.of(
+                        0, new FixedMovementStrategy(),
+                        1, new HorizontalMovementStrategy()
+                )
+        );
+        new GameField(100, 100, scheme);
+
+        Node fixedNode = scheme.getNodes().get(0);
+        Node horizontalNode = scheme.getNodes().get(1);
+
+        scheme.moveNode(fixedNode, new Point2D.Double(30, 40));
+        scheme.moveNode(horizontalNode, new Point2D.Double(60, 70));
+
+        assertEquals(0, fixedNode.getX());
+        assertEquals(0, fixedNode.getY());
+        assertEquals(60, horizontalNode.getX());
+        assertEquals(0, horizontalNode.getY());
+    }
+
+    @Test
+    @DisplayName("Схема проверяет границы после применения стратегии движения")
+    void moveValidatesFieldAfterMovementStrategy() {
+        Scheme scheme = Scheme.create(
+                List.of(
+                        new Point2D.Double(0, 0),
+                        new Point2D.Double(20, 20),
+                        new Point2D.Double(0, 20)
+                ),
+                Map.of(0, List.of(1, 2), 1, List.of(2)),
+                Map.of(1, new HorizontalMovementStrategy())
+        );
+        new GameField(100, 100, scheme);
+        Node node = scheme.getNodes().get(1);
+
+        scheme.moveNode(node, new Point2D.Double(60, 200));
+
+        assertEquals(60, node.getX());
+        assertEquals(20, node.getY());
+    }
+
+    @Test
+    @DisplayName("Сброс схемы не зависит от стратегии движения узла")
+    void resetBypassesMovementStrategy() {
+        Scheme scheme = Scheme.create(
+                List.of(
+                        new Point2D.Double(0, 0),
+                        new Point2D.Double(20, 20),
+                        new Point2D.Double(0, 20)
+                ),
+                Map.of(0, List.of(1, 2), 1, List.of(2)),
+                Map.of(1, new HorizontalMovementStrategy())
+        );
+        new GameField(100, 100, scheme);
+        Node node = scheme.getNodes().get(1);
+
+        scheme.moveNode(node, new Point2D.Double(60, 70));
+        assertEquals(60, node.getX());
+        assertEquals(20, node.getY());
+
+        scheme.reset();
+
+        assertEquals(20, node.getX());
+        assertEquals(20, node.getY());
+    }
+
+    @Test
+    @DisplayName("Схема отклоняет стратегию движения для неизвестного узла")
+    void rejectsMovementStrategyForUnknownNode() {
+        assertThrows(IllegalArgumentException.class, () -> Scheme.create(
+                List.of(
+                        new Point2D.Double(0, 0),
+                        new Point2D.Double(20, 0),
+                        new Point2D.Double(0, 20)
+                ),
+                Map.of(0, List.of(1, 2), 1, List.of(2)),
+                Map.of(3, new FixedMovementStrategy())
+        ));
+    }
+
+    @Test
     @DisplayName("Схема возвращает те же узлы в связанных гранях")
     void edgesReferenceSchemeNodes() {
         Scheme scheme = Scheme.create(

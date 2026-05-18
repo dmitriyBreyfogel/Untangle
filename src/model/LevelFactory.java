@@ -23,6 +23,10 @@ public final class LevelFactory {
                             2, List.of(3),
                             1, List.of(3)
                     ),
+                    Map.of(
+                            2, new FixedMovementStrategy(),
+                            3, new HorizontalMovementStrategy()
+                    ),
                     FIELD_WIDTH,
                     FIELD_HEIGHT
             );

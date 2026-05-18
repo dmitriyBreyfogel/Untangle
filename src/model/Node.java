@@ -4,10 +4,18 @@ import java.awt.geom.Point2D;
 import java.util.Objects;
 
 public final class Node {
+    private static final MovementStrategy DEFAULT_MOVEMENT_STRATEGY = new FreeMovementStrategy();
+
     private Point2D.Double position;
+    private final MovementStrategy movementStrategy;
 
     Node(Point2D position) {
+        this(position, DEFAULT_MOVEMENT_STRATEGY);
+    }
+
+    Node(Point2D position, MovementStrategy movementStrategy) {
         this.position = copyOf(position, "position");
+        this.movementStrategy = Objects.requireNonNull(movementStrategy, "movementStrategy");
     }
 
     public double getX() {
@@ -19,11 +27,31 @@ public final class Node {
     }
 
     public void moveTo(Point2D destination) {
-        position = copyOf(destination, "destination");
+        moveDirectlyTo(resolveMove(destination));
+    }
+
+    public Point2D resolveMove(Point2D destination) {
+        Point2D requestedPosition = copyOf(destination, "destination");
+        Point2D resolvedPosition = movementStrategy.resolveMove(this, requestedPosition);
+        return copyOf(resolvedPosition, "resolvedPosition");
+    }
+
+    public MovementStrategy getMovementStrategy() {
+        return movementStrategy;
     }
 
     Point2D getPosition() {
         return position;
+    }
+
+    void moveDirectlyTo(Point2D destination) {
+        position = copyOf(destination, "destination");
+    }
+
+    boolean isAt(Point2D destination) {
+        Objects.requireNonNull(destination, "destination");
+        return Math.abs(position.getX() - destination.getX()) <= 1e-9
+                && Math.abs(position.getY() - destination.getY()) <= 1e-9;
     }
 
     private static Point2D.Double copyOf(Point2D p, String paramName) {

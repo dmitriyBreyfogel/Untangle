@@ -61,15 +61,13 @@ class GameTest {
         Game game = new Game();
         game.start();
 
-        solveCurrentLevel(game);
-        solveCurrentLevel(game);
-        solveCurrentLevel(game);
-        solveCurrentLevel(game);
-        solveCurrentLevel(game);
+        for (int level = 1; level <= 10; level++) {
+            solveCurrentLevel(game);
+        }
 
         assertFalse(game.started());
         assertNull(game.currentLevel());
-        assertEquals(5, game.maxCompletedLevelNumber());
+        assertEquals(10, game.maxCompletedLevelNumber());
         assertEquals(0, game.moveCounter());
     }
 
@@ -188,8 +186,8 @@ class GameTest {
         Game game = new Game();
         game.start();
 
-        game.loadLevel(5);
-        assertEquals(5, game.currentLevelNumber());
+        game.loadLevel(10);
+        assertEquals(10, game.currentLevelNumber());
 
         game.goToNextLevel();
         assertFalse(game.started());
@@ -224,11 +222,57 @@ class GameTest {
     }
 
     private static void solveCurrentLevel(Game game) {
+        int levelNumber = game.currentLevelNumber();
         Scheme scheme = game.currentLevel().scheme();
-        switch (game.currentLevelNumber()) {
-            case 1, 3, 4, 5 -> scheme.moveNode(scheme.getNodes().get(1), new Point2D.Double(90, 5));
-            case 2 -> scheme.moveNode(scheme.getNodes().getFirst(), new Point2D.Double(0, 80));
-            default -> throw new IllegalStateException("Unexpected level number: " + game.currentLevelNumber());
+        Point2D[] positions = solvedLevelPositions(levelNumber);
+
+        for (int i = 0; i < positions.length && game.started() && game.currentLevelNumber() == levelNumber; i++) {
+            Node node = scheme.getNodes().get(i);
+            scheme.moveNode(node, positions[i]);
+            if (game.started() && game.currentLevelNumber() == levelNumber) {
+                assertEquals(levelNumber, game.currentLevelNumber());
+                assertTrue(game.currentLevel().scheme().hasIntersections());
+            }
         }
+    }
+
+    private static Point2D[] solvedLevelPositions(int levelNumber) {
+        return switch (levelNumber) {
+            case 1 -> new Point2D[]{
+                    point(10, 10), point(90, 5), point(10, 90), point(90, 10)
+            };
+            case 2 -> new Point2D[]{
+                    point(15, 15), point(85, 15), point(85, 85), point(15, 85), point(50, 50)
+            };
+            case 3 -> new Point2D[]{
+                    point(50, 8), point(50, 28), point(88, 80), point(68, 68), point(12, 80), point(32, 68)
+            };
+            case 4 -> new Point2D[]{
+                    point(50, 8), point(85, 25), point(85, 70), point(50, 92), point(15, 70), point(15, 25), point(50, 50)
+            };
+            case 5 -> new Point2D[]{
+                    point(12, 20), point(37, 20), point(63, 20), point(88, 20), point(12, 80), point(37, 80), point(63, 80), point(88, 80)
+            };
+            case 6 -> new Point2D[]{
+                    point(15, 15), point(50, 15), point(85, 15), point(15, 50), point(50, 50), point(85, 50), point(15, 85), point(50, 85), point(85, 85)
+            };
+            case 7 -> new Point2D[]{
+                    point(50, 6), point(90, 35), point(75, 88), point(25, 88), point(10, 35), point(50, 30), point(68, 43), point(61, 67), point(39, 67), point(32, 43)
+            };
+            case 8 -> new Point2D[]{
+                    point(50, 6), point(82, 18), point(94, 50), point(82, 82), point(50, 94), point(18, 82), point(6, 50), point(18, 18), point(65, 35), point(35, 65), point(50, 50)
+            };
+            case 9 -> new Point2D[]{
+                    point(10, 12), point(37, 12), point(63, 12), point(90, 12), point(10, 50), point(37, 50), point(63, 50), point(90, 50), point(10, 88), point(37, 88), point(63, 88), point(90, 88)
+            };
+            case 10 -> new Point2D[]{
+                    point(50, 5), point(72, 11), point(89, 28), point(95, 50), point(89, 72), point(72, 89), point(50, 95), point(28, 89), point(11, 72), point(5, 50), point(11, 28), point(28, 11), point(50, 50)
+            };
+            default -> throw new IllegalStateException("Unexpected level number: " + levelNumber);
+        };
+    }
+
+    private static Point2D point(double x, double y) {
+        return new Point2D.Double(x, y);
     }
 }

@@ -10,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.util.Objects;
 
 public final class GameWindow extends JFrame {
@@ -53,7 +54,7 @@ public final class GameWindow extends JFrame {
         setTitle("Untangle");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(0, 20));
-        setMinimumSize(new Dimension(900, 940));
+        setMinimumSize(new Dimension(780, 720));
         Color windowBackground = new Color(14, 22, 32);
         setBackground(windowBackground);
         setLocationByPlatform(true);
@@ -69,7 +70,22 @@ public final class GameWindow extends JFrame {
         add(gameFieldPanel, BorderLayout.CENTER);
         add(gameControlPanel, BorderLayout.SOUTH);
         pack();
+        fitPackedWindowToScreen();
         setLocationRelativeTo(null);
+    }
+
+    private void fitPackedWindowToScreen() {
+        if (GraphicsEnvironment.isHeadless()) {
+            return;
+        }
+
+        Rectangle screenBounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+        int maxWidth = Math.max(getMinimumSize().width, screenBounds.width - 32);
+        int maxHeight = Math.max(getMinimumSize().height, screenBounds.height - 32);
+        Dimension packedSize = getSize();
+        int width = Math.min(packedSize.width, maxWidth);
+        int height = Math.min(packedSize.height, maxHeight);
+        setSize(new Dimension(width, height));
     }
 
     private void bindControlActions() {

@@ -66,7 +66,7 @@ public final class GameFieldPanel extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(4, 0, 4, 0));
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         setToolTipText("Перетаскивайте узлы, чтобы распутать схему");
-        setPreferredSize(new Dimension(700, 700));
+        setPreferredSize(new Dimension(620, 620));
         setMinimumSize(new Dimension(320, 320));
     }
 

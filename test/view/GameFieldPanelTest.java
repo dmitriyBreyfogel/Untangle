@@ -101,7 +101,7 @@ class GameFieldPanelTest {
 
         assertTrue(panel.isOpaque());
         assertEquals(new Color(14, 22, 32), panel.getBackground());
-        assertEquals(new Dimension(700, 700), panel.getPreferredSize());
+        assertEquals(new Dimension(620, 620), panel.getPreferredSize());
         assertEquals(new Dimension(320, 320), panel.getMinimumSize());
         assertEquals(Cursor.HAND_CURSOR, panel.getCursor().getType());
         assertEquals("Перетаскивайте узлы, чтобы распутать схему", panel.getToolTipText());

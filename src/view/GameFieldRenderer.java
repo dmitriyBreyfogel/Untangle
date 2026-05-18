@@ -29,12 +29,30 @@ public final class GameFieldRenderer {
             Color nodeColor,
             Color selectedNodeColor
     ) {
+        this(
+                fieldParameters,
+                normalEdgeColor,
+                intersectingEdgeColor,
+                nodeColor,
+                selectedNodeColor,
+                NodeRenderStrategyRegistry.createDefault()
+        );
+    }
+
+    public GameFieldRenderer(
+            FieldParameters fieldParameters,
+            Color normalEdgeColor,
+            Color intersectingEdgeColor,
+            Color nodeColor,
+            Color selectedNodeColor,
+            NodeRenderStrategyRegistry nodeRenderStrategyRegistry
+    ) {
         this.fieldParameters = Objects.requireNonNull(fieldParameters, "fieldParameters");
         this.normalEdgeColor = Objects.requireNonNull(normalEdgeColor, "normalEdgeColor");
         this.intersectingEdgeColor = Objects.requireNonNull(intersectingEdgeColor, "intersectingEdgeColor");
         this.nodeColor = Objects.requireNonNull(nodeColor, "nodeColor");
         this.selectedNodeColor = Objects.requireNonNull(selectedNodeColor, "selectedNodeColor");
-        graphRenderer = new GraphRenderer(fieldParameters);
+        graphRenderer = new GraphRenderer(fieldParameters, nodeRenderStrategyRegistry);
     }
 
     public void drawField(Graphics2D graphics, Game gameModel, Node selectedNode) {

@@ -1,6 +1,7 @@
 package view;
 
 import model.Game;
+import model.FreeMovementStrategy;
 import model.Node;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import java.awt.image.BufferedImage;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class NodeRendererTest {
@@ -88,6 +90,79 @@ class NodeRendererTest {
     }
 
     @Test
+    @DisplayName("Node renderer draws fixed node with lock marker")
+    void drawsFixedNodeWithLockMarker() {
+        Game game = startedGame();
+        FieldParameters parameters = new FieldParameters(12, 28);
+        Node node = game.currentLevel().scheme().getNodes().get(2);
+        NodeRenderer renderer = new NodeRenderer(parameters);
+        BufferedImage image = SwingTestSupport.createCanvas(320, 320);
+        Graphics2D graphics = SwingTestSupport.createGraphics(image);
+        Color nodeColor = new Color(40, 120, 190);
+        try {
+            renderer.begin(graphics);
+            renderer.drawNodes(graphics, game, null, null, nodeColor, Color.ORANGE);
+        } finally {
+            renderer.end();
+            graphics.dispose();
+        }
+
+        Point point = SwingTestSupport.toScreenPoint(parameters, game, node.getX(), node.getY(), image.getWidth(), image.getHeight());
+
+        assertNotEquals(nodeColor.getRGB(), image.getRGB(point.x, point.y));
+    }
+
+    @Test
+    @DisplayName("Node renderer draws horizontal node with arrow marker")
+    void drawsHorizontalNodeWithArrowMarker() {
+        Game game = startedGame();
+        FieldParameters parameters = new FieldParameters(12, 28);
+        Node node = game.currentLevel().scheme().getNodes().get(3);
+        NodeRenderer renderer = new NodeRenderer(parameters);
+        BufferedImage image = SwingTestSupport.createCanvas(320, 320);
+        Graphics2D graphics = SwingTestSupport.createGraphics(image);
+        Color nodeColor = new Color(40, 120, 190);
+        try {
+            renderer.begin(graphics);
+            renderer.drawNodes(graphics, game, null, null, nodeColor, Color.ORANGE);
+        } finally {
+            renderer.end();
+            graphics.dispose();
+        }
+
+        Point point = SwingTestSupport.toScreenPoint(parameters, game, node.getX(), node.getY(), image.getWidth(), image.getHeight());
+
+        assertNotEquals(nodeColor.getRGB(), image.getRGB(point.x, point.y));
+    }
+
+    @Test
+    @DisplayName("Node renderer can use custom render strategy registry")
+    void usesCustomRenderStrategyRegistry() {
+        Game game = startedGame();
+        FieldParameters parameters = new FieldParameters(12, 28);
+        Node node = game.currentLevel().scheme().getNodes().getFirst();
+        NodeRenderStrategyRegistry registry = new NodeRenderStrategyRegistry(new DefaultNodeRenderStrategy());
+        registry.register(FreeMovementStrategy.class, (graphics, center, radius, color, selected) -> {
+            graphics.setColor(Color.MAGENTA);
+            graphics.fillRect(center.x, center.y, 1, 1);
+        });
+        NodeRenderer renderer = new NodeRenderer(parameters, registry);
+        BufferedImage image = SwingTestSupport.createCanvas(320, 320);
+        Graphics2D graphics = SwingTestSupport.createGraphics(image);
+        try {
+            renderer.begin(graphics);
+            renderer.drawNodes(graphics, game, null, null, Color.BLUE, Color.ORANGE);
+        } finally {
+            renderer.end();
+            graphics.dispose();
+        }
+
+        Point point = SwingTestSupport.toScreenPoint(parameters, game, node.getX(), node.getY(), image.getWidth(), image.getHeight());
+
+        assertEquals(Color.MAGENTA.getRGB(), image.getRGB(point.x, point.y));
+    }
+
+    @Test
     @DisplayName("Node renderer leaves image unchanged when game is not started")
     void leavesImageUnchangedWhenGameIsNotStarted() {
         Game game = new Game();
@@ -132,6 +207,12 @@ class NodeRendererTest {
             renderer.end();
             graphics.dispose();
         }
+    }
+
+    @Test
+    @DisplayName("Node renderer rejects null render strategy registry")
+    void rejectsNullRenderStrategyRegistry() {
+        assertThrows(NullPointerException.class, () -> new NodeRenderer(new FieldParameters(12, 28), null));
     }
 
     private static Game startedGame() {

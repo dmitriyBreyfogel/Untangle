@@ -13,9 +13,13 @@ public final class GraphRenderer {
     private final NodeRenderer nodeRenderer;
 
     public GraphRenderer(FieldParameters fieldParameters) {
+        this(fieldParameters, NodeRenderStrategyRegistry.createDefault());
+    }
+
+    public GraphRenderer(FieldParameters fieldParameters, NodeRenderStrategyRegistry nodeRenderStrategyRegistry) {
         this.fieldParameters = Objects.requireNonNull(fieldParameters, "fieldParameters");
         this.edgeRenderer = new EdgeRenderer(fieldParameters);
-        this.nodeRenderer = new NodeRenderer(fieldParameters);
+        this.nodeRenderer = new NodeRenderer(fieldParameters, nodeRenderStrategyRegistry);
     }
 
     public void drawGraph(Graphics2D graphics, Game gameModel) {

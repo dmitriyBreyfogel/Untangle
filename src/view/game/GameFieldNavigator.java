@@ -12,20 +12,20 @@ import java.awt.geom.Point2D;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public final class GameFieldNavigator {
+final class GameFieldNavigator {
     private final FieldParameters fieldParameters;
     private final Game gameModel;
     private final Supplier<Dimension> panelSizeSupplier;
 
     private Node selectedNode;
 
-    public GameFieldNavigator(FieldParameters fieldParameters, Game gameModel, Supplier<Dimension> panelSizeSupplier) {
+    GameFieldNavigator(FieldParameters fieldParameters, Game gameModel, Supplier<Dimension> panelSizeSupplier) {
         this.fieldParameters = Objects.requireNonNull(fieldParameters, "fieldParameters");
         this.gameModel = Objects.requireNonNull(gameModel, "gameModel");
         this.panelSizeSupplier = Objects.requireNonNull(panelSizeSupplier, "panelSizeSupplier");
     }
 
-    public Node findNodeAtScreenPoint(Point screenPoint) {
+    Node findNodeAtScreenPoint(Point screenPoint) {
         Objects.requireNonNull(screenPoint, "screenPoint");
         Level currentLevel = gameModel.currentLevel();
         if (currentLevel == null) {
@@ -46,11 +46,11 @@ public final class GameFieldNavigator {
         return nearestNode;
     }
 
-    public void selectNode(Point screenPoint) {
+    void selectNode(Point screenPoint) {
         selectedNode = findNodeAtScreenPoint(screenPoint);
     }
 
-    public void moveSelectedNode(Point screenPoint) {
+    void moveSelectedNode(Point screenPoint) {
         Objects.requireNonNull(screenPoint, "screenPoint");
         Level currentLevel = gameModel.currentLevel();
         if (selectedNode == null || currentLevel == null) {
@@ -60,19 +60,19 @@ public final class GameFieldNavigator {
         currentLevel.scheme().moveNode(selectedNode, modelPoint);
     }
 
-    public void clearSelectedNode() {
+    void clearSelectedNode() {
         selectedNode = null;
     }
 
-    public Point convertToScreenCoordinates(Point2D modelPoint) {
+    Point convertToScreenCoordinates(Point2D modelPoint) {
         return currentMapper().toScreenCoordinates(modelPoint);
     }
 
-    public Point2D convertToModelCoordinates(Point screenPoint) {
+    Point2D convertToModelCoordinates(Point screenPoint) {
         return currentMapper().toModelCoordinates(screenPoint);
     }
 
-    public Point2D previewMove(Node node, Point screenPoint) {
+    Point2D previewMove(Node node, Point screenPoint) {
         Objects.requireNonNull(node, "node");
         Objects.requireNonNull(screenPoint, "screenPoint");
         return node.resolveMove(convertToModelCoordinates(screenPoint));

@@ -11,21 +11,21 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
-public final class NodeRenderer {
+final class NodeRenderer {
     private final FieldParameters fieldParameters;
     private final NodeRenderStrategyRegistry nodeRenderStrategyRegistry;
 
-    public NodeRenderer(FieldParameters fieldParameters) {
+    NodeRenderer(FieldParameters fieldParameters) {
         this.fieldParameters = Objects.requireNonNull(fieldParameters, "fieldParameters");
         this.nodeRenderStrategyRegistry = NodeRenderStrategyRegistry.createDefault();
     }
 
-    public NodeRenderer(FieldParameters fieldParameters, NodeRenderStrategyRegistry nodeRenderStrategyRegistry) {
+    NodeRenderer(FieldParameters fieldParameters, NodeRenderStrategyRegistry nodeRenderStrategyRegistry) {
         this.fieldParameters = Objects.requireNonNull(fieldParameters, "fieldParameters");
         this.nodeRenderStrategyRegistry = Objects.requireNonNull(nodeRenderStrategyRegistry, "nodeRenderStrategyRegistry");
     }
 
-    public void drawNodes(Graphics2D graphics, Game gameModel) {
+    void drawNodes(Graphics2D graphics, Game gameModel) {
         drawNodes(graphics, gameModel, null, null, new Color(52, 127, 196), new Color(241, 166, 47));
     }
 

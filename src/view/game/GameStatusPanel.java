@@ -13,13 +13,13 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.Objects;
 
-public final class GameStatusPanel extends JPanel {
+final class GameStatusPanel extends JPanel {
     private final Game gameModel;
     private final JLabel levelNumberLabel;
     private final JLabel moveCountLabel;
     private final JLabel gameStatusLabel;
 
-    public GameStatusPanel(Game gameModel) {
+    GameStatusPanel(Game gameModel) {
         this.gameModel = Objects.requireNonNull(gameModel, "gameModel");
         configurePanel();
         levelNumberLabel = new JLabel();
@@ -29,7 +29,7 @@ public final class GameStatusPanel extends JPanel {
         refreshState();
     }
 
-    public void refreshState() {
+    void refreshState() {
         refreshLevelNumber();
         refreshMoveCount();
         refreshStageLabel();

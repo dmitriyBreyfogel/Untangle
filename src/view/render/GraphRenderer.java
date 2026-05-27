@@ -8,22 +8,22 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Objects;
 
-public final class GraphRenderer {
+final class GraphRenderer {
     private final FieldParameters fieldParameters;
     private final EdgeRenderer edgeRenderer;
     private final NodeRenderer nodeRenderer;
 
-    public GraphRenderer(FieldParameters fieldParameters) {
+    GraphRenderer(FieldParameters fieldParameters) {
         this(fieldParameters, NodeRenderStrategyRegistry.createDefault());
     }
 
-    public GraphRenderer(FieldParameters fieldParameters, NodeRenderStrategyRegistry nodeRenderStrategyRegistry) {
+    GraphRenderer(FieldParameters fieldParameters, NodeRenderStrategyRegistry nodeRenderStrategyRegistry) {
         this.fieldParameters = Objects.requireNonNull(fieldParameters, "fieldParameters");
         this.edgeRenderer = new EdgeRenderer(fieldParameters);
         this.nodeRenderer = new NodeRenderer(fieldParameters, nodeRenderStrategyRegistry);
     }
 
-    public void drawGraph(Graphics2D graphics, Game gameModel) {
+    void drawGraph(Graphics2D graphics, Game gameModel) {
         drawGraph(
                 graphics,
                 gameModel,

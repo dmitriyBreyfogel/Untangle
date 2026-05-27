@@ -16,14 +16,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public final class EdgeRenderer {
+final class EdgeRenderer {
     private final FieldParameters fieldParameters;
 
-    public EdgeRenderer(FieldParameters fieldParameters) {
+    EdgeRenderer(FieldParameters fieldParameters) {
         this.fieldParameters = Objects.requireNonNull(fieldParameters, "fieldParameters");
     }
 
-    public void drawEdges(Graphics2D graphics, Game gameModel) {
+    void drawEdges(Graphics2D graphics, Game gameModel) {
         drawEdges(graphics, gameModel, null, null, new Color(90, 90, 90), new Color(210, 70, 70));
     }
 

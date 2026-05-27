@@ -20,7 +20,7 @@ import java.awt.geom.Point2D;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public final class GameFieldPanel extends JPanel {
+final class GameFieldPanel extends JPanel {
     private final FieldParameters fieldParameters;
     private final Game gameModel;
     private Node selectedNode;
@@ -33,7 +33,7 @@ public final class GameFieldPanel extends JPanel {
     private final Consumer<MoveResult> moveResultHandler;
     private Point2D selectedNodePreviewPosition;
 
-    public GameFieldPanel(Game gameModel) {
+    GameFieldPanel(Game gameModel) {
         this(gameModel, result -> {
         });
     }
@@ -58,7 +58,7 @@ public final class GameFieldPanel extends JPanel {
         attachMouseHandlers();
     }
 
-    public void refreshField() {
+    void refreshField() {
         repaint();
     }
 

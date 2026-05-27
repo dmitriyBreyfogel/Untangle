@@ -8,7 +8,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import java.awt.FlowLayout;
 
-public final class GameControlPanel extends JPanel {
+final class GameControlPanel extends JPanel {
     private final JButton startGameButton;
     private final JButton restartLevelButton;
     private final JButton finishGameButton;
@@ -17,7 +17,7 @@ public final class GameControlPanel extends JPanel {
     private Runnable restartLevelAction;
     private Runnable finishGameAction;
 
-    public GameControlPanel() {
+    GameControlPanel() {
         configurePanel();
         startGameButton = MenuButtonFactory.primary("Новая игра", 190);
         restartLevelButton = MenuButtonFactory.secondary("", 260);
@@ -27,23 +27,23 @@ public final class GameControlPanel extends JPanel {
         updateButtonAvailability(false, false, 1);
     }
 
-    public void setStartGameAction(Runnable startGameAction) {
+    void setStartGameAction(Runnable startGameAction) {
         this.startGameAction = startGameAction;
     }
 
-    public void setRestartLevelAction(Runnable restartLevelAction) {
+    void setRestartLevelAction(Runnable restartLevelAction) {
         this.restartLevelAction = restartLevelAction;
     }
 
-    public void setFinishGameAction(Runnable finishGameAction) {
+    void setFinishGameAction(Runnable finishGameAction) {
         this.finishGameAction = finishGameAction;
     }
 
-    public void updateButtonAvailability(boolean gameStarted) {
+    void updateButtonAvailability(boolean gameStarted) {
         updateButtonAvailability(gameStarted, false, 1);
     }
 
-    public void updateButtonAvailability(boolean gameStarted, boolean canContinue, int continueLevelNumber) {
+    void updateButtonAvailability(boolean gameStarted, boolean canContinue, int continueLevelNumber) {
         configureButtonCopy(gameStarted, continueLevelNumber);
         startGameButton.setEnabled(!gameStarted);
         restartLevelButton.setEnabled(gameStarted || canContinue);

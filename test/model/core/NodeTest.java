@@ -20,7 +20,7 @@ class NodeTest {
     @DisplayName("Узел перемещается в новую точку")
     void nodeMoves() {
         Node node = new Node(new Point2D.Double(10, 10));
-        node.moveTo(new Point2D.Double(20, 30));
+        node.moveDirectlyTo(new Point2D.Double(20, 30));
         assertEquals(20, node.getX());
         assertEquals(30, node.getY());
         assertInstanceOf(FreeMovementStrategy.class, node.getMovementStrategy());
@@ -40,10 +40,10 @@ class NodeTest {
     void fixedStrategyKeepsNodeInPlace() {
         Node node = new Node(new Point2D.Double(10, 10), new FixedMovementStrategy());
 
-        node.moveTo(new Point2D.Double(20, 30));
+        Point2D resolvedPosition = node.resolveMove(new Point2D.Double(20, 30));
 
-        assertEquals(10, node.getX());
-        assertEquals(10, node.getY());
+        assertEquals(10, resolvedPosition.getX());
+        assertEquals(10, resolvedPosition.getY());
     }
 
     @Test
@@ -51,10 +51,10 @@ class NodeTest {
     void horizontalStrategyMovesOnlyHorizontally() {
         Node node = new Node(new Point2D.Double(10, 10), new HorizontalMovementStrategy());
 
-        node.moveTo(new Point2D.Double(20, 30));
+        Point2D resolvedPosition = node.resolveMove(new Point2D.Double(20, 30));
 
-        assertEquals(20, node.getX());
-        assertEquals(10, node.getY());
+        assertEquals(20, resolvedPosition.getX());
+        assertEquals(10, resolvedPosition.getY());
     }
 
     @Test
@@ -62,7 +62,7 @@ class NodeTest {
     void nodeRejectsNaN() {
         assertThrows(IllegalArgumentException.class, () -> new Node(new Point2D.Double(Double.NaN, 0)));
         Node node = new Node(new Point2D.Double(0, 0));
-        assertThrows(IllegalArgumentException.class, () -> node.moveTo(new Point2D.Double(0, Double.NaN)));
+        assertThrows(IllegalArgumentException.class, () -> node.resolveMove(new Point2D.Double(0, Double.NaN)));
     }
 
     @Test
@@ -70,7 +70,7 @@ class NodeTest {
     void nodeRejectsInfinity() {
         assertThrows(IllegalArgumentException.class, () -> new Node(new Point2D.Double(Double.POSITIVE_INFINITY, 0)));
         Node node = new Node(new Point2D.Double(0, 0));
-        assertThrows(IllegalArgumentException.class, () -> node.moveTo(new Point2D.Double(0, Double.NEGATIVE_INFINITY)));
+        assertThrows(IllegalArgumentException.class, () -> node.resolveMove(new Point2D.Double(0, Double.NEGATIVE_INFINITY)));
     }
 
     @Test
@@ -79,7 +79,7 @@ class NodeTest {
         assertThrows(NullPointerException.class, () -> new Node(null));
         assertThrows(NullPointerException.class, () -> new Node(new Point2D.Double(0, 0), null));
         Node node = new Node(new Point2D.Double(0, 0));
-        assertThrows(NullPointerException.class, () -> node.moveTo(null));
+        assertThrows(NullPointerException.class, () -> node.resolveMove(null));
     }
 
     @Test
@@ -93,7 +93,7 @@ class NodeTest {
         assertEquals(10, node.getY());
 
         Point2D.Double destination = new Point2D.Double(20, 30);
-        node.moveTo(destination);
+        node.moveDirectlyTo(destination);
         destination.setLocation(1, 2);
 
         assertEquals(20, node.getX());

@@ -16,8 +16,7 @@ class GameValidationTest {
     @DisplayName("Загрузка неизвестного уровня бросает исключение")
     void loadUnknownLevelThrows() {
         Game game = new Game();
-        game.start();
-        assertThrows(IllegalArgumentException.class, () -> game.loadLevel(999));
+        assertThrows(IllegalArgumentException.class, () -> game.startAtLevel(999));
     }
 }
 

@@ -27,12 +27,17 @@ public final class Game {
     }
 
     public void start() {
+        startAtLevel(1);
+    }
+
+    public void startAtLevel(int levelNumber) {
         if (started) {
             return;
         }
+        Level level = levelFactory.createLevel(levelNumber);
         started = true;
         resetMoveCounter();
-        loadLevel(1);
+        loadLevel(level);
     }
 
     public void continueGame() {
@@ -50,7 +55,7 @@ public final class Game {
         resetMoveCounter();
     }
 
-    public void loadLevel(int levelNumber) {
+    private void loadLevel(int levelNumber) {
         Level level = levelFactory.createLevel(levelNumber);
         loadLevel(level);
     }
@@ -68,29 +73,33 @@ public final class Game {
         return !currentLevel.scheme().hasIntersections();
     }
 
-    public void restartLevel(int levelNumber) {
+    public void restartCurrentLevel() {
+        if (currentLevel == null) {
+            return;
+        }
         resetMoveCounter();
-        loadLevel(levelNumber);
+        loadLevel(currentLevelNumber);
     }
 
-    public void incrementMoveCounter() {
+    void registerMove() {
         moveCounter++;
+        validateMove();
     }
 
-    public void validateMove() {
+    private void validateMove() {
         if (!isWin()) {
             return;
         }
-        completeLevel();
+        completeCurrentLevel();
         resetMoveCounter();
         goToNextLevel();
     }
 
-    public void completeLevel() {
+    private void completeCurrentLevel() {
         maxCompletedLevelNumber = Math.max(maxCompletedLevelNumber, currentLevelNumber);
     }
 
-    public void goToNextLevel() {
+    private void goToNextLevel() {
         int next = currentLevelNumber + 1;
         try {
             loadLevel(next);
@@ -99,7 +108,7 @@ public final class Game {
         }
     }
 
-    public void resetMoveCounter() {
+    private void resetMoveCounter() {
         moveCounter = 0;
     }
 

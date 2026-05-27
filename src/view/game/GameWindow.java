@@ -119,7 +119,7 @@ public final class GameWindow extends JFrame {
             refreshView();
             return;
         }
-        gameModel.restartLevel(gameModel.currentLevelNumber());
+        gameModel.restartCurrentLevel();
         refreshView();
     }
 

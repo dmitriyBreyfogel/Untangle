@@ -82,7 +82,7 @@ class GameStatusPanelTest {
         game.currentLevel().scheme().moveNode(game.currentLevel().scheme().getNodes().getFirst(), new Point2D.Double(12, 12));
         GameStatusPanel panel = SwingTestSupport.callOnEdt(() -> new GameStatusPanel(game));
 
-        game.restartLevel(1);
+        game.restartCurrentLevel();
         SwingTestSupport.runOnEdt(panel::refreshState);
 
         JLabel levelLabel = SwingTestSupport.readField(panel, "levelNumberLabel", JLabel.class);

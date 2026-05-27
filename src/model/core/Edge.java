@@ -21,12 +21,12 @@ public final class Edge {
         updateGeometry();
     }
 
-    public void updateGeometry() {
+    void updateGeometry() {
         start = copyOf(nodeA.getPosition());
         end = copyOf(nodeB.getPosition());
     }
 
-    public boolean intersects(Edge other) {
+    boolean intersects(Edge other) {
         Objects.requireNonNull(other, "other");
         if (other == this) {
             return false;
@@ -37,7 +37,7 @@ public final class Edge {
         return strictlyIntersects(start, end, other.start, other.end);
     }
 
-    public boolean containsNode(Node node) {
+    boolean containsNode(Node node) {
         return node == nodeA || node == nodeB;
     }
 

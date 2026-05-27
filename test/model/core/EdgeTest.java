@@ -78,7 +78,7 @@ class EdgeTest {
 
         assertTrue(a.intersects(b));
 
-        a2.moveTo(new Point2D.Double(0, 1));
+        a2.moveDirectlyTo(new Point2D.Double(0, 1));
         a.updateGeometry();
 
         assertFalse(a.intersects(b));

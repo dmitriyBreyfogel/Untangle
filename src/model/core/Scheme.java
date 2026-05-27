@@ -81,6 +81,7 @@ public final class Scheme {
     public void moveNode(Node node, Point2D destination) {
         Objects.requireNonNull(node, "node");
         Objects.requireNonNull(destination, "destination");
+        verifyNodeBelongsToScheme(node);
 
         Point2D resolvedDestination = node.resolveMove(destination);
         if (gameField != null && !gameField.canPlace(resolvedDestination)) {
@@ -95,8 +96,7 @@ public final class Scheme {
         updateIntersections();
 
         if (game != null) {
-            game.incrementMoveCounter();
-            game.validateMove();
+            game.registerMove();
         }
     }
 
@@ -113,9 +113,7 @@ public final class Scheme {
     public List<Edge> getIntersectingEdgesAfterMove(Node node, Point2D destination) {
         Objects.requireNonNull(node, "node");
         Point2D movedPosition = copyOf(destination, "destination");
-        if (!nodes.contains(node)) {
-            throw new IllegalArgumentException("Узел не принадлежит схеме");
-        }
+        verifyNodeBelongsToScheme(node);
 
         Set<Edge> result = new HashSet<>();
         for (int i = 0; i < edges.size(); i++) {
@@ -142,6 +140,8 @@ public final class Scheme {
 
     public List<Edge> getEdgesOfNode(Node node) {
         Objects.requireNonNull(node, "node");
+        verifyNodeBelongsToScheme(node);
+
         List<Edge> result = new ArrayList<>();
         for (Edge edge : edges) {
             if (edge.containsNode(node)) {
@@ -165,6 +165,12 @@ public final class Scheme {
 
     void bindGame(Game game) {
         this.game = Objects.requireNonNull(game, "game");
+    }
+
+    private void verifyNodeBelongsToScheme(Node node) {
+        if (!nodes.contains(node)) {
+            throw new IllegalArgumentException("Узел не принадлежит схеме");
+        }
     }
 
     private void updateIncidentEdges(Node node) {

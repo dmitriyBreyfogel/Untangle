@@ -161,6 +161,20 @@ class SchemeValidationTest {
     }
 
     @Test
+    @DisplayName("Схема отклоняет чужой узел")
+    void rejectsForeignNode() {
+        Scheme scheme = Scheme.create(
+                List.of(new Point2D.Double(0, 0), new Point2D.Double(1, 0), new Point2D.Double(0, 1)),
+                Map.of(0, List.of(1, 2), 1, List.of(2))
+        );
+        Node foreignNode = new Node(new Point2D.Double(0, 0));
+
+        assertThrows(IllegalArgumentException.class, () -> scheme.moveNode(foreignNode, new Point2D.Double(0, 0)));
+        assertThrows(IllegalArgumentException.class, () -> scheme.getEdgesOfNode(foreignNode));
+        assertThrows(IllegalArgumentException.class, () -> scheme.getIntersectingEdgesAfterMove(foreignNode, new Point2D.Double(0, 0)));
+    }
+
+    @Test
     @DisplayName("Схема копирует входные коллекции")
     void copiesInputCollections() {
         List<Point2D> coordinates = new ArrayList<>(List.of(

@@ -15,12 +15,8 @@ final class GameSessionLauncher {
     }
 
     Game gameAtLevel(int levelNumber) {
-        levelFactory.createLevel(levelNumber);
         Game game = new Game();
-        game.start();
-        if (levelNumber != 1) {
-            game.loadLevel(levelNumber);
-        }
+        game.startAtLevel(levelNumber);
         return game;
     }
 

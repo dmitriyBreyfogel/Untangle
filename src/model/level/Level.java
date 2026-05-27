@@ -11,10 +11,6 @@ import java.util.Objects;
 
 public final class Level {
     private final int number;
-    private final List<Point2D> initialNodeCoordinates;
-    private final Map<Integer, List<Integer>> nodeConnections;
-    private final Map<Integer, MovementStrategy> nodeMovementStrategies;
-
     private final Scheme scheme;
     private final GameField gameField;
 
@@ -34,11 +30,11 @@ public final class Level {
             throw new IllegalArgumentException("Номер уровня должен быть положительным");
         }
         this.number = number;
-        this.initialNodeCoordinates = List.copyOf(Objects.requireNonNull(initialNodeCoordinates, "initialNodeCoordinates"));
-        this.nodeConnections = Map.copyOf(Objects.requireNonNull(nodeConnections, "nodeConnections"));
-        this.nodeMovementStrategies = Map.copyOf(Objects.requireNonNull(nodeMovementStrategies, "nodeMovementStrategies"));
+        List<Point2D> copiedInitialNodeCoordinates = List.copyOf(Objects.requireNonNull(initialNodeCoordinates, "initialNodeCoordinates"));
+        Map<Integer, List<Integer>> copiedNodeConnections = Map.copyOf(Objects.requireNonNull(nodeConnections, "nodeConnections"));
+        Map<Integer, MovementStrategy> copiedNodeMovementStrategies = Map.copyOf(Objects.requireNonNull(nodeMovementStrategies, "nodeMovementStrategies"));
 
-        this.scheme = Scheme.create(this.initialNodeCoordinates, this.nodeConnections, this.nodeMovementStrategies);
+        this.scheme = Scheme.create(copiedInitialNodeCoordinates, copiedNodeConnections, copiedNodeMovementStrategies);
         this.gameField = new GameField(fieldWidth, fieldHeight, scheme);
     }
 

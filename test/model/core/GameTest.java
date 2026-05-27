@@ -174,7 +174,7 @@ class GameTest {
         scheme.moveNode(scheme.getNodes().getFirst(), new Point2D.Double(12, 12));
         assertEquals(1, game.moveCounter());
 
-        game.restartLevel(1);
+        game.restartCurrentLevel();
         assertEquals(0, game.moveCounter());
         assertEquals(1, game.currentLevelNumber());
         assertTrue(game.currentLevel().scheme().hasIntersections());
@@ -184,22 +184,21 @@ class GameTest {
     @DisplayName("Переход за последний уровень завершает игру")
     void goingPastLastLevelFinishesGame() {
         Game game = new Game();
-        game.start();
-
-        game.loadLevel(10);
+        game.startAtLevel(10);
         assertEquals(10, game.currentLevelNumber());
 
-        game.goToNextLevel();
+        solveCurrentLevel(game);
+
         assertFalse(game.started());
         assertNull(game.currentLevel());
     }
 
     @Test
-    @DisplayName("Проверка хода без текущего уровня ничего не меняет")
-    void validateMoveWithoutCurrentLevelDoesNothing() {
+    @DisplayName("Перезапуск без текущего уровня ничего не меняет")
+    void restartWithoutCurrentLevelDoesNothing() {
         Game game = new Game();
 
-        game.validateMove();
+        game.restartCurrentLevel();
 
         assertFalse(game.started());
         assertNull(game.currentLevel());
@@ -211,12 +210,12 @@ class GameTest {
     @DisplayName("Повторное завершение уже пройденного уровня не уменьшает прогресс")
     void completeLevelDoesNotDecreaseProgress() {
         Game game = new Game();
-        game.start();
-        game.loadLevel(2);
-        game.completeLevel();
+        game.startAtLevel(2);
+        solveCurrentLevel(game);
 
-        game.loadLevel(1);
-        game.completeLevel();
+        game.finish();
+        game.startAtLevel(1);
+        solveCurrentLevel(game);
 
         assertEquals(2, game.maxCompletedLevelNumber());
     }

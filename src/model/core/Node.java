@@ -29,10 +29,6 @@ public final class Node {
         return position.getY();
     }
 
-    public void moveTo(Point2D destination) {
-        moveDirectlyTo(resolveMove(destination));
-    }
-
     public Point2D resolveMove(Point2D destination) {
         Point2D requestedPosition = copyOf(destination, "destination");
         Point2D currentPosition = copyOf(position, "currentPosition");

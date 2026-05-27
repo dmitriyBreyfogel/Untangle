@@ -1,5 +1,4 @@
-import model.Game;
-import view.GameWindow;
+import view.StartMenuWindow;
 
 import javax.swing.SwingUtilities;
 
@@ -8,6 +7,6 @@ public final class UntangleApplication {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GameWindow(new Game()).showWindow());
+        SwingUtilities.invokeLater(() -> new StartMenuWindow().showWindow());
     }
 }

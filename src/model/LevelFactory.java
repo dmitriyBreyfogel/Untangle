@@ -1,12 +1,22 @@
 package model;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public final class LevelFactory {
     private static final double FIELD_WIDTH = 100.0;
     private static final double FIELD_HEIGHT = 100.0;
+    private static final int LAST_LEVEL_NUMBER = 10;
+
+    public List<Integer> availableLevelNumbers() {
+        List<Integer> numbers = new ArrayList<>();
+        for (int number = 1; number <= LAST_LEVEL_NUMBER; number++) {
+            numbers.add(number);
+        }
+        return List.copyOf(numbers);
+    }
 
     public Level createLevel(int number) {
         return switch (number) {

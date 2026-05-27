@@ -1,4 +1,4 @@
-import view.StartMenuWindow;
+import view.menu.StartMenuWindow;
 
 import javax.swing.SwingUtilities;
 

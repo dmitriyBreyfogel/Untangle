@@ -118,7 +118,7 @@ public final class GameWindow extends JFrame {
 
     private void finishGame() {
         gameModel.finish();
-        refreshView();
+        returnToStartMenu();
     }
 
     private void showVictoryMessage(int completedLevelNumber, boolean gameFinished) {
@@ -137,7 +137,18 @@ public final class GameWindow extends JFrame {
             gameStatusPanel.showCompletedState();
             gameStatusPanel.paintImmediately(gameStatusPanel.getVisibleRect());
             showVictoryMessage(result.previousLevelNumber(), !gameModel.started());
+            if (!gameModel.started()) {
+                returnToStartMenu();
+                return;
+            }
         }
         refreshView();
+    }
+
+    private void returnToStartMenu() {
+        if (!GraphicsEnvironment.isHeadless()) {
+            new StartMenuWindow().showWindow();
+        }
+        dispose();
     }
 }

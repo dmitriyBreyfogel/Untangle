@@ -18,7 +18,6 @@ public final class GameFieldRenderer {
     private final Color selectedNodeColor;
     private final GraphRenderer graphRenderer;
     private final BoardRenderer boardRenderer;
-    private final EmptyFieldRenderer emptyFieldRenderer;
 
     public GameFieldRenderer(
             FieldParameters fieldParameters,
@@ -52,7 +51,6 @@ public final class GameFieldRenderer {
         this.selectedNodeColor = Objects.requireNonNull(selectedNodeColor, "selectedNodeColor");
         graphRenderer = new GraphRenderer(fieldParameters, nodeRenderStrategyRegistry);
         boardRenderer = new BoardRenderer();
-        emptyFieldRenderer = new EmptyFieldRenderer();
     }
 
     public void drawField(Graphics2D graphics, Game gameModel, Node selectedNode) {
@@ -75,20 +73,19 @@ public final class GameFieldRenderer {
             boardRenderer.draw(graphicsCopy, clipBounds, fieldParameters);
 
             Level currentLevel = gameModel.currentLevel();
-            if (currentLevel != null) {
-                graphRenderer.drawGraph(
-                        graphicsCopy,
-                        gameModel,
-                        selectedNode,
-                        selectedNodePosition,
-                        normalEdgeColor,
-                        intersectingEdgeColor,
-                        nodeColor,
-                        selectedNodeColor
-                );
-            } else {
-                emptyFieldRenderer.draw(graphicsCopy, clipBounds, gameModel);
+            if (currentLevel == null) {
+                return;
             }
+            graphRenderer.drawGraph(
+                    graphicsCopy,
+                    gameModel,
+                    selectedNode,
+                    selectedNodePosition,
+                    normalEdgeColor,
+                    intersectingEdgeColor,
+                    nodeColor,
+                    selectedNodeColor
+            );
         } finally {
             graphicsCopy.dispose();
         }

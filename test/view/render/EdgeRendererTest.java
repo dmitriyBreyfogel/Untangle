@@ -53,10 +53,8 @@ class EdgeRendererTest {
         Color normal = new Color(10, 20, 30);
         Color intersecting = new Color(200, 30, 40);
         try {
-            renderer.begin(graphics);
             renderer.drawEdges(graphics, game, normal, intersecting);
         } finally {
-            renderer.end();
             graphics.dispose();
         }
 
@@ -76,10 +74,8 @@ class EdgeRendererTest {
         Color normal = new Color(10, 20, 30);
         Color intersecting = new Color(200, 30, 40);
         try {
-            renderer.begin(graphics);
             renderer.drawEdges(graphics, game, normal, intersecting);
         } finally {
-            renderer.end();
             graphics.dispose();
         }
 
@@ -126,11 +122,9 @@ class EdgeRendererTest {
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         try {
-            renderer.begin(graphics);
             assertThrows(NullPointerException.class, () -> renderer.drawEdges(graphics, game, null, Color.RED));
             assertThrows(NullPointerException.class, () -> renderer.drawEdges(graphics, game, Color.BLACK, null));
         } finally {
-            renderer.end();
             graphics.dispose();
         }
     }

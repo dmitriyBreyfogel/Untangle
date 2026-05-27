@@ -57,10 +57,8 @@ class NodeRendererTest {
         Color nodeColor = new Color(40, 120, 190);
         Color selectedColor = new Color(210, 140, 30);
         try {
-            renderer.begin(graphics);
             renderer.drawNodes(graphics, game, null, null, nodeColor, selectedColor);
         } finally {
-            renderer.end();
             graphics.dispose();
         }
 
@@ -81,10 +79,8 @@ class NodeRendererTest {
         Color nodeColor = new Color(40, 120, 190);
         Color selectedColor = new Color(210, 140, 30);
         try {
-            renderer.begin(graphics);
             renderer.drawNodes(graphics, game, node, null, nodeColor, selectedColor);
         } finally {
-            renderer.end();
             graphics.dispose();
         }
 
@@ -104,10 +100,8 @@ class NodeRendererTest {
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         Color nodeColor = new Color(40, 120, 190);
         try {
-            renderer.begin(graphics);
             renderer.drawNodes(graphics, game, null, null, nodeColor, Color.ORANGE);
         } finally {
-            renderer.end();
             graphics.dispose();
         }
 
@@ -127,10 +121,8 @@ class NodeRendererTest {
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         Color nodeColor = new Color(40, 120, 190);
         try {
-            renderer.begin(graphics);
             renderer.drawNodes(graphics, game, null, null, nodeColor, Color.ORANGE);
         } finally {
-            renderer.end();
             graphics.dispose();
         }
 
@@ -154,10 +146,8 @@ class NodeRendererTest {
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         try {
-            renderer.begin(graphics);
             renderer.drawNodes(graphics, game, null, null, Color.BLUE, Color.ORANGE);
         } finally {
-            renderer.end();
             graphics.dispose();
         }
 
@@ -204,11 +194,9 @@ class NodeRendererTest {
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         try {
-            renderer.begin(graphics);
             assertThrows(NullPointerException.class, () -> renderer.drawNodes(graphics, game, null, null, null, Color.ORANGE));
             assertThrows(NullPointerException.class, () -> renderer.drawNodes(graphics, game, null, null, Color.BLUE, null));
         } finally {
-            renderer.end();
             graphics.dispose();
         }
     }

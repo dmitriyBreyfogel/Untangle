@@ -110,11 +110,4 @@ final class NodeRenderer {
     private FieldCoordinateMapper mapperFor(Graphics2D graphics, Game gameModel) {
         return FieldCoordinateMapper.fromBounds(fieldParameters, graphics.getClipBounds(), gameModel);
     }
-
-    void begin(Graphics2D graphics) {
-        Objects.requireNonNull(graphics, "graphics");
-    }
-
-    void end() {
-    }
 }

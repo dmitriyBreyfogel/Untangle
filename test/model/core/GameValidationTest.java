@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GameValidationTest {
     @Test
-    @DisplayName("Игра не принимает null фабрику уровней")
+    @DisplayName("Игра не принимает пустую фабрику уровней")
     void gameRejectsNullFactory() {
         assertThrows(NullPointerException.class, () -> new Game(null));
     }

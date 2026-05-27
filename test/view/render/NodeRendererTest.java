@@ -22,19 +22,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class NodeRendererTest {
     @Test
-    @DisplayName("Рендерер узлов не принимает null параметры поля")
+    @DisplayName("Рендерер узлов не принимает пустые параметры поля")
     void rejectsNullFieldParameters() {
         assertThrows(NullPointerException.class, () -> new NodeRenderer(null));
     }
 
     @Test
-    @DisplayName("Рендерер узлов не принимает null graphics")
+    @DisplayName("Рендерер узлов не принимает пустой графический контекст")
     void rejectsNullGraphics() {
         assertThrows(NullPointerException.class, () -> new NodeRenderer(new FieldParameters(12, 28)).drawNodes(null, new Game()));
     }
 
     @Test
-    @DisplayName("Рендерер узлов не принимает null игру")
+    @DisplayName("Рендерер узлов не принимает пустую игру")
     void rejectsNullGame() {
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
@@ -173,7 +173,7 @@ class NodeRendererTest {
     }
 
     @Test
-    @DisplayName("Рендерер узлов может рисовать без явного clip")
+    @DisplayName("Рендерер узлов может рисовать без явной области отсечения")
     void canDrawWithoutExplicitClip() {
         Game game = startedGame();
         NodeRenderer renderer = new NodeRenderer(new FieldParameters(12, 28));
@@ -187,7 +187,7 @@ class NodeRendererTest {
     }
 
     @Test
-    @DisplayName("Пакетный метод рендерера узлов не принимает null цвета")
+    @DisplayName("Пакетный метод рендерера узлов не принимает пустые цвета")
     void packageMethodRejectsNullColors() {
         Game game = startedGame();
         NodeRenderer renderer = new NodeRenderer(new FieldParameters(12, 28));
@@ -202,7 +202,7 @@ class NodeRendererTest {
     }
 
     @Test
-    @DisplayName("Рендерер узлов не принимает null реестр стратегий рендера")
+    @DisplayName("Рендерер узлов не принимает пустой реестр стратегий рендера")
     void rejectsNullRenderStrategyRegistry() {
         assertThrows(NullPointerException.class, () -> new NodeRenderer(new FieldParameters(12, 28), null));
     }

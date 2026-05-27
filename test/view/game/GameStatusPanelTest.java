@@ -50,7 +50,7 @@ class GameStatusPanelTest {
     }
 
     @Test
-    @DisplayName("Панель статуса не принимает null игру")
+    @DisplayName("Панель статуса не принимает пустую игру")
     void rejectsNullGame() {
         assertThrows(NullPointerException.class, () -> new GameStatusPanel(null));
     }
@@ -128,7 +128,7 @@ class GameStatusPanelTest {
     }
 
     @Test
-    @DisplayName("Панель статуса настраивает три label")
+    @DisplayName("Панель статуса настраивает три метки")
     void configuresThreeLabels() {
         GameStatusPanel panel = SwingTestSupport.callOnEdt(() -> new GameStatusPanel(new Game()));
 

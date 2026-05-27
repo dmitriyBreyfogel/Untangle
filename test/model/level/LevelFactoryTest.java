@@ -30,6 +30,15 @@ class LevelFactoryTest {
     }
 
     @Test
+    @DisplayName("Фабрика возвращает доступные номера уровней")
+    void returnsAvailableLevelNumbers() {
+        List<Integer> levelNumbers = new LevelFactory().availableLevelNumbers();
+
+        assertEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), levelNumbers);
+        assertThrows(UnsupportedOperationException.class, () -> levelNumbers.add(11));
+    }
+
+    @Test
     @DisplayName("Фабрика создаёт уровни с растущей сложностью")
     void createsLevelsWithGrowingComplexity() {
         LevelFactory factory = new LevelFactory();

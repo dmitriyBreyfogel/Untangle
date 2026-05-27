@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import java.awt.GraphicsEnvironment;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -73,7 +74,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Окно игры не принимает null игру")
+    @DisplayName("Окно игры не принимает пустую игру")
     void rejectsNullGame() {
         requireWindowEnvironment();
 
@@ -81,7 +82,15 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Окно игры настраивает frame")
+    @DisplayName("Окно игры не принимает пустое действие возврата в меню")
+    void rejectsNullReturnToMenuAction() {
+        requireWindowEnvironment();
+
+        assertThrows(NullPointerException.class, () -> new GameWindow(new Game(), null));
+    }
+
+    @Test
+    @DisplayName("Окно игры настраивает окно")
     void configuresFrame() {
         requireWindowEnvironment();
 
@@ -122,7 +131,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Окно игры делает frame видимым при showWindow")
+    @DisplayName("Окно игры становится видимым при показе")
     void showWindowMakesFrameVisible() {
         requireWindowEnvironment();
 
@@ -152,7 +161,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Окно игры обновляет label статуса при refresh")
+    @DisplayName("Окно игры обновляет метку статуса при обновлении")
     void refreshUpdatesStatusLabels() {
         requireWindowEnvironment();
 
@@ -206,6 +215,25 @@ class GameWindowTest {
     }
 
     @Test
+    @DisplayName("Окно игры возвращает в меню при завершении партии")
+    void finishButtonRunsReturnToMenuAction() {
+        requireWindowEnvironment();
+
+        Game game = new Game();
+        AtomicInteger returnCounter = new AtomicInteger();
+        window = SwingTestSupport.callOnEdt(() -> new GameWindow(game, returnCounter::incrementAndGet));
+        GameControlPanel controlPanel = SwingTestSupport.readField(window, "gameControlPanel", GameControlPanel.class);
+        JButton startButton = SwingTestSupport.readField(controlPanel, "startGameButton", JButton.class);
+        JButton finishButton = SwingTestSupport.readField(controlPanel, "finishGameButton", JButton.class);
+
+        SwingTestSupport.runOnEdt(startButton::doClick);
+        SwingTestSupport.runOnEdt(finishButton::doClick);
+
+        assertEquals(1, returnCounter.get());
+        assertFalse(window.isDisplayable());
+    }
+
+    @Test
     @DisplayName("Окно игры восстанавливает остановленное состояние после завершения")
     void refreshAfterFinishRestoresStoppedState() {
         requireWindowEnvironment();
@@ -222,7 +250,7 @@ class GameWindowTest {
     }
 
     @Test
-    @DisplayName("Окно игры не падает при refresh без текущего уровня")
+    @DisplayName("Окно игры не падает при обновлении без текущего уровня")
     void refreshWhenLevelIsAbsentDoesNotThrow() {
         requireWindowEnvironment();
 

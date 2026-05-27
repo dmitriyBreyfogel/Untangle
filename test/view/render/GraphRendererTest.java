@@ -19,19 +19,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GraphRendererTest {
     @Test
-    @DisplayName("Рендерер графа не принимает null параметры поля")
+    @DisplayName("Рендерер графа не принимает пустые параметры поля")
     void rejectsNullFieldParameters() {
         assertThrows(NullPointerException.class, () -> new GraphRenderer(null));
     }
 
     @Test
-    @DisplayName("Рендерер графа не принимает null graphics")
+    @DisplayName("Рендерер графа не принимает пустой графический контекст")
     void rejectsNullGraphics() {
         assertThrows(NullPointerException.class, () -> new GraphRenderer(new FieldParameters(12, 28)).drawGraph(null, new Game()));
     }
 
     @Test
-    @DisplayName("Рендерер графа не принимает null игру")
+    @DisplayName("Рендерер графа не принимает пустую игру")
     void rejectsNullGame() {
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);

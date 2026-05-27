@@ -44,7 +44,7 @@ class EdgeTest {
     }
 
     @Test
-    @DisplayName("Грань не принимает null узлы")
+    @DisplayName("Грань не принимает пустые узлы")
     void edgeRejectsNullNodes() {
         Node node = new Node(new Point2D.Double(0, 0));
 
@@ -132,7 +132,7 @@ class EdgeTest {
     }
 
     @Test
-    @DisplayName("Пересечение с null гранью запрещено")
+    @DisplayName("Пересечение с пустой гранью запрещено")
     void intersectsRejectsNull() {
         Edge edge = new Edge(
                 new Node(new Point2D.Double(0, 0)),

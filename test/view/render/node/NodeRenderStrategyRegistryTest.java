@@ -1,4 +1,4 @@
-package view.render;
+package view.render.node;
 
 import model.movement.FixedMovementStrategy;
 import model.movement.FreeMovementStrategy;
@@ -8,7 +8,6 @@ import model.movement.MovementStrategy;
 import model.core.Node;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import view.render.node.*;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -47,6 +46,18 @@ class NodeRenderStrategyRegistryTest {
     }
 
     @Test
+    @DisplayName("Реестр находит стратегию рендера по родительскому типу движения")
+    void resolvesAssignableMovementStrategy() {
+        NodeRenderStrategyRegistry registry = new NodeRenderStrategyRegistry(new DefaultNodeRenderStrategy());
+        NodeRenderStrategy renderStrategy = (graphics, center, radius, color, selected) -> {
+        };
+
+        registry.register(MovementStrategy.class, renderStrategy);
+
+        assertSame(renderStrategy, registry.resolve(new CustomMovementStrategy()));
+    }
+
+    @Test
     @DisplayName("Реестр находит стратегию рендера по узлу")
     void resolvesStrategyFromNode() {
         NodeRenderStrategyRegistry registry = NodeRenderStrategyRegistry.createDefault();
@@ -58,7 +69,7 @@ class NodeRenderStrategyRegistryTest {
     }
 
     @Test
-    @DisplayName("Реестр не принимает null параметры")
+    @DisplayName("Реестр не принимает пустые параметры")
     void rejectsNullArgs() {
         NodeRenderStrategyRegistry registry = new NodeRenderStrategyRegistry(new DefaultNodeRenderStrategy());
 

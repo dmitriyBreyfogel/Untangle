@@ -55,25 +55,25 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Навигатор не принимает null параметры поля")
+    @DisplayName("Навигатор не принимает пустые параметры поля")
     void rejectsNullFieldParameters() {
         assertThrows(NullPointerException.class, () -> new GameFieldNavigator(null, new Game(), () -> new Dimension(100, 100)));
     }
 
     @Test
-    @DisplayName("Навигатор не принимает null игру")
+    @DisplayName("Навигатор не принимает пустую игру")
     void rejectsNullGame() {
         assertThrows(NullPointerException.class, () -> new GameFieldNavigator(new FieldParameters(12, 28), null, () -> new Dimension(100, 100)));
     }
 
     @Test
-    @DisplayName("Навигатор не принимает null поставщик размера")
+    @DisplayName("Навигатор не принимает пустой поставщик размера")
     void rejectsNullSizeSupplier() {
         assertThrows(NullPointerException.class, () -> new GameFieldNavigator(new FieldParameters(12, 28), new Game(), null));
     }
 
     @Test
-    @DisplayName("Навигатор не принимает null точку при поиске узла")
+    @DisplayName("Навигатор не принимает пустую точку при поиске узла")
     void rejectsNullPointInFindNode() {
         GameFieldNavigator navigator = navigator(new Game(), 400, 400);
 
@@ -81,7 +81,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Навигатор не принимает null точку при переводе в экранные координаты")
+    @DisplayName("Навигатор не принимает пустую точку при переводе в экранные координаты")
     void rejectsNullPointInConvertToScreen() {
         GameFieldNavigator navigator = navigator(new Game(), 400, 400);
 
@@ -89,7 +89,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Навигатор не принимает null точку при переводе в координаты модели")
+    @DisplayName("Навигатор не принимает пустую точку при переводе в координаты модели")
     void rejectsNullPointInConvertToModel() {
         GameFieldNavigator navigator = navigator(new Game(), 400, 400);
 
@@ -105,7 +105,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Навигатор выбирает null, когда точка вне всех узлов")
+    @DisplayName("Навигатор очищает выбор, когда точка вне всех узлов")
     void selectsNullWhenPointIsOutsideEveryNode() {
         Game game = startedGame();
         GameFieldNavigator navigator = navigator(game, 400, 400);
@@ -168,7 +168,7 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Навигатор не принимает null размер панели от поставщика")
+    @DisplayName("Навигатор не принимает пустой размер панели от поставщика")
     void rejectsNullPanelSizeFromSupplier() {
         GameFieldNavigator navigator = new GameFieldNavigator(new FieldParameters(12, 28), new Game(), () -> null);
 

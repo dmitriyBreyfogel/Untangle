@@ -25,6 +25,19 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("Старт с выбранного уровня загружает этот уровень")
+    void startAtLevelLoadsSelectedLevel() {
+        Game game = new Game();
+
+        game.startAtLevel(5);
+
+        assertTrue(game.started());
+        assertNotNull(game.currentLevel());
+        assertEquals(5, game.currentLevelNumber());
+        assertEquals(0, game.moveCounter());
+    }
+
+    @Test
     @DisplayName("Недопустимое перемещение не считается ходом")
     void invalidMoveNotCounted() {
         Game game = new Game();
@@ -72,6 +85,26 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("Продолжение после последнего уровня открывает последний пройденный уровень")
+    void continueAfterLastLevelLoadsLastCompletedLevel() {
+        Game game = new Game();
+        game.start();
+
+        for (int level = 1; level <= 10; level++) {
+            solveCurrentLevel(game);
+        }
+
+        assertFalse(game.started());
+        assertEquals(10, game.continueLevelNumber());
+
+        game.continueGame();
+
+        assertTrue(game.started());
+        assertEquals(10, game.currentLevelNumber());
+        assertEquals(0, game.moveCounter());
+    }
+
+    @Test
     @DisplayName("Обычный ход увеличивает счётчик и не завершает уровень")
     void regularMoveIncrementsCounter() {
         Game game = new Game();
@@ -100,6 +133,22 @@ class GameTest {
         assertEquals(1, game.moveCounter());
         assertEquals(1, game.currentLevelNumber());
         assertNotNull(game.currentLevel());
+    }
+
+    @Test
+    @DisplayName("Старт с уровня не меняет уже запущенную игру")
+    void startAtLevelDoesNothingWhenGameIsAlreadyStarted() {
+        Game game = new Game();
+        game.start();
+
+        Scheme scheme = game.currentLevel().scheme();
+        scheme.moveNode(scheme.getNodes().getFirst(), new Point2D.Double(12, 12));
+
+        game.startAtLevel(5);
+
+        assertTrue(game.started());
+        assertEquals(1, game.currentLevelNumber());
+        assertEquals(1, game.moveCounter());
     }
 
     @Test

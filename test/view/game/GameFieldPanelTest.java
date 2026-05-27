@@ -17,6 +17,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,7 +49,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Перетаскивание с несколькими mouse dragged событиями считается одним ходом")
+    @DisplayName("Перетаскивание с несколькими событиями движения мыши считается одним ходом")
     void draggingNodeWithMultipleMouseDraggedEventsCountsAsOneMove() {
         Game game = startedGame();
         GameFieldPanel panel = panel(game);
@@ -93,9 +94,34 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Панель поля не принимает null игру")
+    @DisplayName("Панель поля передаёт обработчику состояние до хода")
+    void moveResultHandlerReceivesPreviousState() {
+        Game game = startedGame();
+        AtomicReference<MoveResult> handledResult = new AtomicReference<>();
+        GameFieldPanel panel = SwingTestSupport.callOnEdt(() -> new GameFieldPanel(game, handledResult::set));
+        SwingTestSupport.runOnEdt(() -> panel.setSize(400, 400));
+        GameFieldNavigator navigator = SwingTestSupport.readField(panel, "gameFieldNavigator", GameFieldNavigator.class);
+        Node node = game.currentLevel().scheme().getNodes().getFirst();
+        Point pressPoint = navigator.convertToScreenCoordinates(new Point2D.Double(node.getX(), node.getY()));
+        Point dragPoint = navigator.convertToScreenCoordinates(new Point2D.Double(20, 20));
+
+        dispatch(panel, MouseEvent.MOUSE_PRESSED, pressPoint);
+        dispatch(panel, MouseEvent.MOUSE_DRAGGED, dragPoint);
+        dispatch(panel, MouseEvent.MOUSE_RELEASED, dragPoint);
+
+        assertEquals(new MoveResult(1, 0), handledResult.get());
+    }
+
+    @Test
+    @DisplayName("Панель поля не принимает пустую игру")
     void rejectsNullGame() {
         assertThrows(NullPointerException.class, () -> new GameFieldPanel(null));
+    }
+
+    @Test
+    @DisplayName("Панель поля не принимает пустой обработчик результата хода")
+    void rejectsNullMoveResultHandler() {
+        assertThrows(NullPointerException.class, () -> new GameFieldPanel(new Game(), null));
     }
 
     @Test
@@ -112,7 +138,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Панель поля подключает mouse listeners")
+    @DisplayName("Панель поля подключает слушатели мыши")
     void attachesMouseListeners() {
         GameFieldPanel panel = panel(new Game());
 
@@ -226,7 +252,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Панель поля рисует поле в graphics")
+    @DisplayName("Панель поля рисует поле в графический контекст")
     void paintsFieldIntoGraphics() {
         GameFieldPanel panel = panel(startedGame());
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
@@ -245,7 +271,7 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Панель поля не падает при refresh")
+    @DisplayName("Панель поля не падает при обновлении")
     void refreshDoesNotThrow() {
         GameFieldPanel panel = panel(new Game());
 

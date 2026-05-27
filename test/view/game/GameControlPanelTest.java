@@ -70,7 +70,7 @@ class GameControlPanelTest {
     }
 
     @Test
-    @DisplayName("Панель управления настраивает layout и кнопки")
+    @DisplayName("Панель управления настраивает компоновщик и кнопки")
     void configuresLayoutAndButtons() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
         JButton startButton = SwingTestSupport.readField(panel, "startGameButton", JButton.class);
@@ -85,7 +85,7 @@ class GameControlPanelTest {
     }
 
     @Test
-    @DisplayName("Панель управления игнорирует клик без start action")
+    @DisplayName("Панель управления игнорирует клик без действия запуска")
     void ignoresClickWhenStartActionIsMissing() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
         JButton startButton = SwingTestSupport.readField(panel, "startGameButton", JButton.class);
@@ -94,7 +94,7 @@ class GameControlPanelTest {
     }
 
     @Test
-    @DisplayName("Панель управления выполняет только start action для кнопки старта")
+    @DisplayName("Панель управления выполняет только действие запуска для кнопки старта")
     void runsOnlyStartActionForStartButton() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
         JButton startButton = SwingTestSupport.readField(panel, "startGameButton", JButton.class);
@@ -115,7 +115,7 @@ class GameControlPanelTest {
     }
 
     @Test
-    @DisplayName("Панель управления выполняет только restart action для кнопки перезапуска")
+    @DisplayName("Панель управления выполняет только действие перезапуска для кнопки перезапуска")
     void runsOnlyRestartActionForRestartButton() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
         JButton restartButton = SwingTestSupport.readField(panel, "restartLevelButton", JButton.class);
@@ -137,7 +137,7 @@ class GameControlPanelTest {
     }
 
     @Test
-    @DisplayName("Панель управления выполняет только finish action для кнопки завершения")
+    @DisplayName("Панель управления выполняет только действие завершения для кнопки завершения")
     void runsOnlyFinishActionForFinishButton() {
         GameControlPanel panel = SwingTestSupport.callOnEdt(GameControlPanel::new);
         JButton finishButton = SwingTestSupport.readField(panel, "finishGameButton", JButton.class);

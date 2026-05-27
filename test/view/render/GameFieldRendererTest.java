@@ -59,13 +59,13 @@ class GameFieldRendererTest {
     }
 
     @Test
-    @DisplayName("Рендерер поля не принимает null параметры поля")
+    @DisplayName("Рендерер поля не принимает пустые параметры поля")
     void rejectsNullFieldParameters() {
         assertThrows(NullPointerException.class, () -> new GameFieldRenderer(null, Color.BLACK, Color.RED, Color.BLUE, Color.ORANGE));
     }
 
     @Test
-    @DisplayName("Рендерер поля не принимает null цвета")
+    @DisplayName("Рендерер поля не принимает пустые цвета")
     void rejectsNullColors() {
         FieldParameters parameters = new FieldParameters(12, 28);
         assertThrows(NullPointerException.class, () -> new GameFieldRenderer(parameters, null, Color.RED, Color.BLUE, Color.ORANGE));
@@ -75,13 +75,13 @@ class GameFieldRendererTest {
     }
 
     @Test
-    @DisplayName("Рендерер поля не принимает null graphics")
+    @DisplayName("Рендерер поля не принимает пустой графический контекст")
     void rejectsNullGraphics() {
         assertThrows(NullPointerException.class, () -> renderer(new FieldParameters(12, 28), Color.ORANGE).drawField(null, new Game(), null));
     }
 
     @Test
-    @DisplayName("Рендерер поля не принимает null игру")
+    @DisplayName("Рендерер поля не принимает пустую игру")
     void rejectsNullGame() {
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
@@ -141,7 +141,7 @@ class GameFieldRendererTest {
     }
 
     @Test
-    @DisplayName("Рендерер поля обновляет цвет грани в preview до отпускания мыши")
+    @DisplayName("Рендерер поля обновляет цвет грани в предпросмотре до отпускания мыши")
     void updatesEdgeColorInPreviewBeforeMouseRelease() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
@@ -171,7 +171,7 @@ class GameFieldRendererTest {
     }
 
     @Test
-    @DisplayName("Рендерер поля может рисовать без явного clip")
+    @DisplayName("Рендерер поля может рисовать без явной области отсечения")
     void canDrawWithoutExplicitClip() {
         GameFieldRenderer renderer = renderer(new FieldParameters(12, 28), new Color(230, 155, 44));
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);

@@ -33,7 +33,7 @@ class MovementStrategyTest {
     }
 
     @Test
-    @DisplayName("Горизонтальная стратегия сохраняет текущий Y узла")
+    @DisplayName("Горизонтальная стратегия сохраняет текущую координату игрек узла")
     void horizontalStrategyKeepsCurrentY() {
         Point2D currentPosition = new Point2D.Double(10, 10);
 
@@ -44,7 +44,7 @@ class MovementStrategyTest {
     }
 
     @Test
-    @DisplayName("Стратегии движения не принимают null параметры")
+    @DisplayName("Стратегии движения не принимают пустые параметры")
     void strategiesRejectNullArgs() {
         Point2D currentPosition = new Point2D.Double(10, 10);
         Point2D requestedPosition = new Point2D.Double(20, 30);

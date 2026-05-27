@@ -47,7 +47,7 @@ class NodeTest {
     }
 
     @Test
-    @DisplayName("Горизонтальная стратегия меняет только X координату")
+    @DisplayName("Горизонтальная стратегия меняет только координату икс")
     void horizontalStrategyMovesOnlyHorizontally() {
         Node node = new Node(new Point2D.Double(10, 10), new HorizontalMovementStrategy());
 
@@ -58,7 +58,7 @@ class NodeTest {
     }
 
     @Test
-    @DisplayName("Узел отклоняет координаты NaN")
+    @DisplayName("Узел отклоняет нечисловые координаты")
     void nodeRejectsNaN() {
         assertThrows(IllegalArgumentException.class, () -> new Node(new Point2D.Double(Double.NaN, 0)));
         Node node = new Node(new Point2D.Double(0, 0));
@@ -74,7 +74,7 @@ class NodeTest {
     }
 
     @Test
-    @DisplayName("Узел не принимает null позицию")
+    @DisplayName("Узел не принимает пустую позицию")
     void nodeRejectsNull() {
         assertThrows(NullPointerException.class, () -> new Node(null));
         assertThrows(NullPointerException.class, () -> new Node(new Point2D.Double(0, 0), null));

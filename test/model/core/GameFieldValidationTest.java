@@ -11,13 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GameFieldValidationTest {
     @Test
-    @DisplayName("Поле не принимает null схему")
+    @DisplayName("Поле не принимает пустую схему")
     void fieldRejectsNullScheme() {
         assertThrows(NullPointerException.class, () -> new GameField(100, 100, null));
     }
 
     @Test
-    @DisplayName("Поле не принимает null точку")
+    @DisplayName("Поле не принимает пустую точку")
     void fieldRejectsNullPoint() {
         Scheme scheme = Scheme.create(
                 List.of(new Point2D.Double(0, 0), new Point2D.Double(10, 10), new Point2D.Double(0, 10), new Point2D.Double(10, 0)),

@@ -32,7 +32,7 @@ class SchemeValidationTest {
     }
 
     @Test
-    @DisplayName("Схема отклоняет индекс узла вне диапазона (from)")
+    @DisplayName("Схема отклоняет исходный индекс узла вне диапазона")
     void rejectsOutOfRangeFromIndex() {
         assertThrows(IllegalArgumentException.class, () -> Scheme.create(
                 List.of(new Point2D.Double(0, 0), new Point2D.Double(1, 0), new Point2D.Double(0, 1)),
@@ -41,7 +41,7 @@ class SchemeValidationTest {
     }
 
     @Test
-    @DisplayName("Схема отклоняет индекс узла вне диапазона (to)")
+    @DisplayName("Схема отклоняет целевой индекс узла вне диапазона")
     void rejectsOutOfRangeToIndex() {
         assertThrows(IllegalArgumentException.class, () -> Scheme.create(
                 List.of(new Point2D.Double(0, 0), new Point2D.Double(1, 0), new Point2D.Double(0, 1)),
@@ -95,7 +95,7 @@ class SchemeValidationTest {
     }
 
     @Test
-    @DisplayName("Схема отклоняет NaN в начальных координатах")
+    @DisplayName("Схема отклоняет нечисловые начальные координаты")
     void rejectsNaNInitialCoordinates() {
         assertThrows(IllegalArgumentException.class, () -> Scheme.create(
                 List.of(
@@ -121,14 +121,14 @@ class SchemeValidationTest {
     }
 
     @Test
-    @DisplayName("Схема не принимает null параметры")
+    @DisplayName("Схема не принимает пустые параметры")
     void rejectsNullArgs() {
         assertThrows(NullPointerException.class, () -> Scheme.create(null, Map.of()));
         assertThrows(NullPointerException.class, () -> Scheme.create(List.of(new Point2D.Double(0, 0), new Point2D.Double(1, 0), new Point2D.Double(0, 1)), null));
     }
 
     @Test
-    @DisplayName("Схема не принимает null при привязке игры и поля")
+    @DisplayName("Схема не принимает пустые значения при привязке игры и поля")
     void bindRejectsNull() {
         Scheme scheme = Scheme.create(
                 List.of(new Point2D.Double(0, 0), new Point2D.Double(1, 0), new Point2D.Double(0, 1)),
@@ -139,7 +139,7 @@ class SchemeValidationTest {
     }
 
     @Test
-    @DisplayName("Схема не принимает null в перемещении узла")
+    @DisplayName("Схема не принимает пустые значения в перемещении узла")
     void moveNodeRejectsNullArgs() {
         Scheme scheme = Scheme.create(
                 List.of(new Point2D.Double(0, 0), new Point2D.Double(1, 0), new Point2D.Double(0, 1)),
@@ -151,13 +151,26 @@ class SchemeValidationTest {
     }
 
     @Test
-    @DisplayName("Схема не принимает null в запросе граней узла")
+    @DisplayName("Схема не принимает пустой узел в запросе граней")
     void getEdgesOfNodeRejectsNull() {
         Scheme scheme = Scheme.create(
                 List.of(new Point2D.Double(0, 0), new Point2D.Double(1, 0), new Point2D.Double(0, 1)),
                 Map.of(0, List.of(1, 2), 1, List.of(2))
         );
         assertThrows(NullPointerException.class, () -> scheme.getEdgesOfNode(null));
+    }
+
+    @Test
+    @DisplayName("Схема не принимает пустые параметры в предварительном расчёте пересечений")
+    void getIntersectingEdgesAfterMoveRejectsNullArgs() {
+        Scheme scheme = Scheme.create(
+                List.of(new Point2D.Double(0, 0), new Point2D.Double(1, 0), new Point2D.Double(0, 1)),
+                Map.of(0, List.of(1, 2), 1, List.of(2))
+        );
+        Node node = scheme.getNodes().getFirst();
+
+        assertThrows(NullPointerException.class, () -> scheme.getIntersectingEdgesAfterMove(null, new Point2D.Double(0, 0)));
+        assertThrows(NullPointerException.class, () -> scheme.getIntersectingEdgesAfterMove(node, null));
     }
 
     @Test

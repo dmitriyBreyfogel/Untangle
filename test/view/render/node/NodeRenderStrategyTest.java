@@ -1,13 +1,9 @@
-package view.render;
+package view.render.node;
 
 import view.SwingTestSupport;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import view.render.node.DefaultNodeRenderStrategy;
-import view.render.node.FixedNodeRenderStrategy;
-import view.render.node.HorizontalNodeRenderStrategy;
-import view.render.node.NodeRenderStrategy;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -44,6 +40,20 @@ class NodeRenderStrategyTest {
     }
 
     @Test
+    @DisplayName("Выбранный узел рисуется с дополнительным свечением")
+    void selectedNodeDrawsGlow() {
+        BufferedImage image = SwingTestSupport.createCanvas(80, 80);
+        Graphics2D graphics = SwingTestSupport.createGraphics(image);
+        try {
+            new DefaultNodeRenderStrategy().render(graphics, new Point(40, 40), 12, Color.BLUE, true);
+        } finally {
+            graphics.dispose();
+        }
+
+        assertNotEquals(0, image.getRGB(25, 40));
+    }
+
+    @Test
     @DisplayName("Стратегии рендера отклоняют некорректные параметры")
     void strategiesRejectInvalidArgs() {
         BufferedImage image = SwingTestSupport.createCanvas(80, 80);
@@ -56,6 +66,28 @@ class NodeRenderStrategyTest {
             assertThrows(IllegalArgumentException.class, () -> strategy.render(graphics, new Point(40, 40), 0, Color.BLUE, false));
             assertDoesNotThrow(() -> new FixedNodeRenderStrategy().render(graphics, new Point(40, 40), 12, Color.BLUE, false));
             assertDoesNotThrow(() -> new HorizontalNodeRenderStrategy().render(graphics, new Point(40, 40), 12, Color.BLUE, false));
+        } finally {
+            graphics.dispose();
+        }
+    }
+
+    @Test
+    @DisplayName("Специализированные стратегии рендера отклоняют некорректные параметры")
+    void specializedStrategiesRejectInvalidArgs() {
+        BufferedImage image = SwingTestSupport.createCanvas(80, 80);
+        Graphics2D graphics = SwingTestSupport.createGraphics(image);
+        try {
+            NodeRenderStrategy fixedStrategy = new FixedNodeRenderStrategy();
+            NodeRenderStrategy horizontalStrategy = new HorizontalNodeRenderStrategy();
+
+            assertThrows(NullPointerException.class, () -> fixedStrategy.render(null, new Point(40, 40), 12, Color.BLUE, false));
+            assertThrows(NullPointerException.class, () -> fixedStrategy.render(graphics, null, 12, Color.BLUE, false));
+            assertThrows(NullPointerException.class, () -> fixedStrategy.render(graphics, new Point(40, 40), 12, null, false));
+            assertThrows(IllegalArgumentException.class, () -> fixedStrategy.render(graphics, new Point(40, 40), 0, Color.BLUE, false));
+            assertThrows(NullPointerException.class, () -> horizontalStrategy.render(null, new Point(40, 40), 12, Color.BLUE, false));
+            assertThrows(NullPointerException.class, () -> horizontalStrategy.render(graphics, null, 12, Color.BLUE, false));
+            assertThrows(NullPointerException.class, () -> horizontalStrategy.render(graphics, new Point(40, 40), 12, null, false));
+            assertThrows(IllegalArgumentException.class, () -> horizontalStrategy.render(graphics, new Point(40, 40), 0, Color.BLUE, false));
         } finally {
             graphics.dispose();
         }

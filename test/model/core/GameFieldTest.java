@@ -51,7 +51,7 @@ class GameFieldTest {
     }
 
     @Test
-    @DisplayName("Поле отклоняет точку с NaN координатами")
+    @DisplayName("Поле отклоняет точку с нечисловыми координатами")
     void cannotPlaceNaNPoint() {
         Scheme scheme = Scheme.create(
                 List.of(new Point2D.Double(0, 0), new Point2D.Double(10, 10), new Point2D.Double(0, 10), new Point2D.Double(10, 0)),

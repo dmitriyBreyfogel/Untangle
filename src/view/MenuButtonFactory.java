@@ -1,15 +1,13 @@
 package view;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
 import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
 
 final class MenuButtonFactory {
+    private static final Color DISABLED_BACKGROUND = new Color(57, 67, 81);
+    private static final Color DISABLED_FOREGROUND = new Color(141, 150, 161);
+    private static final Color DISABLED_BORDER = new Color(86, 95, 107);
+
     private MenuButtonFactory() {
     }
 
@@ -25,22 +23,32 @@ final class MenuButtonFactory {
         return create(text, width, new Color(128, 56, 54), new Color(250, 241, 239), new Color(171, 101, 97));
     }
 
-    private static JButton create(String text, int width, Color background, Color foreground, Color border) {
-        JButton button = new JButton(text);
-        button.setFocusPainted(false);
-        button.setFocusable(false);
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        button.setPreferredSize(new Dimension(width, 52));
-        button.setMaximumSize(new Dimension(width, 52));
-        button.putClientProperty("JButton.buttonType", "roundRect");
-        button.setOpaque(true);
+    static void applyState(
+            JButton button,
+            Color background,
+            Color foreground,
+            Color border,
+            Color disabledBackground,
+            Color disabledForeground,
+            Color disabledBorder
+    ) {
+        if (button instanceof RoundedButton roundedButton) {
+            roundedButton.applyPalette(background, foreground, border);
+            roundedButton.applyDisabledPalette(disabledBackground, disabledForeground, disabledBorder);
+            return;
+        }
         button.setBackground(background);
         button.setForeground(foreground);
-        button.setBorder(new CompoundBorder(
-                BorderFactory.createLineBorder(border, 1, true),
-                new EmptyBorder(12, 18, 12, 18)
-        ));
+    }
+
+    static void applyState(JButton button, Color background, Color foreground, Color border) {
+        applyState(button, background, foreground, border, DISABLED_BACKGROUND, DISABLED_FOREGROUND, DISABLED_BORDER);
+    }
+
+    private static RoundedButton create(String text, int width, Color background, Color foreground, Color border) {
+        RoundedButton button = new RoundedButton(text, width);
+        button.applyPalette(background, foreground, border);
+        button.applyDisabledPalette(DISABLED_BACKGROUND, DISABLED_FOREGROUND, DISABLED_BORDER);
         return button;
     }
 }

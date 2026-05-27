@@ -1,15 +1,10 @@
 package view;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 
 public final class GameControlPanel extends JPanel {
     private final JButton startGameButton;
@@ -22,9 +17,9 @@ public final class GameControlPanel extends JPanel {
 
     public GameControlPanel() {
         configurePanel();
-        startGameButton = new JButton("Новая игра");
-        restartLevelButton = new JButton();
-        finishGameButton = new JButton("Закончить партию");
+        startGameButton = MenuButtonFactory.primary("Новая игра", 190);
+        restartLevelButton = MenuButtonFactory.secondary("", 260);
+        finishGameButton = MenuButtonFactory.danger("Закончить партию", 214);
         createButtons();
         connectButtonHandlers();
         updateButtonAvailability(false, false, 1);
@@ -53,7 +48,6 @@ public final class GameControlPanel extends JPanel {
         finishGameButton.setEnabled(gameStarted);
         applyButtonState(
                 startGameButton,
-                !gameStarted,
                 new Color(35, 54, 79),
                 new Color(248, 244, 236),
                 new Color(84, 111, 145),
@@ -63,7 +57,6 @@ public final class GameControlPanel extends JPanel {
         );
         applyButtonState(
                 restartLevelButton,
-                gameStarted || canContinue,
                 gameStarted ? new Color(234, 226, 214) : new Color(62, 86, 118),
                 gameStarted ? new Color(45, 52, 63) : new Color(244, 240, 232),
                 gameStarted ? new Color(191, 181, 166) : new Color(97, 126, 161),
@@ -73,7 +66,6 @@ public final class GameControlPanel extends JPanel {
         );
         applyButtonState(
                 finishGameButton,
-                gameStarted,
                 new Color(128, 56, 54),
                 new Color(250, 241, 239),
                 new Color(171, 101, 97),
@@ -92,9 +84,6 @@ public final class GameControlPanel extends JPanel {
     private void createButtons() {
         startGameButton.setToolTipText("Запустить новую партию");
         finishGameButton.setToolTipText("Закрыть текущую партию");
-        styleButton(startGameButton, 186);
-        styleButton(restartLevelButton, 254);
-        styleButton(finishGameButton, 208);
         add(startGameButton);
         add(restartLevelButton);
         add(finishGameButton);
@@ -124,20 +113,6 @@ public final class GameControlPanel extends JPanel {
         }
     }
 
-    private void styleButton(JButton button, int preferredWidth) {
-        button.setFocusPainted(false);
-        button.setFocusable(false);
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        button.setPreferredSize(new Dimension(preferredWidth, 48));
-        button.putClientProperty("JButton.buttonType", "roundRect");
-        button.setOpaque(true);
-        button.setBorder(new CompoundBorder(
-                BorderFactory.createLineBorder(new Color(86, 95, 107), 1, true),
-                new EmptyBorder(10, 18, 10, 18)
-        ));
-    }
-
     private void configureButtonCopy(boolean gameStarted, int continueLevelNumber) {
         restartLevelButton.setText(gameStarted
                 ? "Перезапустить уровень"
@@ -156,7 +131,6 @@ public final class GameControlPanel extends JPanel {
 
     private void applyButtonState(
             JButton button,
-            boolean enabled,
             Color enabledBackground,
             Color enabledForeground,
             Color enabledBorder,
@@ -164,11 +138,14 @@ public final class GameControlPanel extends JPanel {
             Color disabledForeground,
             Color disabledBorder
     ) {
-        button.setBackground(enabled ? enabledBackground : disabledBackground);
-        button.setForeground(enabled ? enabledForeground : disabledForeground);
-        button.setBorder(new CompoundBorder(
-                BorderFactory.createLineBorder(enabled ? enabledBorder : disabledBorder, 1, true),
-                new EmptyBorder(10, 18, 10, 18)
-        ));
+        MenuButtonFactory.applyState(
+                button,
+                enabledBackground,
+                enabledForeground,
+                enabledBorder,
+                disabledBackground,
+                disabledForeground,
+                disabledBorder
+        );
     }
 }

@@ -1,6 +1,5 @@
 package view;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -61,7 +60,6 @@ final class LevelSelectionDialog extends JDialog {
 
     private JButton createLevelButton(int levelNumber) {
         JButton button = MenuButtonFactory.secondary(Integer.toString(levelNumber), 64);
-        button.setBorder(BorderFactory.createLineBorder(new Color(97, 126, 161), 1, true));
         button.addActionListener(event -> selectLevel(levelNumber));
         return button;
     }

@@ -57,7 +57,7 @@ public final class Edge {
         return nodeB;
     }
 
-    private static boolean strictlyIntersects(Point2D a1, Point2D a2, Point2D b1, Point2D b2) {
+    static boolean strictlyIntersects(Point2D a1, Point2D a2, Point2D b1, Point2D b2) {
         int o1 = orientation(a1, a2, b1);
         int o2 = orientation(a1, a2, b2);
         int o3 = orientation(b1, b2, a1);

@@ -9,7 +9,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.HashSet;
@@ -25,12 +24,7 @@ public final class EdgeRenderer {
     }
 
     public void drawEdges(Graphics2D graphics, Game gameModel) {
-        begin(graphics);
-        try {
-            drawEdges(graphics, gameModel, null, null, new Color(90, 90, 90), new Color(210, 70, 70));
-        } finally {
-            end();
-        }
+        drawEdges(graphics, gameModel, null, null, new Color(90, 90, 90), new Color(210, 70, 70));
     }
 
     void drawEdges(Graphics2D graphics, Game gameModel, Color normalEdgeColor, Color intersectingEdgeColor) {
@@ -55,9 +49,33 @@ public final class EdgeRenderer {
             return;
         }
 
+        FieldCoordinateMapper mapper = mapperFor(graphics, gameModel);
+        drawEdges(graphics, gameModel, mapper, selectedNode, selectedNodePosition, normalEdgeColor, intersectingEdgeColor);
+    }
+
+    void drawEdges(
+            Graphics2D graphics,
+            Game gameModel,
+            FieldCoordinateMapper mapper,
+            Node selectedNode,
+            Point2D selectedNodePosition,
+            Color normalEdgeColor,
+            Color intersectingEdgeColor
+    ) {
+        Objects.requireNonNull(graphics, "graphics");
+        Objects.requireNonNull(gameModel, "gameModel");
+        Objects.requireNonNull(mapper, "mapper");
+        Objects.requireNonNull(normalEdgeColor, "normalEdgeColor");
+        Objects.requireNonNull(intersectingEdgeColor, "intersectingEdgeColor");
+
+        Level currentLevel = gameModel.currentLevel();
+        if (currentLevel == null) {
+            return;
+        }
+
         List<Edge> edges = currentLevel.scheme().getEdges();
         Set<Edge> previewIntersectingEdges = selectedNode != null && selectedNodePosition != null
-                ? collectPreviewIntersectingEdges(edges, selectedNode, selectedNodePosition)
+                ? new HashSet<>(currentLevel.scheme().getIntersectingEdgesAfterMove(selectedNode, selectedNodePosition))
                 : null;
 
         for (Edge edge : edges) {
@@ -66,7 +84,7 @@ public final class EdgeRenderer {
                     : previewIntersectingEdges.contains(edge);
             drawEdge(
                     graphics,
-                    gameModel,
+                    mapper,
                     edge,
                     selectedNode,
                     selectedNodePosition,
@@ -76,76 +94,17 @@ public final class EdgeRenderer {
         }
     }
 
-    private Set<Edge> collectPreviewIntersectingEdges(List<Edge> edges, Node selectedNode, Point2D selectedNodePosition) {
-        Set<Edge> intersectingEdges = new HashSet<>();
-        for (int i = 0; i < edges.size(); i++) {
-            for (int j = i + 1; j < edges.size(); j++) {
-                Edge first = edges.get(i);
-                Edge second = edges.get(j);
-                if (previewIntersects(first, second, selectedNode, selectedNodePosition)) {
-                    intersectingEdges.add(first);
-                    intersectingEdges.add(second);
-                }
-            }
-        }
-        return intersectingEdges;
-    }
-
-    private boolean previewIntersects(Edge first, Edge second, Node selectedNode, Point2D selectedNodePosition) {
-        if (first == second) {
-            return false;
-        }
-        if (first.containsNode(second.getNodeA()) || first.containsNode(second.getNodeB())) {
-            return false;
-        }
-
-        Point2D firstStart = modelPointOf(first.getNodeA(), selectedNode, selectedNodePosition);
-        Point2D firstEnd = modelPointOf(first.getNodeB(), selectedNode, selectedNodePosition);
-        Point2D secondStart = modelPointOf(second.getNodeA(), selectedNode, selectedNodePosition);
-        Point2D secondEnd = modelPointOf(second.getNodeB(), selectedNode, selectedNodePosition);
-
-        return strictlyIntersects(firstStart, firstEnd, secondStart, secondEnd);
-    }
-
-    private Point2D modelPointOf(Node node, Node selectedNode, Point2D selectedNodePosition) {
-        if (node == selectedNode && selectedNodePosition != null) {
-            return selectedNodePosition;
-        }
-        return new Point2D.Double(node.getX(), node.getY());
-    }
-
-    private static boolean strictlyIntersects(Point2D a1, Point2D a2, Point2D b1, Point2D b2) {
-        int o1 = orientation(a1, a2, b1);
-        int o2 = orientation(a1, a2, b2);
-        int o3 = orientation(b1, b2, a1);
-        int o4 = orientation(b1, b2, a2);
-
-        if (o1 == 0 || o2 == 0 || o3 == 0 || o4 == 0) {
-            return false;
-        }
-        return o1 != o2 && o3 != o4;
-    }
-
-    private static int orientation(Point2D a, Point2D b, Point2D c) {
-        double cross = (b.getX() - a.getX()) * (c.getY() - a.getY()) - (b.getY() - a.getY()) * (c.getX() - a.getX());
-        double epsilon = 1e-10;
-        if (Math.abs(cross) <= epsilon) {
-            return 0;
-        }
-        return cross > 0 ? 1 : -1;
-    }
-
     private void drawEdge(
             Graphics2D graphics,
-            Game gameModel,
+            FieldCoordinateMapper mapper,
             Edge edge,
             Node selectedNode,
             Point2D selectedNodePosition,
             Color color,
             boolean intersecting
     ) {
-        Point start = toScreenPoint(gameModel, edge.getNodeA(), selectedNode, selectedNodePosition);
-        Point end = toScreenPoint(gameModel, edge.getNodeB(), selectedNode, selectedNodePosition);
+        Point start = toScreenPoint(mapper, edge.getNodeA(), selectedNode, selectedNodePosition);
+        Point end = toScreenPoint(mapper, edge.getNodeB(), selectedNode, selectedNodePosition);
         Line2D edgeLine = new Line2D.Float(start.x, start.y, end.x, end.y);
         Line2D shadowLine = new Line2D.Float(start.x + 2.5f, start.y + 3.5f, end.x + 2.5f, end.y + 3.5f);
 
@@ -168,13 +127,7 @@ public final class EdgeRenderer {
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
     }
 
-    private Point toScreenPoint(Game gameModel, Node node, Node selectedNode, Point2D selectedNodePosition) {
-        Level currentLevel = gameModel.currentLevel();
-        Rectangle bounds = currentBounds();
-        int padding = fieldParameters.fieldPadding();
-        int drawableWidth = Math.max(1, bounds.width - padding * 2);
-        int drawableHeight = Math.max(1, bounds.height - padding * 2);
-
+    private Point toScreenPoint(FieldCoordinateMapper mapper, Node node, Node selectedNode, Point2D selectedNodePosition) {
         double modelX = node.getX();
         double modelY = node.getY();
         if (node == selectedNode && selectedNodePosition != null) {
@@ -182,23 +135,17 @@ public final class EdgeRenderer {
             modelY = selectedNodePosition.getY();
         }
 
-        double x = padding + modelX * drawableWidth / currentLevel.gameField().width();
-        double y = padding + modelY * drawableHeight / currentLevel.gameField().height();
-        return new Point((int) Math.round(x), (int) Math.round(y));
+        return mapper.toScreenCoordinates(new Point2D.Double(modelX, modelY));
     }
 
-    private Rectangle currentBounds() {
-        return graphicsBounds == null ? new Rectangle(0, 0, 1, 1) : graphicsBounds;
+    private FieldCoordinateMapper mapperFor(Graphics2D graphics, Game gameModel) {
+        return FieldCoordinateMapper.fromBounds(fieldParameters, graphics.getClipBounds(), gameModel);
     }
-
-    private Rectangle graphicsBounds;
 
     void begin(Graphics2D graphics) {
-        Rectangle clipBounds = graphics.getClipBounds();
-        graphicsBounds = clipBounds != null ? new Rectangle(clipBounds) : new Rectangle(0, 0, 1, 1);
+        Objects.requireNonNull(graphics, "graphics");
     }
 
     void end() {
-        graphicsBounds = null;
     }
 }

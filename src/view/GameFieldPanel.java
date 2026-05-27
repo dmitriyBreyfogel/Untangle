@@ -6,7 +6,6 @@ import model.Node;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -17,6 +16,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public final class GameFieldPanel extends JPanel {
     private final FieldParameters fieldParameters;
@@ -28,10 +28,17 @@ public final class GameFieldPanel extends JPanel {
     private final Color selectedNodeColor;
     private final GameFieldRenderer gameFieldRenderer;
     private final GameFieldNavigator gameFieldNavigator;
+    private final Consumer<MoveResult> moveResultHandler;
     private Point2D selectedNodePreviewPosition;
 
     public GameFieldPanel(Game gameModel) {
+        this(gameModel, result -> {
+        });
+    }
+
+    GameFieldPanel(Game gameModel, Consumer<MoveResult> moveResultHandler) {
         this.gameModel = Objects.requireNonNull(gameModel, "gameModel");
+        this.moveResultHandler = Objects.requireNonNull(moveResultHandler, "moveResultHandler");
         fieldParameters = new FieldParameters(12, 28);
         normalEdgeColor = new Color(106, 126, 152);
         intersectingEdgeColor = new Color(226, 97, 76);
@@ -105,7 +112,7 @@ public final class GameFieldPanel extends JPanel {
         if (selectedNode == null || gameModel.currentLevel() == null) {
             return;
         }
-        selectedNodePreviewPosition = selectedNode.resolveMove(gameFieldNavigator.convertToModelCoordinates(screenPoint));
+        selectedNodePreviewPosition = gameFieldNavigator.previewMove(selectedNode, screenPoint);
         refreshField();
     }
 
@@ -122,7 +129,8 @@ public final class GameFieldPanel extends JPanel {
         selectedNode = null;
         selectedNodePreviewPosition = null;
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        handleMoveResult(previousLevelNumber, previousMaxCompletedLevelNumber);
+        moveResultHandler.accept(new MoveResult(previousLevelNumber, previousMaxCompletedLevelNumber));
+        refreshField();
     }
 
     private boolean hasPendingMove() {
@@ -131,12 +139,4 @@ public final class GameFieldPanel extends JPanel {
         return Math.abs(dx) > 1e-9 || Math.abs(dy) > 1e-9;
     }
 
-    private void handleMoveResult(int previousLevelNumber, int previousMaxCompletedLevelNumber) {
-        java.awt.Window ownerWindow = SwingUtilities.getWindowAncestor(this);
-        if (ownerWindow instanceof GameWindow gameWindow) {
-            gameWindow.handleMoveResult(previousLevelNumber, previousMaxCompletedLevelNumber);
-            return;
-        }
-        refreshField();
-    }
 }

@@ -47,28 +47,24 @@ public final class GraphRenderer {
     ) {
         Objects.requireNonNull(graphics, "graphics");
         Objects.requireNonNull(gameModel, "gameModel");
-        edgeRenderer.begin(graphics);
-        nodeRenderer.begin(graphics);
-        try {
-            edgeRenderer.drawEdges(
-                    graphics,
-                    gameModel,
-                    selectedNode,
-                    selectedNodePosition,
-                    normalEdgeColor,
-                    intersectingEdgeColor
-            );
-            nodeRenderer.drawNodes(
-                    graphics,
-                    gameModel,
-                    selectedNode,
-                    selectedNodePosition,
-                    nodeColor,
-                    selectedNodeColor
-            );
-        } finally {
-            nodeRenderer.end();
-            edgeRenderer.end();
-        }
+        FieldCoordinateMapper mapper = FieldCoordinateMapper.fromBounds(fieldParameters, graphics.getClipBounds(), gameModel);
+        edgeRenderer.drawEdges(
+                graphics,
+                gameModel,
+                mapper,
+                selectedNode,
+                selectedNodePosition,
+                normalEdgeColor,
+                intersectingEdgeColor
+        );
+        nodeRenderer.drawNodes(
+                graphics,
+                gameModel,
+                mapper,
+                selectedNode,
+                selectedNodePosition,
+                nodeColor,
+                selectedNodeColor
+        );
     }
 }

@@ -42,12 +42,7 @@ public final class GameWindow extends JFrame {
     }
 
     void handleMoveResult(int previousLevelNumber, int previousMaxCompletedLevelNumber) {
-        if (gameModel.maxCompletedLevelNumber() > previousMaxCompletedLevelNumber) {
-            gameStatusPanel.showCompletedState();
-            gameStatusPanel.paintImmediately(gameStatusPanel.getVisibleRect());
-            showVictoryMessage(previousLevelNumber, !gameModel.started());
-        }
-        refreshView();
+        handleMoveResult(new MoveResult(previousLevelNumber, previousMaxCompletedLevelNumber));
     }
 
     private void configureWindow() {
@@ -64,7 +59,7 @@ public final class GameWindow extends JFrame {
 
     private void assembleLayout() {
         gameStatusPanel = new GameStatusPanel(gameModel);
-        gameFieldPanel = new GameFieldPanel(gameModel);
+        gameFieldPanel = new GameFieldPanel(gameModel, this::handleMoveResult);
         gameControlPanel = new GameControlPanel();
         add(gameStatusPanel, BorderLayout.NORTH);
         add(gameFieldPanel, BorderLayout.CENTER);
@@ -135,5 +130,14 @@ public final class GameWindow extends JFrame {
                 ? "Игра пройдена"
                 : "Уровень " + completedLevelNumber + " пройден";
         JOptionPane.showMessageDialog(this, message, "Победа", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void handleMoveResult(MoveResult result) {
+        if (gameModel.maxCompletedLevelNumber() > result.previousMaxCompletedLevelNumber()) {
+            gameStatusPanel.showCompletedState();
+            gameStatusPanel.paintImmediately(gameStatusPanel.getVisibleRect());
+            showVictoryMessage(result.previousLevelNumber(), !gameModel.started());
+        }
+        refreshView();
     }
 }

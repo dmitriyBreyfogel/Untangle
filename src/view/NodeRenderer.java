@@ -7,7 +7,6 @@ import model.Node;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
@@ -26,12 +25,7 @@ public final class NodeRenderer {
     }
 
     public void drawNodes(Graphics2D graphics, Game gameModel) {
-        begin(graphics);
-        try {
-            drawNodes(graphics, gameModel, null, null, new Color(52, 127, 196), new Color(241, 166, 47));
-        } finally {
-            end();
-        }
+        drawNodes(graphics, gameModel, null, null, new Color(52, 127, 196), new Color(241, 166, 47));
     }
 
     void drawNodes(
@@ -52,10 +46,34 @@ public final class NodeRenderer {
             return;
         }
 
+        FieldCoordinateMapper mapper = mapperFor(graphics, gameModel);
+        drawNodes(graphics, gameModel, mapper, selectedNode, selectedNodePosition, nodeColor, selectedNodeColor);
+    }
+
+    void drawNodes(
+            Graphics2D graphics,
+            Game gameModel,
+            FieldCoordinateMapper mapper,
+            Node selectedNode,
+            Point2D selectedNodePosition,
+            Color nodeColor,
+            Color selectedNodeColor
+    ) {
+        Objects.requireNonNull(graphics, "graphics");
+        Objects.requireNonNull(gameModel, "gameModel");
+        Objects.requireNonNull(mapper, "mapper");
+        Objects.requireNonNull(nodeColor, "nodeColor");
+        Objects.requireNonNull(selectedNodeColor, "selectedNodeColor");
+
+        Level currentLevel = gameModel.currentLevel();
+        if (currentLevel == null) {
+            return;
+        }
+
         for (Node node : currentLevel.scheme().getNodes()) {
             drawNode(
                     graphics,
-                    gameModel,
+                    mapper,
                     node,
                     selectedNode,
                     selectedNodePosition,
@@ -66,24 +84,18 @@ public final class NodeRenderer {
 
     private void drawNode(
             Graphics2D graphics,
-            Game gameModel,
+            FieldCoordinateMapper mapper,
             Node node,
             Node selectedNode,
             Point2D selectedNodePosition,
             Color color
     ) {
-        Point screenPoint = toScreenPoint(gameModel, node, selectedNode, selectedNodePosition);
+        Point screenPoint = toScreenPoint(mapper, node, selectedNode, selectedNodePosition);
         int radius = fieldParameters.nodeRadius();
         nodeRenderStrategyRegistry.resolve(node).render(graphics, screenPoint, radius, color, node == selectedNode);
     }
 
-    private Point toScreenPoint(Game gameModel, Node node, Node selectedNode, Point2D selectedNodePosition) {
-        Level currentLevel = gameModel.currentLevel();
-        Rectangle bounds = currentBounds();
-        int padding = fieldParameters.fieldPadding();
-        int drawableWidth = Math.max(1, bounds.width - padding * 2);
-        int drawableHeight = Math.max(1, bounds.height - padding * 2);
-
+    private Point toScreenPoint(FieldCoordinateMapper mapper, Node node, Node selectedNode, Point2D selectedNodePosition) {
         double modelX = node.getX();
         double modelY = node.getY();
         if (node == selectedNode && selectedNodePosition != null) {
@@ -91,23 +103,17 @@ public final class NodeRenderer {
             modelY = selectedNodePosition.getY();
         }
 
-        double x = padding + modelX * drawableWidth / currentLevel.gameField().width();
-        double y = padding + modelY * drawableHeight / currentLevel.gameField().height();
-        return new Point((int) Math.round(x), (int) Math.round(y));
+        return mapper.toScreenCoordinates(new Point2D.Double(modelX, modelY));
     }
 
-    private Rectangle currentBounds() {
-        return graphicsBounds == null ? new Rectangle(0, 0, 1, 1) : graphicsBounds;
+    private FieldCoordinateMapper mapperFor(Graphics2D graphics, Game gameModel) {
+        return FieldCoordinateMapper.fromBounds(fieldParameters, graphics.getClipBounds(), gameModel);
     }
-
-    private Rectangle graphicsBounds;
 
     void begin(Graphics2D graphics) {
-        Rectangle clipBounds = graphics.getClipBounds();
-        graphicsBounds = clipBounds != null ? new Rectangle(clipBounds) : new Rectangle(0, 0, 1, 1);
+        Objects.requireNonNull(graphics, "graphics");
     }
 
     void end() {
-        graphicsBounds = null;
     }
 }

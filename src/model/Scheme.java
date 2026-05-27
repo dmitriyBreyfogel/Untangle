@@ -107,6 +107,27 @@ public final class Scheme {
         return List.copyOf(result);
     }
 
+    public List<Edge> getIntersectingEdgesAfterMove(Node node, Point2D destination) {
+        Objects.requireNonNull(node, "node");
+        Point2D movedPosition = copyOf(destination, "destination");
+        if (!nodes.contains(node)) {
+            throw new IllegalArgumentException("Узел не принадлежит схеме");
+        }
+
+        Set<Edge> result = new HashSet<>();
+        for (int i = 0; i < edges.size(); i++) {
+            for (int j = i + 1; j < edges.size(); j++) {
+                Edge a = edges.get(i);
+                Edge b = edges.get(j);
+                if (intersectsAfterMove(a, b, node, movedPosition)) {
+                    result.add(a);
+                    result.add(b);
+                }
+            }
+        }
+        return List.copyOf(result);
+    }
+
     public boolean hasIntersections() {
         for (Edge edge : edges) {
             if (edge.isIntersecting()) {
@@ -172,6 +193,29 @@ public final class Scheme {
                 }
             }
         }
+    }
+
+    private boolean intersectsAfterMove(Edge first, Edge second, Node movedNode, Point2D movedPosition) {
+        if (first == second) {
+            return false;
+        }
+        if (first.containsNode(second.getNodeA()) || first.containsNode(second.getNodeB())) {
+            return false;
+        }
+
+        Point2D firstStart = pointOf(first.getNodeA(), movedNode, movedPosition);
+        Point2D firstEnd = pointOf(first.getNodeB(), movedNode, movedPosition);
+        Point2D secondStart = pointOf(second.getNodeA(), movedNode, movedPosition);
+        Point2D secondEnd = pointOf(second.getNodeB(), movedNode, movedPosition);
+
+        return Edge.strictlyIntersects(firstStart, firstEnd, secondStart, secondEnd);
+    }
+
+    private Point2D pointOf(Node node, Node movedNode, Point2D movedPosition) {
+        if (node == movedNode) {
+            return movedPosition;
+        }
+        return new Point2D.Double(node.getX(), node.getY());
     }
 
     private List<Edge> buildEdges() {

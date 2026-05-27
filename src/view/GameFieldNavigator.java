@@ -32,8 +32,9 @@ public final class GameFieldNavigator {
 
         Node nearestNode = null;
         double nearestDistance = Double.POSITIVE_INFINITY;
+        FieldCoordinateMapper mapper = currentMapper();
         for (Node node : currentLevel.scheme().getNodes()) {
-            Point nodeScreenPoint = convertToScreenCoordinates(new Point2D.Double(node.getX(), node.getY()));
+            Point nodeScreenPoint = mapper.toScreenCoordinates(new Point2D.Double(node.getX(), node.getY()));
             double distance = nodeScreenPoint.distance(screenPoint);
             if (distance <= fieldParameters.nodeRadius() && distance < nearestDistance) {
                 nearestNode = node;
@@ -53,7 +54,7 @@ public final class GameFieldNavigator {
         if (selectedNode == null || currentLevel == null) {
             return;
         }
-        Point2D modelPoint = convertToModelCoordinates(screenPoint);
+        Point2D modelPoint = currentMapper().toModelCoordinates(screenPoint);
         currentLevel.scheme().moveNode(selectedNode, modelPoint);
     }
 
@@ -62,33 +63,25 @@ public final class GameFieldNavigator {
     }
 
     public Point convertToScreenCoordinates(Point2D modelPoint) {
-        Objects.requireNonNull(modelPoint, "modelPoint");
-        Dimension panelSize = currentPanelSize();
-        int padding = fieldParameters.fieldPadding();
-        int drawableWidth = Math.max(1, panelSize.width - padding * 2);
-        int drawableHeight = Math.max(1, panelSize.height - padding * 2);
-
-        double screenX = padding + modelPoint.getX() * drawableWidth / currentFieldWidth();
-        double screenY = padding + modelPoint.getY() * drawableHeight / currentFieldHeight();
-        return new Point((int) Math.round(screenX), (int) Math.round(screenY));
+        return currentMapper().toScreenCoordinates(modelPoint);
     }
 
     public Point2D convertToModelCoordinates(Point screenPoint) {
-        Objects.requireNonNull(screenPoint, "screenPoint");
-        Dimension panelSize = currentPanelSize();
-        int padding = fieldParameters.fieldPadding();
-        int drawableWidth = Math.max(1, panelSize.width - padding * 2);
-        int drawableHeight = Math.max(1, panelSize.height - padding * 2);
+        return currentMapper().toModelCoordinates(screenPoint);
+    }
 
-        double clampedX = Math.max(padding, Math.min(screenPoint.x, padding + drawableWidth));
-        double clampedY = Math.max(padding, Math.min(screenPoint.y, padding + drawableHeight));
-        double modelX = (clampedX - padding) * currentFieldWidth() / drawableWidth;
-        double modelY = (clampedY - padding) * currentFieldHeight() / drawableHeight;
-        return new Point2D.Double(modelX, modelY);
+    public Point2D previewMove(Node node, Point screenPoint) {
+        Objects.requireNonNull(node, "node");
+        Objects.requireNonNull(screenPoint, "screenPoint");
+        return node.resolveMove(convertToModelCoordinates(screenPoint));
     }
 
     Node selectedNode() {
         return selectedNode;
+    }
+
+    private FieldCoordinateMapper currentMapper() {
+        return FieldCoordinateMapper.fromPanel(fieldParameters, currentPanelSize(), gameModel);
     }
 
     private Dimension currentPanelSize() {
@@ -96,15 +89,5 @@ public final class GameFieldNavigator {
         int width = Math.max(1, panelSize.width);
         int height = Math.max(1, panelSize.height);
         return new Dimension(width, height);
-    }
-
-    private double currentFieldWidth() {
-        Level currentLevel = gameModel.currentLevel();
-        return currentLevel == null ? 100.0 : currentLevel.gameField().width();
-    }
-
-    private double currentFieldHeight() {
-        Level currentLevel = gameModel.currentLevel();
-        return currentLevel == null ? 100.0 : currentLevel.gameField().height();
     }
 }

@@ -1,4 +1,8 @@
-package model;
+package model.level;
+
+import model.core.GameField;
+import model.core.Scheme;
+import model.movement.MovementStrategy;
 
 import java.awt.geom.Point2D;
 import java.util.List;

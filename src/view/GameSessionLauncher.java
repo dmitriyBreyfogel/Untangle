@@ -1,7 +1,7 @@
 package view;
 
-import model.Game;
-import model.LevelFactory;
+import model.core.Game;
+import model.level.LevelFactory;
 
 import java.util.List;
 

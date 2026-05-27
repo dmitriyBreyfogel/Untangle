@@ -1,4 +1,7 @@
-package model;
+package model.core;
+
+import model.movement.FixedMovementStrategy;
+import model.movement.HorizontalMovementStrategy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

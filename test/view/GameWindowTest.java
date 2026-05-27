@@ -1,6 +1,6 @@
 package view;
 
-import model.Game;
+import model.core.Game;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DisplayName;

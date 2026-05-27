@@ -1,6 +1,6 @@
 package view;
 
-import model.Game;
+import model.core.Game;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;

@@ -1,4 +1,10 @@
-package model;
+package model.level;
+
+import model.core.Node;
+import model.core.Scheme;
+import model.movement.FixedMovementStrategy;
+import model.movement.FreeMovementStrategy;
+import model.movement.HorizontalMovementStrategy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

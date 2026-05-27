@@ -1,4 +1,7 @@
-package model;
+package model.core;
+
+import model.level.Level;
+import model.level.LevelFactory;
 
 import java.util.Objects;
 

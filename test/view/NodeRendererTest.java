@@ -1,8 +1,8 @@
 package view;
 
-import model.Game;
-import model.FreeMovementStrategy;
-import model.Node;
+import model.core.Game;
+import model.movement.FreeMovementStrategy;
+import model.core.Node;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

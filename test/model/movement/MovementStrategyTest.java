@@ -1,4 +1,4 @@
-package model;
+package model.movement;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

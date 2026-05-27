@@ -1,11 +1,11 @@
 package view;
 
-import model.FixedMovementStrategy;
-import model.FreeMovementStrategy;
-import model.Game;
-import model.HorizontalMovementStrategy;
-import model.MovementStrategy;
-import model.Node;
+import model.movement.FixedMovementStrategy;
+import model.movement.FreeMovementStrategy;
+import model.core.Game;
+import model.movement.HorizontalMovementStrategy;
+import model.movement.MovementStrategy;
+import model.core.Node;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

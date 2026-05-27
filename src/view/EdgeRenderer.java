@@ -1,9 +1,9 @@
 package view;
 
-import model.Edge;
-import model.Game;
-import model.Level;
-import model.Node;
+import model.core.Edge;
+import model.core.Game;
+import model.level.Level;
+import model.core.Node;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

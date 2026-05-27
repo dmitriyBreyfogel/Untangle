@@ -1,7 +1,7 @@
 package view;
 
-import model.Game;
-import model.Level;
+import model.core.Game;
+import model.level.Level;
 
 import java.awt.Dimension;
 import java.awt.Point;

@@ -1,7 +1,7 @@
 package view;
 
-import model.Game;
-import model.Node;
+import model.core.Game;
+import model.core.Node;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

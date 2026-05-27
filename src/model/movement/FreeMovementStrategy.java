@@ -1,13 +1,12 @@
-package model;
+package model.movement;
 
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
-public final class FixedMovementStrategy implements MovementStrategy {
+public final class FreeMovementStrategy implements MovementStrategy {
     @Override
     public Point2D resolveMove(Point2D currentPosition, Point2D requestedPosition) {
         Objects.requireNonNull(currentPosition, "currentPosition");
-        Objects.requireNonNull(requestedPosition, "requestedPosition");
-        return currentPosition;
+        return Objects.requireNonNull(requestedPosition, "requestedPosition");
     }
 }

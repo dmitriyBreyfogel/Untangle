@@ -1,4 +1,7 @@
-package model;
+package model.core;
+
+import model.movement.FreeMovementStrategy;
+import model.movement.MovementStrategy;
 
 import java.awt.geom.Point2D;
 import java.util.Objects;

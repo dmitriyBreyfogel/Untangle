@@ -1,4 +1,7 @@
-package model;
+package model.level;
+
+import model.movement.FixedMovementStrategy;
+import model.movement.HorizontalMovementStrategy;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;

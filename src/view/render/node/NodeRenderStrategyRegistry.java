@@ -1,4 +1,4 @@
-package view.render;
+package view.render.node;
 
 import model.movement.FixedMovementStrategy;
 import model.movement.FreeMovementStrategy;

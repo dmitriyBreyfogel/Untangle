@@ -1,4 +1,4 @@
-package view.render;
+package view.render.node;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

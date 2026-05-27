@@ -1,4 +1,4 @@
-package view.render;
+package view.render.node;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

@@ -7,6 +7,8 @@ import model.movement.FreeMovementStrategy;
 import model.core.Node;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import view.render.node.DefaultNodeRenderStrategy;
+import view.render.node.NodeRenderStrategyRegistry;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

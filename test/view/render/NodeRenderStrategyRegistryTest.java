@@ -8,6 +8,7 @@ import model.movement.MovementStrategy;
 import model.core.Node;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import view.render.node.*;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertSame;

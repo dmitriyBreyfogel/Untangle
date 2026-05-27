@@ -4,6 +4,10 @@ import view.SwingTestSupport;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import view.render.node.DefaultNodeRenderStrategy;
+import view.render.node.FixedNodeRenderStrategy;
+import view.render.node.HorizontalNodeRenderStrategy;
+import view.render.node.NodeRenderStrategy;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

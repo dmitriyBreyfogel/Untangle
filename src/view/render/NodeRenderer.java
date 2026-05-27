@@ -3,6 +3,7 @@ package view.render;
 import model.core.Game;
 import model.level.Level;
 import model.core.Node;
+import view.render.node.NodeRenderStrategyRegistry;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

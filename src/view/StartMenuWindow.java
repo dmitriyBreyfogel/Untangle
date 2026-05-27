@@ -63,7 +63,7 @@ public final class StartMenuWindow extends JFrame {
         title.setFont(new Font("Segoe UI", Font.BOLD, 44));
         title.setForeground(new Color(241, 236, 228));
 
-        JLabel subtitle = new JLabel("Распутайте схему без пересечений", SwingConstants.CENTER);
+        JLabel subtitle = new JLabel("Распутайте схему", SwingConstants.CENTER);
         subtitle.setAlignmentX(CENTER_ALIGNMENT);
         subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         subtitle.setForeground(new Color(176, 186, 199));

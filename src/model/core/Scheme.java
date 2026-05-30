@@ -23,13 +23,14 @@ public final class Scheme {
     private final List<Node> nodes;
     private final List<Edge> edges;
 
-    private GameField gameField;
+    private final GameField gameField;
     private Game game;
 
     private Scheme(
             List<Point2D> initialNodeCoordinates,
             Map<Integer, List<Integer>> nodeConnections,
-            Map<Integer, MovementStrategy> nodeMovementStrategies
+            Map<Integer, MovementStrategy> nodeMovementStrategies,
+            GameField gameField
     ) {
         Objects.requireNonNull(initialNodeCoordinates, "initialNodeCoordinates");
         List<Point2D.Double> copies = new ArrayList<>(initialNodeCoordinates.size());
@@ -39,6 +40,7 @@ public final class Scheme {
         this.initialNodeCoordinates = List.copyOf(copies);
         this.nodeConnections = deepCopy(Objects.requireNonNull(nodeConnections, "nodeConnections"));
         this.nodeMovementStrategies = Map.copyOf(Objects.requireNonNull(nodeMovementStrategies, "nodeMovementStrategies"));
+        this.gameField = gameField;
 
         if (this.initialNodeCoordinates.size() < 3) {
             throw new IllegalArgumentException("Смеха должна состоять минимум из трёх узлов");
@@ -67,7 +69,16 @@ public final class Scheme {
             Map<Integer, List<Integer>> nodeConnections,
             Map<Integer, MovementStrategy> nodeMovementStrategies
     ) {
-        return new Scheme(initialNodeCoordinates, nodeConnections, nodeMovementStrategies);
+        return new Scheme(initialNodeCoordinates, nodeConnections, nodeMovementStrategies, null);
+    }
+
+    public static Scheme create(
+            List<Point2D> initialNodeCoordinates,
+            Map<Integer, List<Integer>> nodeConnections,
+            Map<Integer, MovementStrategy> nodeMovementStrategies,
+            GameField gameField
+    ) {
+        return new Scheme(initialNodeCoordinates, nodeConnections, nodeMovementStrategies, Objects.requireNonNull(gameField, "gameField"));
     }
 
     public void reset() {
@@ -157,10 +168,6 @@ public final class Scheme {
 
     public List<Edge> getEdges() {
         return List.copyOf(edges);
-    }
-
-    void bindGameField(GameField gameField) {
-        this.gameField = Objects.requireNonNull(gameField, "gameField");
     }
 
     void bindGame(Game game) {

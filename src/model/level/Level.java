@@ -34,8 +34,8 @@ public final class Level {
         Map<Integer, List<Integer>> copiedNodeConnections = Map.copyOf(Objects.requireNonNull(nodeConnections, "nodeConnections"));
         Map<Integer, MovementStrategy> copiedNodeMovementStrategies = Map.copyOf(Objects.requireNonNull(nodeMovementStrategies, "nodeMovementStrategies"));
 
-        this.scheme = Scheme.create(copiedInitialNodeCoordinates, copiedNodeConnections, copiedNodeMovementStrategies);
-        this.gameField = new GameField(fieldWidth, fieldHeight, scheme);
+        this.gameField = new GameField(fieldWidth, fieldHeight);
+        this.scheme = Scheme.create(copiedInitialNodeCoordinates, copiedNodeConnections, copiedNodeMovementStrategies, gameField);
     }
 
     public void reset() {

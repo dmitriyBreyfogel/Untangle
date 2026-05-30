@@ -125,17 +125,22 @@ class SchemeValidationTest {
     void rejectsNullArgs() {
         assertThrows(NullPointerException.class, () -> Scheme.create(null, Map.of()));
         assertThrows(NullPointerException.class, () -> Scheme.create(List.of(new Point2D.Double(0, 0), new Point2D.Double(1, 0), new Point2D.Double(0, 1)), null));
+        assertThrows(NullPointerException.class, () -> Scheme.create(
+                List.of(new Point2D.Double(0, 0), new Point2D.Double(1, 0), new Point2D.Double(0, 1)),
+                Map.of(0, List.of(1, 2), 1, List.of(2)),
+                Map.of(),
+                null
+        ));
     }
 
     @Test
-    @DisplayName("Схема не принимает пустые значения при привязке игры и поля")
+    @DisplayName("Схема не принимает пустую игру при привязке")
     void bindRejectsNull() {
         Scheme scheme = Scheme.create(
                 List.of(new Point2D.Double(0, 0), new Point2D.Double(1, 0), new Point2D.Double(0, 1)),
                 Map.of(0, List.of(1, 2), 1, List.of(2))
         );
         assertThrows(NullPointerException.class, () -> scheme.bindGame(null));
-        assertThrows(NullPointerException.class, () -> scheme.bindGameField(null));
     }
 
     @Test

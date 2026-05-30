@@ -6,16 +6,13 @@ import java.util.Objects;
 public final class GameField {
     private final double width;
     private final double height;
-    private final Scheme scheme;
 
-    public GameField(double width, double height, Scheme scheme) {
+    public GameField(double width, double height) {
         if (!Double.isFinite(width) || !Double.isFinite(height) || width <= 0 || height <= 0) {
             throw new IllegalArgumentException("Ширина и высота должны быть конечными положительными величинами");
         }
         this.width = width;
         this.height = height;
-        this.scheme = Objects.requireNonNull(scheme, "scheme");
-        this.scheme.bindGameField(this);
     }
 
     public boolean canPlace(Point2D point) {
@@ -31,9 +28,5 @@ public final class GameField {
 
     public double height() {
         return height;
-    }
-
-    public Scheme scheme() {
-        return scheme;
     }
 }

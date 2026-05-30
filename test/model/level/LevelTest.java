@@ -17,7 +17,6 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -53,7 +52,7 @@ class LevelTest {
 
         assertEquals(100, level.gameField().width());
         assertEquals(100, level.gameField().height());
-        assertSame(level.scheme(), level.gameField().scheme());
+        assertEquals(4, level.scheme().getNodes().size());
     }
 
     @Test

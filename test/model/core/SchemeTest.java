@@ -33,8 +33,6 @@ class SchemeTest {
                         1, List.of(3)
                 )
         );
-        new GameField(100, 100, scheme);
-
         assertTrue(scheme.hasIntersections());
         assertEquals(2, scheme.getIntersectingEdges().size());
     }
@@ -55,8 +53,6 @@ class SchemeTest {
                         1, List.of(3)
                 )
         );
-        new GameField(100, 100, scheme);
-
         Node node1 = scheme.getNodes().get(1);
         scheme.moveNode(node1, new Point2D.Double(90, 5));
 
@@ -80,8 +76,6 @@ class SchemeTest {
                         1, List.of(3)
                 )
         );
-        new GameField(100, 100, scheme);
-
         scheme.moveNode(scheme.getNodes().get(1), new Point2D.Double(90, 5));
         assertFalse(scheme.hasIntersections());
 
@@ -107,8 +101,6 @@ class SchemeTest {
                         1, List.of(3)
                 )
         );
-        new GameField(100, 100, scheme);
-
         assertEquals(2, scheme.getEdgesOfNode(scheme.getNodes().get(0)).size());
         assertEquals(2, scheme.getEdgesOfNode(scheme.getNodes().get(1)).size());
         assertEquals(2, scheme.getEdgesOfNode(scheme.getNodes().get(2)).size());
@@ -142,8 +134,6 @@ class SchemeTest {
                         1, List.of(3)
                 )
         );
-        new GameField(100, 100, scheme);
-
         assertThrows(UnsupportedOperationException.class, () -> scheme.getIntersectingEdges().add(scheme.getEdges().get(0)));
     }
 
@@ -210,8 +200,6 @@ class SchemeTest {
                         1, new HorizontalMovementStrategy()
                 )
         );
-        new GameField(100, 100, scheme);
-
         Node fixedNode = scheme.getNodes().get(0);
         Node horizontalNode = scheme.getNodes().get(1);
 
@@ -234,9 +222,9 @@ class SchemeTest {
                         new Point2D.Double(0, 20)
                 ),
                 Map.of(0, List.of(1, 2), 1, List.of(2)),
-                Map.of(1, new HorizontalMovementStrategy())
+                Map.of(1, new HorizontalMovementStrategy()),
+                new GameField(100, 100)
         );
-        new GameField(100, 100, scheme);
         Node node = scheme.getNodes().get(1);
 
         scheme.moveNode(node, new Point2D.Double(60, 200));
@@ -257,7 +245,6 @@ class SchemeTest {
                 Map.of(0, List.of(1, 2), 1, List.of(2)),
                 Map.of(1, new HorizontalMovementStrategy())
         );
-        new GameField(100, 100, scheme);
         Node node = scheme.getNodes().get(1);
 
         scheme.moveNode(node, new Point2D.Double(60, 70));

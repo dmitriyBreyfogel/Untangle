@@ -1,32 +1,32 @@
 @startuml
-title Model sequence: start new game
+title Модель: запуск новой игры
 
-actor Client
-participant "Game" as Game
-participant "LevelFactory" as LevelFactory
-participant "Level" as Level
-participant "Scheme" as Scheme
-participant "GameField" as GameField
+actor Клиент
+participant "Игра" as Игра
+participant "ФабрикаУровней" as ФабрикаУровней
+participant "Уровень" as Уровень
+participant "Схема" as Схема
+participant "ИгровоеПоле" as ИгровоеПоле
 
-Client -> Game : start()
-Game -> Game : startAtLevel(1)
-Game -> LevelFactory : createLevel(1)
-create Level
-LevelFactory --> Level : new Level(...)
-Level -> Scheme : create(coordinates, connections, strategies)
-create Scheme
-Scheme --> Level : scheme
-create GameField
-Level -> GameField : new GameField(width, height, scheme)
-GameField -> Scheme : bindGameField(this)
-GameField --> Level : gameField
-LevelFactory --> Game : level
-Game -> Game : resetMoveCounter()
-Game -> Game : loadLevel(level)
-Game -> Level : number()
-Game -> Level : scheme()
-Level --> Game : scheme
-Game -> Scheme : bindGame(this)
-Game --> Client : started game
+Клиент -> Игра : начать()
+Игра -> Игра : начатьСУровня(1)
+Игра -> ФабрикаУровней : создатьУровень(1)
+создать Уровень
+ФабрикаУровней --> Уровень : new Уровень(...)
+Уровень -> Схема : создать(координаты, соединения, стратегии)
+создать Схема
+Схема --> Уровень : схема
+создать ИгровоеПоле
+Уровень -> ИгровоеПоле : new ИгровоеПоле(ширина, высота, схема)
+ИгровоеПоле -> Схема : привязатьИгровоеПоле(this)
+ИгровоеПоле --> Уровень : игровоеПоле
+ФабрикаУровней --> Игра : уровень
+Игра -> Игра : сброситьСчетчикХодов()
+Игра -> Игра : загрузитьУровень(уровень)
+Игра -> Уровень : номер()
+Игра -> Уровень : схема()
+Уровень --> Игра : схема
+Игра -> Схема : привязатьИгру(this)
+Игра --> Клиент : запущена игра
 
 @enduml

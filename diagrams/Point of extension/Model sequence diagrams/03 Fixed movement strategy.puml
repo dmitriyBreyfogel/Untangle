@@ -1,18 +1,18 @@
 @startuml
-title Model extension sequence: fixed movement strategy
+title Точка расширения модели: стратегия фиксированного движения
 
-actor Client
-participant "Scheme" as Scheme
-participant "Node" as Node
-participant "FixedMovementStrategy" as FixedMovementStrategy
+actor Клиент
+participant "Схема" as Схема
+participant "Узел" as Узел
+participant "СтратегияФиксированногоДвижения" as СтратегияФиксированногоДвижения
 
-Client -> Scheme : moveNode(fixedNode, destination)
-Scheme -> Node : resolveMove(destination)
-Node -> FixedMovementStrategy : resolveMove(currentPosition, requestedPosition)
-FixedMovementStrategy --> Node : currentPosition
-Node --> Scheme : resolvedDestination
-Scheme -> Node : isAt(resolvedDestination)
-Node --> Scheme : true
-Scheme --> Client : movement ignored
+Клиент -> Схема : переместитьУзел(фиксированныйУзел, целеваяПозиция)
+Схема -> Узел : рассчитатьПозициюПослеХода(целеваяПозиция)
+Узел -> СтратегияФиксированногоДвижения : рассчитатьПозициюПослеХода(текущаяПозиция, запрошеннаяПозиция)
+СтратегияФиксированногоДвижения --> Узел : текущаяПозиция
+Узел --> Схема : рассчитаннаяПозиция
+Схема -> Узел : находитсяВ(рассчитаннаяПозиция)
+Узел --> Схема : true
+Схема --> Клиент : движение проигнорировано
 
 @enduml

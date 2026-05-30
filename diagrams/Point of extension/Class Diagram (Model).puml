@@ -1,101 +1,101 @@
 @startuml
-title Class Diagram (Model): point of extension
+title Диаграмма классов (Модель): точка расширения
 
 skinparam classAttributeIconSize 0
 hide circle
 
 package model.core {
-    class Scheme {
-        - DEFAULT_MOVEMENT_STRATEGY : MovementStrategy
-        - initialNodeCoordinates : List<Point2D.Double>
-        - nodeConnections : Map<Integer, List<Integer>>
-        - nodeMovementStrategies : Map<Integer, MovementStrategy>
-        - nodes : List<Node>
-        - edges : List<Edge>
-        - gameField : GameField
-        - game : Game
-        - Scheme(initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, nodeMovementStrategies : Map<Integer, MovementStrategy>)
-        + {static} create(initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>) : Scheme
-        + {static} create(initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, nodeMovementStrategies : Map<Integer, MovementStrategy>) : Scheme
-        + reset() : void
-        + moveNode(node : Node, destination : Point2D) : void
-        + getIntersectingEdges() : List<Edge>
-        + getIntersectingEdgesAfterMove(node : Node, destination : Point2D) : List<Edge>
-        + hasIntersections() : boolean
-        + getEdgesOfNode(node : Node) : List<Edge>
-        + getNodes() : List<Node>
-        + getEdges() : List<Edge>
-        ~ bindGameField(gameField : GameField) : void
-        ~ bindGame(game : Game) : void
-        - verifyMovementStrategyIndexes() : void
+    class Схема {
+        - стратегияДвиженияПоУмолчанию : СтратегияДвижения
+        - начальныеКоординатыУзлов : List<Point2D.Double>
+        - соединенияУзлов : Map<Integer, List<Integer>>
+        - стратегииДвиженияУзлов : Map<Integer, СтратегияДвижения>
+        - узлы : List<Узел>
+        - ребра : List<Ребро>
+        - игровоеПоле : ИгровоеПоле
+        - игра : Игра
+        - Схема(начальныеКоординатыУзлов : List<Point2D>, соединенияУзлов : Map<Integer, List<Integer>>, стратегииДвиженияУзлов : Map<Integer, СтратегияДвижения>)
+        + {static} создать(начальныеКоординатыУзлов : List<Point2D>, соединенияУзлов : Map<Integer, List<Integer>>) : Схема
+        + {static} создать(начальныеКоординатыУзлов : List<Point2D>, соединенияУзлов : Map<Integer, List<Integer>>, стратегииДвиженияУзлов : Map<Integer, СтратегияДвижения>) : Схема
+        + сбросить() : void
+        + переместитьУзел(узел : Узел, целеваяПозиция : Point2D) : void
+        + получитьПересекающиесяРебра() : List<Ребро>
+        + получитьПересекающиесяРебраПослеХода(узел : Узел, целеваяПозиция : Point2D) : List<Ребро>
+        + естьПересечения() : boolean
+        + получитьРебраУзла(узел : Узел) : List<Ребро>
+        + получитьУзлы() : List<Узел>
+        + получитьРебра() : List<Ребро>
+        ~ привязатьИгровоеПоле(игровоеПоле : ИгровоеПоле) : void
+        ~ привязатьИгру(игра : Игра) : void
+        - проверитьИндексыСтратегийДвижения() : void
     }
 
-    class Node {
-        - DEFAULT_MOVEMENT_STRATEGY : MovementStrategy
-        - position : Point2D.Double
-        - movementStrategy : MovementStrategy
-        ~ Node(position : Point2D)
-        ~ Node(position : Point2D, movementStrategy : MovementStrategy)
-        + getX() : double
-        + getY() : double
-        + resolveMove(destination : Point2D) : Point2D
-        + getMovementStrategy() : MovementStrategy
-        ~ getPosition() : Point2D
-        ~ moveDirectlyTo(destination : Point2D) : void
-        ~ isAt(destination : Point2D) : boolean
+    class Узел {
+        - стратегияДвиженияПоУмолчанию : СтратегияДвижения
+        - позиция : Point2D.Double
+        - стратегияДвижения : СтратегияДвижения
+        ~ Узел(позиция : Point2D)
+        ~ Узел(позиция : Point2D, стратегияДвижения : СтратегияДвижения)
+        + получитьX() : double
+        + получитьY() : double
+        + рассчитатьПозициюПослеХода(целеваяПозиция : Point2D) : Point2D
+        + получитьСтратегиюДвижения() : СтратегияДвижения
+        ~ получитьПозицию() : Point2D
+        ~ переместитьНапрямуюВ(целеваяПозиция : Point2D) : void
+        ~ находитсяВ(целеваяПозиция : Point2D) : boolean
     }
 }
 
 package model.level {
-    class Level {
-        - number : int
-        - scheme : Scheme
-        - gameField : GameField
-        ~ Level(number : int, initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, fieldWidth : double, fieldHeight : double)
-        ~ Level(number : int, initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, nodeMovementStrategies : Map<Integer, MovementStrategy>, fieldWidth : double, fieldHeight : double)
-        + reset() : void
-        + number() : int
-        + gameField() : GameField
-        + scheme() : Scheme
+    class Уровень {
+        - номер : int
+        - схема : Схема
+        - игровоеПоле : ИгровоеПоле
+        ~ Уровень(номер : int, начальныеКоординатыУзлов : List<Point2D>, соединенияУзлов : Map<Integer, List<Integer>>, ширинаПоля : double, высотаПоля : double)
+        ~ Уровень(номер : int, начальныеКоординатыУзлов : List<Point2D>, соединенияУзлов : Map<Integer, List<Integer>>, стратегииДвиженияУзлов : Map<Integer, СтратегияДвижения>, ширинаПоля : double, высотаПоля : double)
+        + сбросить() : void
+        + номер() : int
+        + игровоеПоле() : ИгровоеПоле
+        + схема() : Схема
     }
 
-    class LevelFactory {
-        - FIELD_WIDTH : double
-        - FIELD_HEIGHT : double
-        - LAST_LEVEL_NUMBER : int
-        + availableLevelNumbers() : List<Integer>
-        + createLevel(number : int) : Level
+    class ФабрикаУровней {
+        - ширинаПоляПоУмолчанию : double
+        - высотаПоляПоУмолчанию : double
+        - последнийНомерУровня : int
+        + доступныеНомераУровней() : List<Integer>
+        + создатьУровень(номер : int) : Уровень
     }
 }
 
 package model.movement {
-    interface MovementStrategy {
-        + resolveMove(currentPosition : Point2D, requestedPosition : Point2D) : Point2D
+    interface СтратегияДвижения {
+        + рассчитатьПозициюПослеХода(текущаяПозиция : Point2D, запрошеннаяПозиция : Point2D) : Point2D
     }
 
-    class FreeMovementStrategy {
-        + resolveMove(currentPosition : Point2D, requestedPosition : Point2D) : Point2D
+    class СтратегияСвободногоДвижения {
+        + рассчитатьПозициюПослеХода(текущаяПозиция : Point2D, запрошеннаяПозиция : Point2D) : Point2D
     }
 
-    class FixedMovementStrategy {
-        + resolveMove(currentPosition : Point2D, requestedPosition : Point2D) : Point2D
+    class СтратегияФиксированногоДвижения {
+        + рассчитатьПозициюПослеХода(текущаяПозиция : Point2D, запрошеннаяПозиция : Point2D) : Point2D
     }
 
-    class HorizontalMovementStrategy {
-        + resolveMove(currentPosition : Point2D, requestedPosition : Point2D) : Point2D
+    class СтратегияГоризонтальногоДвижения {
+        + рассчитатьПозициюПослеХода(текущаяПозиция : Point2D, запрошеннаяПозиция : Point2D) : Point2D
     }
 }
 
-MovementStrategy <|.. FreeMovementStrategy
-MovementStrategy <|.. FixedMovementStrategy
-MovementStrategy <|.. HorizontalMovementStrategy
+СтратегияДвижения <|.. СтратегияСвободногоДвижения
+СтратегияДвижения <|.. СтратегияФиксированногоДвижения
+СтратегияДвижения <|.. СтратегияГоризонтальногоДвижения
 
-LevelFactory ..> FreeMovementStrategy : creates
-LevelFactory ..> FixedMovementStrategy : creates
-LevelFactory ..> HorizontalMovementStrategy : creates
-Level ..> MovementStrategy : passes map
-Scheme --> MovementStrategy : stores by node index
-Scheme *-- Node : creates
-Node --> MovementStrategy : delegates movement
+ФабрикаУровней ..> СтратегияСвободногоДвижения : создает
+ФабрикаУровней ..> СтратегияФиксированногоДвижения : создает
+ФабрикаУровней ..> СтратегияГоризонтальногоДвижения : создает
+Уровень ..> СтратегияДвижения : передает словарь
+Схема --> СтратегияДвижения : хранит по узел индекс
+Схема *-- Узел : создает
+Узел --> СтратегияДвижения : делегирует движение
 
 @enduml

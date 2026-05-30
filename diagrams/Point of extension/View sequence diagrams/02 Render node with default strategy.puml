@@ -1,17 +1,17 @@
 @startuml
-title View extension sequence: render node with default strategy
+title Точка расширения представления: отрисовка узла стандартной стратегией
 
-participant "NodeRenderer" as NodeRenderer
-participant "NodeRenderStrategyRegistry" as Registry
-participant "Node" as Node
-participant "DefaultNodeRenderStrategy" as DefaultStrategy
+participant "ОтрисовщикУзлов" as ОтрисовщикУзлов
+participant "РеестрСтратегийОтрисовкиУзлов" as Реестр
+participant "Узел" as Узел
+participant "СтратегияОбычнойОтрисовкиУзла" as ОбычнаяСтратегия
 
-NodeRenderer -> NodeRenderer : drawNode(graphics, mapper, node, selectedNode, preview, color)
-NodeRenderer -> Registry : resolve(node)
-Registry -> Node : getMovementStrategy()
-Node --> Registry : FreeMovementStrategy
-Registry --> NodeRenderer : DefaultNodeRenderStrategy
-NodeRenderer -> DefaultStrategy : render(graphics, screenPoint, radius, color, selected)
-DefaultStrategy --> NodeRenderer : node painted
+ОтрисовщикУзлов -> ОтрисовщикУзлов : отрисоватьУзел(графика, преобразователь, узел, выбранныйУзел, предпросмотр, цвет)
+ОтрисовщикУзлов -> Реестр : выбратьСтратегию(узел)
+Реестр -> Узел : получитьСтратегиюДвижения()
+Узел --> Реестр : СтратегияСвободногоДвижения
+Реестр --> ОтрисовщикУзлов : СтратегияОбычнойОтрисовкиУзла
+ОтрисовщикУзлов -> ОбычнаяСтратегия : отрисовать(графика, экраннаяТочка, радиус, цвет, выбран)
+ОбычнаяСтратегия --> ОтрисовщикУзлов : узел отрисован
 
 @enduml

@@ -1,20 +1,20 @@
 @startuml
-title View extension sequence: render fixed node strategy
+title Точка расширения представления: отрисовка фиксированного узла
 
-participant "NodeRenderer" as NodeRenderer
-participant "NodeRenderStrategyRegistry" as Registry
-participant "Node" as Node
-participant "FixedNodeRenderStrategy" as FixedStrategy
-participant "DefaultNodeRenderStrategy" as DefaultStrategy
+participant "ОтрисовщикУзлов" as ОтрисовщикУзлов
+participant "РеестрСтратегийОтрисовкиУзлов" as Реестр
+participant "Узел" as Узел
+participant "СтратегияОтрисовкиФиксированногоУзла" as ФиксированнаяСтратегия
+participant "СтратегияОбычнойОтрисовкиУзла" as ОбычнаяСтратегия
 
-NodeRenderer -> Registry : resolve(node)
-Registry -> Node : getMovementStrategy()
-Node --> Registry : FixedMovementStrategy
-Registry --> NodeRenderer : FixedNodeRenderStrategy
-NodeRenderer -> FixedStrategy : render(graphics, center, radius, color, selected)
-FixedStrategy -> DefaultStrategy : render(graphics, center, radius, color, selected)
-DefaultStrategy --> FixedStrategy : base node painted
-FixedStrategy -> FixedStrategy : draw lock marker
-FixedStrategy --> NodeRenderer : fixed node painted
+ОтрисовщикУзлов -> Реестр : выбратьСтратегию(узел)
+Реестр -> Узел : получитьСтратегиюДвижения()
+Узел --> Реестр : СтратегияФиксированногоДвижения
+Реестр --> ОтрисовщикУзлов : СтратегияОтрисовкиФиксированногоУзла
+ОтрисовщикУзлов -> ФиксированнаяСтратегия : отрисовать(графика, центр, радиус, цвет, выбран)
+ФиксированнаяСтратегия -> ОбычнаяСтратегия : отрисовать(графика, центр, радиус, цвет, выбран)
+ОбычнаяСтратегия --> ФиксированнаяСтратегия : базовый узел отрисован
+ФиксированнаяСтратегия -> ФиксированнаяСтратегия : отрисовать замок маркер
+ФиксированнаяСтратегия --> ОтрисовщикУзлов : фиксированный узел отрисован
 
 @enduml

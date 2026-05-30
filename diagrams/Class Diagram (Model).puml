@@ -1,157 +1,157 @@
 @startuml
-title Class Diagram (Model)
+title Диаграмма классов (Модель)
 
 skinparam classAttributeIconSize 0
 hide circle
 
 package model.core {
-    class Game {
-        - currentLevelNumber : int
-        - maxCompletedLevelNumber : int
-        - moveCounter : int
-        - started : boolean
-        - levelFactory : LevelFactory
-        - currentLevel : Level
-        + Game()
-        ~ Game(levelFactory : LevelFactory)
-        + start() : void
-        + startAtLevel(levelNumber : int) : void
-        + continueGame() : void
-        + finish() : void
-        - loadLevel(levelNumber : int) : void
-        - loadLevel(level : Level) : void
-        - isWin() : boolean
-        + restartCurrentLevel() : void
-        ~ registerMove() : void
-        - validateMove() : void
-        - completeCurrentLevel() : void
-        - goToNextLevel() : void
-        - resetMoveCounter() : void
-        + hasProgressToContinue() : boolean
-        + continueLevelNumber() : int
-        + currentLevelNumber() : int
-        + maxCompletedLevelNumber() : int
-        + moveCounter() : int
-        + started() : boolean
-        + currentLevel() : Level
-        - levelExists(levelNumber : int) : boolean
+    class Игра {
+        - номерТекущегоУровня : int
+        - максимальныйПройденныйУровень : int
+        - счетчикХодов : int
+        - запущена : boolean
+        - фабрикаУровней : ФабрикаУровней
+        - текущийУровень : Уровень
+        + Игра()
+        ~ Игра(фабрикаУровней : ФабрикаУровней)
+        + начать() : void
+        + начатьСУровня(номерУровня : int) : void
+        + продолжитьИгру() : void
+        + завершить() : void
+        - загрузитьУровень(номерУровня : int) : void
+        - загрузитьУровень(уровень : Уровень) : void
+        - уровеньПройден() : boolean
+        + перезапуститьТекущийУровень() : void
+        ~ зарегистрироватьХод() : void
+        - проверитьХод() : void
+        - завершитьТекущийУровень() : void
+        - перейтиКСледующемуУровню() : void
+        - сброситьСчетчикХодов() : void
+        + естьПрогрессДляПродолжения() : boolean
+        + номерУровняДляПродолжения() : int
+        + номерТекущегоУровня() : int
+        + максимальныйПройденныйУровень() : int
+        + счетчикХодов() : int
+        + запущена() : boolean
+        + текущийУровень() : Уровень
+        - уровеньСуществует(номерУровня : int) : boolean
     }
 
-    class GameField {
-        - width : double
-        - height : double
-        - scheme : Scheme
-        + GameField(width : double, height : double, scheme : Scheme)
-        + canPlace(point : Point2D) : boolean
-        + width() : double
-        + height() : double
-        + scheme() : Scheme
+    class ИгровоеПоле {
+        - ширина : double
+        - высота : double
+        - схема : Схема
+        + ИгровоеПоле(ширина : double, высота : double, схема : Схема)
+        + можноРазместить(точка : Point2D) : boolean
+        + ширина() : double
+        + высота() : double
+        + схема() : Схема
     }
 
-    class Scheme {
-        - DEFAULT_MOVEMENT_STRATEGY : MovementStrategy
-        - initialNodeCoordinates : List<Point2D.Double>
-        - nodeConnections : Map<Integer, List<Integer>>
-        - nodeMovementStrategies : Map<Integer, MovementStrategy>
-        - nodes : List<Node>
-        - edges : List<Edge>
-        - gameField : GameField
-        - game : Game
-        - Scheme(initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, nodeMovementStrategies : Map<Integer, MovementStrategy>)
-        + {static} create(initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>) : Scheme
-        + {static} create(initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, nodeMovementStrategies : Map<Integer, MovementStrategy>) : Scheme
-        + reset() : void
-        + moveNode(node : Node, destination : Point2D) : void
-        + getIntersectingEdges() : List<Edge>
-        + getIntersectingEdgesAfterMove(node : Node, destination : Point2D) : List<Edge>
-        + hasIntersections() : boolean
-        + getEdgesOfNode(node : Node) : List<Edge>
-        + getNodes() : List<Node>
-        + getEdges() : List<Edge>
-        ~ bindGameField(gameField : GameField) : void
-        ~ bindGame(game : Game) : void
-        - verifyNodeBelongsToScheme(node : Node) : void
-        - updateIncidentEdges(node : Node) : void
-        - updateSchemeGeometry() : void
-        - updateIntersections() : void
-        - intersectsAfterMove(first : Edge, second : Edge, movedNode : Node, movedPosition : Point2D) : boolean
-        - pointOf(node : Node, movedNode : Node, movedPosition : Point2D) : Point2D
-        - buildEdges() : List<Edge>
-        - verifyNoIsolatedNodes() : void
-        - verifyMovementStrategyIndexes() : void
-        - {static} deepCopy(map : Map<Integer, List<Integer>>) : Map<Integer, List<Integer>>
-        - {static} copyOf(p : Point2D, paramName : String) : Point2D.Double
+    class Схема {
+        - стратегияДвиженияПоУмолчанию : СтратегияДвижения
+        - начальныеКоординатыУзлов : List<Point2D.Double>
+        - соединенияУзлов : Map<Integer, List<Integer>>
+        - стратегииДвиженияУзлов : Map<Integer, СтратегияДвижения>
+        - узлы : List<Узел>
+        - ребра : List<Ребро>
+        - игровоеПоле : ИгровоеПоле
+        - игра : Игра
+        - Схема(начальныеКоординатыУзлов : List<Point2D>, соединенияУзлов : Map<Integer, List<Integer>>, стратегииДвиженияУзлов : Map<Integer, СтратегияДвижения>)
+        + {static} создать(начальныеКоординатыУзлов : List<Point2D>, соединенияУзлов : Map<Integer, List<Integer>>) : Схема
+        + {static} создать(начальныеКоординатыУзлов : List<Point2D>, соединенияУзлов : Map<Integer, List<Integer>>, стратегииДвиженияУзлов : Map<Integer, СтратегияДвижения>) : Схема
+        + сбросить() : void
+        + переместитьУзел(узел : Узел, целеваяПозиция : Point2D) : void
+        + получитьПересекающиесяРебра() : List<Ребро>
+        + получитьПересекающиесяРебраПослеХода(узел : Узел, целеваяПозиция : Point2D) : List<Ребро>
+        + естьПересечения() : boolean
+        + получитьРебраУзла(узел : Узел) : List<Ребро>
+        + получитьУзлы() : List<Узел>
+        + получитьРебра() : List<Ребро>
+        ~ привязатьИгровоеПоле(игровоеПоле : ИгровоеПоле) : void
+        ~ привязатьИгру(игра : Игра) : void
+        - проверитьПринадлежностьУзлаСхеме(узел : Узел) : void
+        - обновитьИнцидентныеРебра(узел : Узел) : void
+        - обновитьГеометриюСхемы() : void
+        - обновитьПересечения() : void
+        - пересекаютсяПослеХода(первоеРебро : Ребро, второеРебро : Ребро, перемещаемыйУзел : Узел, позицияПослеХода : Point2D) : boolean
+        - точкаУзла(узел : Узел, перемещаемыйУзел : Узел, позицияПослеХода : Point2D) : Point2D
+        - построитьРебра() : List<Ребро>
+        - проверитьОтсутствиеИзолированныхУзлов() : void
+        - проверитьИндексыСтратегийДвижения() : void
+        - {static} глубокаяКопия(словарь : Map<Integer, List<Integer>>) : Map<Integer, List<Integer>>
+        - {static} копия(точка : Point2D, имяПараметра : String) : Point2D.Double
     }
 
-    class Node {
-        - DEFAULT_MOVEMENT_STRATEGY : MovementStrategy
-        - position : Point2D.Double
-        - movementStrategy : MovementStrategy
-        ~ Node(position : Point2D)
-        ~ Node(position : Point2D, movementStrategy : MovementStrategy)
-        + getX() : double
-        + getY() : double
-        + resolveMove(destination : Point2D) : Point2D
-        + getMovementStrategy() : MovementStrategy
-        ~ getPosition() : Point2D
-        ~ moveDirectlyTo(destination : Point2D) : void
-        ~ isAt(destination : Point2D) : boolean
-        - {static} copyOf(p : Point2D, paramName : String) : Point2D.Double
+    class Узел {
+        - стратегияДвиженияПоУмолчанию : СтратегияДвижения
+        - позиция : Point2D.Double
+        - стратегияДвижения : СтратегияДвижения
+        ~ Узел(позиция : Point2D)
+        ~ Узел(позиция : Point2D, стратегияДвижения : СтратегияДвижения)
+        + получитьX() : double
+        + получитьY() : double
+        + рассчитатьПозициюПослеХода(целеваяПозиция : Point2D) : Point2D
+        + получитьСтратегиюДвижения() : СтратегияДвижения
+        ~ получитьПозицию() : Point2D
+        ~ переместитьНапрямуюВ(целеваяПозиция : Point2D) : void
+        ~ находитсяВ(целеваяПозиция : Point2D) : boolean
+        - {static} копия(точка : Point2D, имяПараметра : String) : Point2D.Double
     }
 
-    class Edge {
-        - nodeA : Node
-        - nodeB : Node
-        - start : Point2D.Double
-        - end : Point2D.Double
-        - intersecting : boolean
-        ~ Edge(nodeA : Node, nodeB : Node)
-        ~ updateGeometry() : void
-        ~ intersects(other : Edge) : boolean
-        ~ containsNode(node : Node) : boolean
-        + isIntersecting() : boolean
-        ~ setIntersecting(intersecting : boolean) : void
-        + getNodeA() : Node
-        + getNodeB() : Node
-        ~ {static} strictlyIntersects(a1 : Point2D, a2 : Point2D, b1 : Point2D, b2 : Point2D) : boolean
-        - {static} orientation(a : Point2D, b : Point2D, c : Point2D) : int
-        - {static} copyOf(p : Point2D) : Point2D.Double
+    class Ребро {
+        - узелA : Узел
+        - узелB : Узел
+        - начало : Point2D.Double
+        - конец : Point2D.Double
+        - пересекающееся : boolean
+        ~ Ребро(узелA : Узел, узелB : Узел)
+        ~ обновитьГеометрию() : void
+        ~ пересекаетсяС(другоеРебро : Ребро) : boolean
+        ~ содержитУзел(узел : Узел) : boolean
+        + являетсяПересекающимся() : boolean
+        ~ установитьПересечение(пересекающееся : boolean) : void
+        + получитьУзелA() : Узел
+        + получитьУзелB() : Узел
+        ~ {static} строгоПересекаются(точкаA1 : Point2D, точкаA2 : Point2D, точкаB1 : Point2D, точкаB2 : Point2D) : boolean
+        - {static} ориентация(точкаA : Point2D, точкаB : Point2D, точкаC : Point2D) : int
+        - {static} копия(точка : Point2D) : Point2D.Double
     }
 }
 
 package model.level {
-    class Level {
-        - number : int
-        - scheme : Scheme
-        - gameField : GameField
-        ~ Level(number : int, initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, fieldWidth : double, fieldHeight : double)
-        ~ Level(number : int, initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, nodeMovementStrategies : Map<Integer, MovementStrategy>, fieldWidth : double, fieldHeight : double)
-        + reset() : void
-        + number() : int
-        + gameField() : GameField
-        + scheme() : Scheme
+    class Уровень {
+        - номер : int
+        - схема : Схема
+        - игровоеПоле : ИгровоеПоле
+        ~ Уровень(номер : int, начальныеКоординатыУзлов : List<Point2D>, соединенияУзлов : Map<Integer, List<Integer>>, ширинаПоля : double, высотаПоля : double)
+        ~ Уровень(номер : int, начальныеКоординатыУзлов : List<Point2D>, соединенияУзлов : Map<Integer, List<Integer>>, стратегииДвиженияУзлов : Map<Integer, СтратегияДвижения>, ширинаПоля : double, высотаПоля : double)
+        + сбросить() : void
+        + номер() : int
+        + игровоеПоле() : ИгровоеПоле
+        + схема() : Схема
     }
 
-    class LevelFactory {
-        - FIELD_WIDTH : double
-        - FIELD_HEIGHT : double
-        - LAST_LEVEL_NUMBER : int
-        + availableLevelNumbers() : List<Integer>
-        + createLevel(number : int) : Level
+    class ФабрикаУровней {
+        - ширинаПоляПоУмолчанию : double
+        - высотаПоляПоУмолчанию : double
+        - последнийНомерУровня : int
+        + доступныеНомераУровней() : List<Integer>
+        + создатьУровень(номер : int) : Уровень
     }
 }
 
-Game o-- LevelFactory : levelFactory
-Game --> Level : currentLevel
-LevelFactory ..> Level : creates
-Level *-- Scheme : scheme
-Level *-- GameField : gameField
-GameField --> Scheme : binds
-Scheme *-- Node : nodes
-Scheme *-- Edge : edges
-Scheme --> GameField : gameField
-Scheme --> Game : game
-Edge --> Node : nodeA
-Edge --> Node : nodeB
+Игра o-- ФабрикаУровней : фабрикаУровней
+Игра --> Уровень : текущийУровень
+ФабрикаУровней ..> Уровень : создает
+Уровень *-- Схема : схема
+Уровень *-- ИгровоеПоле : игровоеПоле
+ИгровоеПоле --> Схема : привязывает
+Схема *-- Узел : узлы
+Схема *-- Ребро : ребра
+Схема --> ИгровоеПоле : игровоеПоле
+Схема --> Игра : игра
+Ребро --> Узел : узелA
+Ребро --> Узел : узелB
 
 @enduml

@@ -1,26 +1,26 @@
 @startuml
-title View sequence: select level from menu
+title Представление: выбор уровня из меню
 
-actor User
-participant "StartMenuWindow" as StartMenuWindow
-participant "GameSessionLauncher" as GameSessionLauncher
-participant "LevelSelectionDialog" as LevelSelectionDialog
-participant "GameWindow" as GameWindow
+actor Пользователь
+participant "ОкноСтартовогоМеню" as ОкноСтартовогоМеню
+participant "ЗапускательИгровойСессии" as ЗапускательИгровойСессии
+participant "ДиалогВыбораУровня" as ДиалогВыбораУровня
+participant "ОкноИгры" as ОкноИгры
 
-User -> StartMenuWindow : click "Выбрать уровень"
-StartMenuWindow -> GameSessionLauncher : availableLevelNumbers()
-GameSessionLauncher --> StartMenuWindow : levelNumbers
-create LevelSelectionDialog
-StartMenuWindow -> LevelSelectionDialog : new LevelSelectionDialog(this, levelNumbers)
-StartMenuWindow -> LevelSelectionDialog : showDialog()
-User -> LevelSelectionDialog : click level button
-LevelSelectionDialog -> LevelSelectionDialog : selectLevel(levelNumber)
-LevelSelectionDialog --> StartMenuWindow : selectedLevelNumber
-StartMenuWindow -> GameSessionLauncher : gameAtLevel(selectedLevelNumber)
-GameSessionLauncher --> StartMenuWindow : game
-create GameWindow
-StartMenuWindow -> GameWindow : new GameWindow(game, returnToMenuAction)
-StartMenuWindow -> GameWindow : showWindow()
-StartMenuWindow -> StartMenuWindow : dispose()
+Пользователь -> ОкноСтартовогоМеню : нажать "Выбрать уровень"
+ОкноСтартовогоМеню -> ЗапускательИгровойСессии : доступныеНомераУровней()
+ЗапускательИгровойСессии --> ОкноСтартовогоМеню : номераУровней
+создать ДиалогВыбораУровня
+ОкноСтартовогоМеню -> ДиалогВыбораУровня : new ДиалогВыбораУровня(this, номераУровней)
+ОкноСтартовогоМеню -> ДиалогВыбораУровня : показатьДиалог()
+Пользователь -> ДиалогВыбораУровня : нажать уровень кнопка
+ДиалогВыбораУровня -> ДиалогВыбораУровня : выбратьУровень(номерУровня)
+ДиалогВыбораУровня --> ОкноСтартовогоМеню : выбранныйНомерУровня
+ОкноСтартовогоМеню -> ЗапускательИгровойСессии : играНаУровне(выбранныйНомерУровня)
+ЗапускательИгровойСессии --> ОкноСтартовогоМеню : игра
+создать ОкноИгры
+ОкноСтартовогоМеню -> ОкноИгры : new ОкноИгры(игра, действиеВозвратаВМеню)
+ОкноСтартовогоМеню -> ОкноИгры : показатьОкно()
+ОкноСтартовогоМеню -> ОкноСтартовогоМеню : dispose()
 
 @enduml

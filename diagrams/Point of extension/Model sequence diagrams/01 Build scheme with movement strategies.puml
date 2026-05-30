@@ -1,24 +1,24 @@
 @startuml
-title Model extension sequence: build scheme with movement strategies
+title Точка расширения модели: построение схемы со стратегиями движения
 
-participant "LevelFactory" as LevelFactory
-participant "FixedMovementStrategy" as FixedMovementStrategy
-participant "HorizontalMovementStrategy" as HorizontalMovementStrategy
-participant "Level" as Level
-participant "Scheme" as Scheme
-participant "Node" as Node
+participant "ФабрикаУровней" as ФабрикаУровней
+participant "СтратегияФиксированногоДвижения" as СтратегияФиксированногоДвижения
+participant "СтратегияГоризонтальногоДвижения" as СтратегияГоризонтальногоДвижения
+participant "Уровень" as Уровень
+participant "Схема" as Схема
+participant "Узел" as Узел
 
-LevelFactory -> FixedMovementStrategy : new FixedMovementStrategy()
-LevelFactory -> HorizontalMovementStrategy : new HorizontalMovementStrategy()
-LevelFactory -> Level : new Level(number, coordinates, connections, strategyMap, width, height)
-Level -> Scheme : create(coordinates, connections, strategyMap)
-create Scheme
-loop each coordinate
-    Scheme -> Scheme : nodeMovementStrategies.getOrDefault(index, DEFAULT_MOVEMENT_STRATEGY)
-    Scheme -> Node : new Node(coordinate, movementStrategy)
-    Node --> Scheme : node
+ФабрикаУровней -> СтратегияФиксированногоДвижения : new СтратегияФиксированногоДвижения()
+ФабрикаУровней -> СтратегияГоризонтальногоДвижения : new СтратегияГоризонтальногоДвижения()
+ФабрикаУровней -> Уровень : new Уровень(номер, координаты, соединения, картаСтратегий, ширина, высота)
+Уровень -> Схема : создать(координаты, соединения, картаСтратегий)
+создать Схема
+loop каждая координата
+    Схема -> Схема : стратегииДвиженияУзлов.getOrDefault(индекс, стратегияДвиженияПоУмолчанию)
+    Схема -> Узел : new Узел(координата, стратегияДвижения)
+    Узел --> Схема : узел
 end
-Scheme --> Level : scheme
-Level --> LevelFactory : level
+Схема --> Уровень : схема
+Уровень --> ФабрикаУровней : уровень
 
 @enduml

@@ -1,24 +1,24 @@
 @startuml
-title View sequence: start menu new game
+title Представление: новая игра из стартового меню
 
-actor User
-participant "StartMenuWindow" as StartMenuWindow
-participant "GameSessionLauncher" as GameSessionLauncher
-participant "Game" as Game
-participant "GameWindow" as GameWindow
+actor Пользователь
+participant "ОкноСтартовогоМеню" as ОкноСтартовогоМеню
+participant "ЗапускательИгровойСессии" as ЗапускательИгровойСессии
+participant "Игра" as Игра
+participant "ОкноИгры" as ОкноИгры
 
-User -> StartMenuWindow : click "Новая игра"
-StartMenuWindow -> GameSessionLauncher : newGame()
-create Game
-GameSessionLauncher -> Game : new Game()
-GameSessionLauncher -> Game : start()
-Game --> GameSessionLauncher : started
-GameSessionLauncher --> StartMenuWindow : game
-StartMenuWindow -> StartMenuWindow : openGame(game)
-create GameWindow
-StartMenuWindow -> GameWindow : new GameWindow(game, returnToMenuAction)
-StartMenuWindow -> GameWindow : showWindow()
-StartMenuWindow -> StartMenuWindow : dispose()
-StartMenuWindow --> User : game window opened
+Пользователь -> ОкноСтартовогоМеню : нажать "Новая игра"
+ОкноСтартовогоМеню -> ЗапускательИгровойСессии : новаяИгра()
+создать Игра
+ЗапускательИгровойСессии -> Игра : new Игра()
+ЗапускательИгровойСессии -> Игра : начать()
+Игра --> ЗапускательИгровойСессии : запущена
+ЗапускательИгровойСессии --> ОкноСтартовогоМеню : игра
+ОкноСтартовогоМеню -> ОкноСтартовогоМеню : открытьИгру(игра)
+создать ОкноИгры
+ОкноСтартовогоМеню -> ОкноИгры : new ОкноИгры(игра, действиеВозвратаВМеню)
+ОкноСтартовогоМеню -> ОкноИгры : показатьОкно()
+ОкноСтартовогоМеню -> ОкноСтартовогоМеню : dispose()
+ОкноСтартовогоМеню --> Пользователь : игра окно открыто
 
 @enduml

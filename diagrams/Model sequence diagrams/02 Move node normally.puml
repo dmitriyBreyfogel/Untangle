@@ -1,35 +1,35 @@
 @startuml
-title Model sequence: regular node move
+title Модель: обычное перемещение узла
 
-actor Client
-participant "Scheme" as Scheme
-participant "Node" as Node
-participant "GameField" as GameField
-participant "Edge" as Edge
-participant "Game" as Game
+actor Клиент
+participant "Схема" as Схема
+participant "Узел" as Узел
+participant "ИгровоеПоле" as ИгровоеПоле
+participant "Ребро" as Ребро
+participant "Игра" as Игра
 
-Client -> Scheme : moveNode(node, destination)
-Scheme -> Scheme : verifyNodeBelongsToScheme(node)
-Scheme -> Node : resolveMove(destination)
-Node --> Scheme : resolvedDestination
-Scheme -> GameField : canPlace(resolvedDestination)
-GameField --> Scheme : true
-Scheme -> Node : isAt(resolvedDestination)
-Node --> Scheme : false
-Scheme -> Node : moveDirectlyTo(resolvedDestination)
-Scheme -> Scheme : updateIncidentEdges(node)
-loop incident edges
-    Scheme -> Edge : updateGeometry()
+Клиент -> Схема : переместитьУзел(узел, целеваяПозиция)
+Схема -> Схема : проверитьПринадлежностьУзлаСхеме(узел)
+Схема -> Узел : рассчитатьПозициюПослеХода(целеваяПозиция)
+Узел --> Схема : рассчитаннаяПозиция
+Схема -> ИгровоеПоле : можноРазместить(рассчитаннаяПозиция)
+ИгровоеПоле --> Схема : true
+Схема -> Узел : находитсяВ(рассчитаннаяПозиция)
+Узел --> Схема : false
+Схема -> Узел : переместитьНапрямуюВ(рассчитаннаяПозиция)
+Схема -> Схема : обновитьИнцидентныеРебра(узел)
+loop инцидентные ребра
+    Схема -> Ребро : обновитьГеометрию()
 end
-Scheme -> Scheme : updateIntersections()
-loop edge pairs
-    Scheme -> Edge : intersects(other)
-    Edge --> Scheme : result
+Схема -> Схема : обновитьПересечения()
+loop пары ребер
+    Схема -> Ребро : пересекаетсяС(другоеРебро)
+    Ребро --> Схема : результат
 end
-Scheme -> Game : registerMove()
-Game -> Game : validateMove()
-Game -> Game : isWin()
-Game --> Scheme : move registered
-Scheme --> Client : node moved
+Схема -> Игра : зарегистрироватьХод()
+Игра -> Игра : проверитьХод()
+Игра -> Игра : уровеньПройден()
+Игра --> Схема : ход зарегистрирован
+Схема --> Клиент : узел перемещен
 
 @enduml

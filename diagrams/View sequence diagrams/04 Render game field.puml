@@ -1,30 +1,30 @@
 @startuml
-title View sequence: render game field
+title Представление: отрисовка игрового поля
 
-participant "GameFieldPanel" as GameFieldPanel
-participant "GameFieldRenderer" as GameFieldRenderer
-participant "BoardRenderer" as BoardRenderer
-participant "Game" as Game
-participant "GraphRenderer" as GraphRenderer
-participant "EdgeRenderer" as EdgeRenderer
-participant "NodeRenderer" as NodeRenderer
+participant "ПанельИгровогоПоля" as ПанельИгровогоПоля
+participant "ОтрисовщикИгровогоПоля" as ОтрисовщикИгровогоПоля
+participant "ОтрисовщикДоски" as ОтрисовщикДоски
+participant "Игра" as Игра
+participant "ОтрисовщикГрафа" as ОтрисовщикГрафа
+participant "ОтрисовщикРебер" as ОтрисовщикРебер
+participant "ОтрисовщикУзлов" as ОтрисовщикУзлов
 
-GameFieldPanel -> GameFieldPanel : paintComponent(graphics)
-GameFieldPanel -> GameFieldRenderer : drawField(graphics, gameModel, selectedNode, previewPosition)
-GameFieldRenderer -> GameFieldRenderer : create graphicsCopy
-GameFieldRenderer -> BoardRenderer : draw(graphicsCopy, clipBounds, fieldParameters)
-BoardRenderer --> GameFieldRenderer : board drawn
-GameFieldRenderer -> Game : currentLevel()
-alt currentLevel is absent
-    GameFieldRenderer --> GameFieldPanel : only board drawn
-else currentLevel exists
-    GameFieldRenderer -> GraphRenderer : drawGraph(graphicsCopy, gameModel, selectedNode, previewPosition, colors)
-    GraphRenderer -> EdgeRenderer : drawEdges(graphics, gameModel, mapper, selectedNode, previewPosition, edgeColors)
-    EdgeRenderer --> GraphRenderer : edges drawn
-    GraphRenderer -> NodeRenderer : drawNodes(graphics, gameModel, mapper, selectedNode, previewPosition, nodeColors)
-    NodeRenderer --> GraphRenderer : nodes drawn
-    GraphRenderer --> GameFieldRenderer : graph drawn
+ПанельИгровогоПоля -> ПанельИгровогоПоля : paintComponent(графика)
+ПанельИгровогоПоля -> ОтрисовщикИгровогоПоля : отрисоватьПоле(графика, модельИгры, выбранныйУзел, позицияПредпросмотра)
+ОтрисовщикИгровогоПоля -> ОтрисовщикИгровогоПоля : создать копияГрафики
+ОтрисовщикИгровогоПоля -> ОтрисовщикДоски : отрисовать(копияГрафики, границыОтсечения, параметрыПоля)
+ОтрисовщикДоски --> ОтрисовщикИгровогоПоля : доска отрисована
+ОтрисовщикИгровогоПоля -> Игра : текущийУровень()
+alt текущийУровень отсутствует
+    ОтрисовщикИгровогоПоля --> ПанельИгровогоПоля : отрисована только доска
+else текущийУровень существует
+    ОтрисовщикИгровогоПоля -> ОтрисовщикГрафа : отрисоватьГраф(копияГрафики, модельИгры, выбранныйУзел, позицияПредпросмотра, цвета)
+    ОтрисовщикГрафа -> ОтрисовщикРебер : отрисоватьРебра(графика, модельИгры, преобразователь, выбранныйУзел, позицияПредпросмотра, цветаРебер)
+    ОтрисовщикРебер --> ОтрисовщикГрафа : ребра отрисованы
+    ОтрисовщикГрафа -> ОтрисовщикУзлов : отрисоватьУзлы(графика, модельИгры, преобразователь, выбранныйУзел, позицияПредпросмотра, цветаУзлов)
+    ОтрисовщикУзлов --> ОтрисовщикГрафа : узлы отрисованы
+    ОтрисовщикГрафа --> ОтрисовщикИгровогоПоля : граф отрисован
 end
-GameFieldRenderer --> GameFieldPanel : field drawn
+ОтрисовщикИгровогоПоля --> ПанельИгровогоПоля : поле отрисовано
 
 @enduml

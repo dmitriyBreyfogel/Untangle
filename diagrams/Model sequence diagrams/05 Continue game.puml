@@ -1,29 +1,29 @@
 @startuml
-title Model sequence: continue game
+title Модель: продолжение игры
 
-actor Client
-participant "Game" as Game
-participant "LevelFactory" as LevelFactory
-participant "Level" as Level
-participant "Scheme" as Scheme
+actor Клиент
+participant "Игра" as Игра
+participant "ФабрикаУровней" as ФабрикаУровней
+participant "Уровень" as Уровень
+participant "Схема" as Схема
 
-Client -> Game : continueGame()
-Game -> Game : hasProgressToContinue()
-alt already started or no progress
-    Game --> Client : no changes
-else progress exists
-    Game -> Game : resetMoveCounter()
-    Game -> Game : continueLevelNumber()
-    Game -> Game : levelExists(nextUnlockedLevelNumber)
-    Game -> LevelFactory : createLevel(levelNumber)
-    LevelFactory --> Game : level
-    Game -> Game : loadLevel(level)
-    Game -> Level : number()
-    Level --> Game : number
-    Game -> Level : scheme()
-    Level --> Game : scheme
-    Game -> Scheme : bindGame(this)
-    Game --> Client : continued game
+Клиент -> Игра : продолжитьИгру()
+Игра -> Игра : естьПрогрессДляПродолжения()
+alt игра уже запущена или прогресса нет
+    Игра --> Клиент : изменений нет
+else прогресс есть
+    Игра -> Игра : сброситьСчетчикХодов()
+    Игра -> Игра : номерУровняДляПродолжения()
+    Игра -> Игра : уровеньСуществует(номерСледующегоОткрытогоУровня)
+    Игра -> ФабрикаУровней : создатьУровень(номерУровня)
+    ФабрикаУровней --> Игра : уровень
+    Игра -> Игра : загрузитьУровень(уровень)
+    Игра -> Уровень : номер()
+    Уровень --> Игра : номер
+    Игра -> Уровень : схема()
+    Уровень --> Игра : схема
+    Игра -> Схема : привязатьИгру(this)
+    Игра --> Клиент : игра продолжена
 end
 
 @enduml

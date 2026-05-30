@@ -1,27 +1,27 @@
 @startuml
-title Model sequence: restart current level
+title Модель: перезапуск текущего уровня
 
-actor Client
-participant "Game" as Game
-participant "LevelFactory" as LevelFactory
-participant "Level" as Level
-participant "Scheme" as Scheme
+actor Клиент
+participant "Игра" as Игра
+participant "ФабрикаУровней" as ФабрикаУровней
+participant "Уровень" as Уровень
+participant "Схема" as Схема
 
-Client -> Game : restartCurrentLevel()
-alt currentLevel is absent
-    Game --> Client : no changes
-else currentLevel exists
-    Game -> Game : resetMoveCounter()
-    Game -> Game : loadLevel(currentLevelNumber)
-    Game -> LevelFactory : createLevel(currentLevelNumber)
-    LevelFactory --> Game : level
-    Game -> Game : loadLevel(level)
-    Game -> Level : number()
-    Level --> Game : number
-    Game -> Level : scheme()
-    Level --> Game : scheme
-    Game -> Scheme : bindGame(this)
-    Game --> Client : level restarted
+Клиент -> Игра : перезапуститьТекущийУровень()
+alt текущийУровень отсутствует
+    Игра --> Клиент : изменений нет
+else текущийУровень существует
+    Игра -> Игра : сброситьСчетчикХодов()
+    Игра -> Игра : загрузитьУровень(номерТекущегоУровня)
+    Игра -> ФабрикаУровней : создатьУровень(номерТекущегоУровня)
+    ФабрикаУровней --> Игра : уровень
+    Игра -> Игра : загрузитьУровень(уровень)
+    Игра -> Уровень : номер()
+    Уровень --> Игра : номер
+    Игра -> Уровень : схема()
+    Уровень --> Игра : схема
+    Игра -> Схема : привязатьИгру(this)
+    Игра --> Клиент : уровень перезапущен
 end
 
 @enduml

@@ -1,29 +1,29 @@
 @startuml
-title View sequence: control panel secondary action
+title Представление: вторичное действие панели управления
 
-actor User
-participant "GameControlPanel" as GameControlPanel
-participant "GameWindow" as GameWindow
-participant "Game" as Game
-participant "GameStatusPanel" as GameStatusPanel
-participant "GameFieldPanel" as GameFieldPanel
+actor Пользователь
+participant "ПанельУправленияИгрой" as ПанельУправленияИгрой
+participant "ОкноИгры" as ОкноИгры
+participant "Игра" as Игра
+participant "ПанельСтатусаИгры" as ПанельСтатусаИгры
+participant "ПанельИгровогоПоля" as ПанельИгровогоПоля
 
-User -> GameControlPanel : click secondary button
-GameControlPanel -> GameWindow : handleSecondaryAction()
-GameWindow -> Game : started()
-alt game is started
-    GameWindow -> GameWindow : restartCurrentLevel()
-    GameWindow -> Game : currentLevel()
-    Game --> GameWindow : level
-    GameWindow -> Game : restartCurrentLevel()
-else game is stopped
-    GameWindow -> GameWindow : continueGame()
-    GameWindow -> Game : continueGame()
+Пользователь -> ПанельУправленияИгрой : нажать вторичная кнопка
+ПанельУправленияИгрой -> ОкноИгры : обработатьВторичноеДействие()
+ОкноИгры -> Игра : запущена()
+alt игра запущена
+    ОкноИгры -> ОкноИгры : перезапуститьТекущийУровень()
+    ОкноИгры -> Игра : текущийУровень()
+    Игра --> ОкноИгры : уровень
+    ОкноИгры -> Игра : перезапуститьТекущийУровень()
+else игра остановлена
+    ОкноИгры -> ОкноИгры : продолжитьИгру()
+    ОкноИгры -> Игра : продолжитьИгру()
 end
-GameWindow -> GameWindow : refreshView()
-GameWindow -> GameStatusPanel : refreshState()
-GameWindow -> GameFieldPanel : refreshField()
-GameWindow -> GameControlPanel : updateButtonAvailability(started, canContinue, continueLevelNumber)
-GameWindow --> User : updated view
+ОкноИгры -> ОкноИгры : обновитьПредставление()
+ОкноИгры -> ПанельСтатусаИгры : обновитьСостояние()
+ОкноИгры -> ПанельИгровогоПоля : обновитьПоле()
+ОкноИгры -> ПанельУправленияИгрой : обновитьДоступностьКнопок(запущена, можноПродолжить, номерУровняДляПродолжения)
+ОкноИгры --> Пользователь : представление обновлено
 
 @enduml

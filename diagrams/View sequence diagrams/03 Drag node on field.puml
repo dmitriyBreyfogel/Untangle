@@ -1,37 +1,37 @@
 @startuml
-title View sequence: drag node on field
+title Представление: перетаскивание узла на поле
 
-actor User
-participant "GameFieldPanel" as GameFieldPanel
-participant "GameFieldNavigator" as GameFieldNavigator
-participant "Game" as Game
-participant "Level" as Level
-participant "Scheme" as Scheme
-participant "GameWindow" as GameWindow
+actor Пользователь
+participant "ПанельИгровогоПоля" as ПанельИгровогоПоля
+participant "НавигаторИгровогоПоля" as НавигаторИгровогоПоля
+participant "Игра" as Игра
+participant "Уровень" as Уровень
+participant "Схема" as Схема
+participant "ОкноИгры" as ОкноИгры
 
-User -> GameFieldPanel : mousePressed(point)
-GameFieldPanel -> GameFieldNavigator : selectNode(point)
-GameFieldNavigator -> GameFieldNavigator : findNodeAtScreenPoint(point)
-GameFieldNavigator --> GameFieldPanel : selectedNode()
-GameFieldPanel -> GameFieldPanel : refreshField()
+Пользователь -> ПанельИгровогоПоля : mousePressed(точка)
+ПанельИгровогоПоля -> НавигаторИгровогоПоля : выбратьУзел(точка)
+НавигаторИгровогоПоля -> НавигаторИгровогоПоля : найтиУзелВЭкраннойТочке(точка)
+НавигаторИгровогоПоля --> ПанельИгровогоПоля : выбранныйУзел()
+ПанельИгровогоПоля -> ПанельИгровогоПоля : обновитьПоле()
 
-User -> GameFieldPanel : mouseDragged(point)
-GameFieldPanel -> Game : currentLevel()
-Game --> GameFieldPanel : level
-GameFieldPanel -> GameFieldNavigator : previewMove(selectedNode, point)
-GameFieldNavigator --> GameFieldPanel : selectedNodePreviewPosition
-GameFieldPanel -> GameFieldPanel : refreshField()
+Пользователь -> ПанельИгровогоПоля : mouseDragged(точка)
+ПанельИгровогоПоля -> Игра : текущийУровень()
+Игра --> ПанельИгровогоПоля : уровень
+ПанельИгровогоПоля -> НавигаторИгровогоПоля : предпросмотрХода(выбранныйУзел, точка)
+НавигаторИгровогоПоля --> ПанельИгровогоПоля : предпросмотрПозицииВыбранногоУзла
+ПанельИгровогоПоля -> ПанельИгровогоПоля : обновитьПоле()
 
-User -> GameFieldPanel : mouseReleased()
-GameFieldPanel -> Game : currentLevel()
-Game --> GameFieldPanel : levelBeforeMove
-GameFieldPanel -> Level : scheme()
-Level --> GameFieldPanel : scheme
-GameFieldPanel -> Scheme : moveNode(selectedNode, selectedNodePreviewPosition)
-Scheme --> GameFieldPanel : moved
-GameFieldPanel -> GameFieldNavigator : clearSelectedNode()
-GameFieldPanel -> GameWindow : accept(new MoveResult(previousLevelNumber, previousMaxCompletedLevelNumber))
-GameWindow -> GameWindow : handleMoveResult(result)
-GameFieldPanel -> GameFieldPanel : refreshField()
+Пользователь -> ПанельИгровогоПоля : mouseReleased()
+ПанельИгровогоПоля -> Игра : текущийУровень()
+Игра --> ПанельИгровогоПоля : уровеньДоХода
+ПанельИгровогоПоля -> Уровень : схема()
+Уровень --> ПанельИгровогоПоля : схема
+ПанельИгровогоПоля -> Схема : переместитьУзел(выбранныйУзел, предпросмотрПозицииВыбранногоУзла)
+Схема --> ПанельИгровогоПоля : узел перемещен
+ПанельИгровогоПоля -> НавигаторИгровогоПоля : очиститьВыбранныйУзел()
+ПанельИгровогоПоля -> ОкноИгры : принять(new РезультатХода(предыдущийНомерУровня, предыдущийМаксимальныйПройденныйУровень))
+ОкноИгры -> ОкноИгры : обработатьРезультатХода(результат)
+ПанельИгровогоПоля -> ПанельИгровогоПоля : обновитьПоле()
 
 @enduml

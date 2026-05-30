@@ -1,22 +1,22 @@
 @startuml
-title Model extension sequence: free movement strategy
+title Точка расширения модели: стратегия свободного движения
 
-actor Client
-participant "Scheme" as Scheme
-participant "Node" as Node
-participant "FreeMovementStrategy" as FreeMovementStrategy
-participant "GameField" as GameField
+actor Клиент
+participant "Схема" as Схема
+participant "Узел" as Узел
+participant "СтратегияСвободногоДвижения" as СтратегияСвободногоДвижения
+participant "ИгровоеПоле" as ИгровоеПоле
 
-Client -> Scheme : moveNode(freeNode, destination)
-Scheme -> Node : resolveMove(destination)
-Node -> FreeMovementStrategy : resolveMove(currentPosition, requestedPosition)
-FreeMovementStrategy --> Node : requestedPosition
-Node --> Scheme : resolvedDestination
-Scheme -> GameField : canPlace(resolvedDestination)
-GameField --> Scheme : true
-Scheme -> Node : isAt(resolvedDestination)
-Node --> Scheme : false
-Scheme -> Node : moveDirectlyTo(resolvedDestination)
-Scheme --> Client : node moved freely
+Клиент -> Схема : переместитьУзел(свободныйУзел, целеваяПозиция)
+Схема -> Узел : рассчитатьПозициюПослеХода(целеваяПозиция)
+Узел -> СтратегияСвободногоДвижения : рассчитатьПозициюПослеХода(текущаяПозиция, запрошеннаяПозиция)
+СтратегияСвободногоДвижения --> Узел : запрошеннаяПозиция
+Узел --> Схема : рассчитаннаяПозиция
+Схема -> ИгровоеПоле : можноРазместить(рассчитаннаяПозиция)
+ИгровоеПоле --> Схема : true
+Схема -> Узел : находитсяВ(рассчитаннаяПозиция)
+Узел --> Схема : false
+Схема -> Узел : переместитьНапрямуюВ(рассчитаннаяПозиция)
+Схема --> Клиент : узел перемещен свободно
 
 @enduml

@@ -1,39 +1,39 @@
 @startuml
-title Model sequence: winning move advances level
+title Модель: победный ход открывает следующий уровень
 
-actor Client
-participant "Scheme" as Scheme
-participant "Node" as Node
-participant "Edge" as Edge
-participant "Game" as Game
-participant "LevelFactory" as LevelFactory
-participant "Level" as Level
+actor Клиент
+participant "Схема" as Схема
+participant "Узел" as Узел
+participant "Ребро" as Ребро
+participant "Игра" as Игра
+participant "ФабрикаУровней" as ФабрикаУровней
+participant "Уровень" as Уровень
 
-Client -> Scheme : moveNode(node, solvedPosition)
-Scheme -> Node : resolveMove(solvedPosition)
-Node --> Scheme : resolvedDestination
-Scheme -> Node : moveDirectlyTo(resolvedDestination)
-Scheme -> Scheme : updateIncidentEdges(node)
-Scheme -> Scheme : updateIntersections()
-loop edge pairs
-    Scheme -> Edge : intersects(other)
-    Edge --> Scheme : false
+Клиент -> Схема : переместитьУзел(узел, решающаяПозиция)
+Схема -> Узел : рассчитатьПозициюПослеХода(решающаяПозиция)
+Узел --> Схема : рассчитаннаяПозиция
+Схема -> Узел : переместитьНапрямуюВ(рассчитаннаяПозиция)
+Схема -> Схема : обновитьИнцидентныеРебра(узел)
+Схема -> Схема : обновитьПересечения()
+loop пары ребер
+    Схема -> Ребро : пересекаетсяС(другоеРебро)
+    Ребро --> Схема : false
 end
-Scheme -> Game : registerMove()
-Game -> Game : validateMove()
-Game -> Game : isWin()
-Game -> Scheme : hasIntersections()
-Scheme --> Game : false
-Game -> Game : completeCurrentLevel()
-Game -> Game : resetMoveCounter()
-Game -> Game : goToNextLevel()
-Game -> LevelFactory : createLevel(currentLevelNumber + 1)
-LevelFactory --> Game : nextLevel
-Game -> Game : loadLevel(nextLevel)
-Game -> Level : scheme()
-Level --> Game : scheme
-Game -> Scheme : bindGame(this)
-Game --> Scheme : level advanced
-Scheme --> Client : move completed
+Схема -> Игра : зарегистрироватьХод()
+Игра -> Игра : проверитьХод()
+Игра -> Игра : уровеньПройден()
+Игра -> Схема : естьПересечения()
+Схема --> Игра : false
+Игра -> Игра : завершитьТекущийУровень()
+Игра -> Игра : сброситьСчетчикХодов()
+Игра -> Игра : перейтиКСледующемуУровню()
+Игра -> ФабрикаУровней : создатьУровень(номерТекущегоУровня + 1)
+ФабрикаУровней --> Игра : следующийУровень
+Игра -> Игра : загрузитьУровень(следующийУровень)
+Игра -> Уровень : схема()
+Уровень --> Игра : схема
+Игра -> Схема : привязатьИгру(this)
+Игра --> Схема : уровень повышен
+Схема --> Клиент : ход завершен
 
 @enduml

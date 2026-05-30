@@ -1,0 +1,157 @@
+@startuml
+title Class Diagram (Model)
+
+skinparam classAttributeIconSize 0
+hide circle
+
+package model.core {
+    class Game {
+        - currentLevelNumber : int
+        - maxCompletedLevelNumber : int
+        - moveCounter : int
+        - started : boolean
+        - levelFactory : LevelFactory
+        - currentLevel : Level
+        + Game()
+        ~ Game(levelFactory : LevelFactory)
+        + start() : void
+        + startAtLevel(levelNumber : int) : void
+        + continueGame() : void
+        + finish() : void
+        - loadLevel(levelNumber : int) : void
+        - loadLevel(level : Level) : void
+        - isWin() : boolean
+        + restartCurrentLevel() : void
+        ~ registerMove() : void
+        - validateMove() : void
+        - completeCurrentLevel() : void
+        - goToNextLevel() : void
+        - resetMoveCounter() : void
+        + hasProgressToContinue() : boolean
+        + continueLevelNumber() : int
+        + currentLevelNumber() : int
+        + maxCompletedLevelNumber() : int
+        + moveCounter() : int
+        + started() : boolean
+        + currentLevel() : Level
+        - levelExists(levelNumber : int) : boolean
+    }
+
+    class GameField {
+        - width : double
+        - height : double
+        - scheme : Scheme
+        + GameField(width : double, height : double, scheme : Scheme)
+        + canPlace(point : Point2D) : boolean
+        + width() : double
+        + height() : double
+        + scheme() : Scheme
+    }
+
+    class Scheme {
+        - DEFAULT_MOVEMENT_STRATEGY : MovementStrategy
+        - initialNodeCoordinates : List<Point2D.Double>
+        - nodeConnections : Map<Integer, List<Integer>>
+        - nodeMovementStrategies : Map<Integer, MovementStrategy>
+        - nodes : List<Node>
+        - edges : List<Edge>
+        - gameField : GameField
+        - game : Game
+        - Scheme(initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, nodeMovementStrategies : Map<Integer, MovementStrategy>)
+        + {static} create(initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>) : Scheme
+        + {static} create(initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, nodeMovementStrategies : Map<Integer, MovementStrategy>) : Scheme
+        + reset() : void
+        + moveNode(node : Node, destination : Point2D) : void
+        + getIntersectingEdges() : List<Edge>
+        + getIntersectingEdgesAfterMove(node : Node, destination : Point2D) : List<Edge>
+        + hasIntersections() : boolean
+        + getEdgesOfNode(node : Node) : List<Edge>
+        + getNodes() : List<Node>
+        + getEdges() : List<Edge>
+        ~ bindGameField(gameField : GameField) : void
+        ~ bindGame(game : Game) : void
+        - verifyNodeBelongsToScheme(node : Node) : void
+        - updateIncidentEdges(node : Node) : void
+        - updateSchemeGeometry() : void
+        - updateIntersections() : void
+        - intersectsAfterMove(first : Edge, second : Edge, movedNode : Node, movedPosition : Point2D) : boolean
+        - pointOf(node : Node, movedNode : Node, movedPosition : Point2D) : Point2D
+        - buildEdges() : List<Edge>
+        - verifyNoIsolatedNodes() : void
+        - verifyMovementStrategyIndexes() : void
+        - {static} deepCopy(map : Map<Integer, List<Integer>>) : Map<Integer, List<Integer>>
+        - {static} copyOf(p : Point2D, paramName : String) : Point2D.Double
+    }
+
+    class Node {
+        - DEFAULT_MOVEMENT_STRATEGY : MovementStrategy
+        - position : Point2D.Double
+        - movementStrategy : MovementStrategy
+        ~ Node(position : Point2D)
+        ~ Node(position : Point2D, movementStrategy : MovementStrategy)
+        + getX() : double
+        + getY() : double
+        + resolveMove(destination : Point2D) : Point2D
+        + getMovementStrategy() : MovementStrategy
+        ~ getPosition() : Point2D
+        ~ moveDirectlyTo(destination : Point2D) : void
+        ~ isAt(destination : Point2D) : boolean
+        - {static} copyOf(p : Point2D, paramName : String) : Point2D.Double
+    }
+
+    class Edge {
+        - nodeA : Node
+        - nodeB : Node
+        - start : Point2D.Double
+        - end : Point2D.Double
+        - intersecting : boolean
+        ~ Edge(nodeA : Node, nodeB : Node)
+        ~ updateGeometry() : void
+        ~ intersects(other : Edge) : boolean
+        ~ containsNode(node : Node) : boolean
+        + isIntersecting() : boolean
+        ~ setIntersecting(intersecting : boolean) : void
+        + getNodeA() : Node
+        + getNodeB() : Node
+        ~ {static} strictlyIntersects(a1 : Point2D, a2 : Point2D, b1 : Point2D, b2 : Point2D) : boolean
+        - {static} orientation(a : Point2D, b : Point2D, c : Point2D) : int
+        - {static} copyOf(p : Point2D) : Point2D.Double
+    }
+}
+
+package model.level {
+    class Level {
+        - number : int
+        - scheme : Scheme
+        - gameField : GameField
+        ~ Level(number : int, initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, fieldWidth : double, fieldHeight : double)
+        ~ Level(number : int, initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, nodeMovementStrategies : Map<Integer, MovementStrategy>, fieldWidth : double, fieldHeight : double)
+        + reset() : void
+        + number() : int
+        + gameField() : GameField
+        + scheme() : Scheme
+    }
+
+    class LevelFactory {
+        - FIELD_WIDTH : double
+        - FIELD_HEIGHT : double
+        - LAST_LEVEL_NUMBER : int
+        + availableLevelNumbers() : List<Integer>
+        + createLevel(number : int) : Level
+    }
+}
+
+Game o-- LevelFactory : levelFactory
+Game --> Level : currentLevel
+LevelFactory ..> Level : creates
+Level *-- Scheme : scheme
+Level *-- GameField : gameField
+GameField --> Scheme : binds
+Scheme *-- Node : nodes
+Scheme *-- Edge : edges
+Scheme --> GameField : gameField
+Scheme --> Game : game
+Edge --> Node : nodeA
+Edge --> Node : nodeB
+
+@enduml

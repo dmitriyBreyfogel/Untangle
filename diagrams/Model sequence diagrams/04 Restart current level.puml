@@ -1,0 +1,27 @@
+@startuml
+title Model sequence: restart current level
+
+actor Client
+participant "Game" as Game
+participant "LevelFactory" as LevelFactory
+participant "Level" as Level
+participant "Scheme" as Scheme
+
+Client -> Game : restartCurrentLevel()
+alt currentLevel is absent
+    Game --> Client : no changes
+else currentLevel exists
+    Game -> Game : resetMoveCounter()
+    Game -> Game : loadLevel(currentLevelNumber)
+    Game -> LevelFactory : createLevel(currentLevelNumber)
+    LevelFactory --> Game : level
+    Game -> Game : loadLevel(level)
+    Game -> Level : number()
+    Level --> Game : number
+    Game -> Level : scheme()
+    Level --> Game : scheme
+    Game -> Scheme : bindGame(this)
+    Game --> Client : level restarted
+end
+
+@enduml

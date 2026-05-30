@@ -1,0 +1,101 @@
+@startuml
+title Class Diagram (Model): point of extension
+
+skinparam classAttributeIconSize 0
+hide circle
+
+package model.core {
+    class Scheme {
+        - DEFAULT_MOVEMENT_STRATEGY : MovementStrategy
+        - initialNodeCoordinates : List<Point2D.Double>
+        - nodeConnections : Map<Integer, List<Integer>>
+        - nodeMovementStrategies : Map<Integer, MovementStrategy>
+        - nodes : List<Node>
+        - edges : List<Edge>
+        - gameField : GameField
+        - game : Game
+        - Scheme(initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, nodeMovementStrategies : Map<Integer, MovementStrategy>)
+        + {static} create(initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>) : Scheme
+        + {static} create(initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, nodeMovementStrategies : Map<Integer, MovementStrategy>) : Scheme
+        + reset() : void
+        + moveNode(node : Node, destination : Point2D) : void
+        + getIntersectingEdges() : List<Edge>
+        + getIntersectingEdgesAfterMove(node : Node, destination : Point2D) : List<Edge>
+        + hasIntersections() : boolean
+        + getEdgesOfNode(node : Node) : List<Edge>
+        + getNodes() : List<Node>
+        + getEdges() : List<Edge>
+        ~ bindGameField(gameField : GameField) : void
+        ~ bindGame(game : Game) : void
+        - verifyMovementStrategyIndexes() : void
+    }
+
+    class Node {
+        - DEFAULT_MOVEMENT_STRATEGY : MovementStrategy
+        - position : Point2D.Double
+        - movementStrategy : MovementStrategy
+        ~ Node(position : Point2D)
+        ~ Node(position : Point2D, movementStrategy : MovementStrategy)
+        + getX() : double
+        + getY() : double
+        + resolveMove(destination : Point2D) : Point2D
+        + getMovementStrategy() : MovementStrategy
+        ~ getPosition() : Point2D
+        ~ moveDirectlyTo(destination : Point2D) : void
+        ~ isAt(destination : Point2D) : boolean
+    }
+}
+
+package model.level {
+    class Level {
+        - number : int
+        - scheme : Scheme
+        - gameField : GameField
+        ~ Level(number : int, initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, fieldWidth : double, fieldHeight : double)
+        ~ Level(number : int, initialNodeCoordinates : List<Point2D>, nodeConnections : Map<Integer, List<Integer>>, nodeMovementStrategies : Map<Integer, MovementStrategy>, fieldWidth : double, fieldHeight : double)
+        + reset() : void
+        + number() : int
+        + gameField() : GameField
+        + scheme() : Scheme
+    }
+
+    class LevelFactory {
+        - FIELD_WIDTH : double
+        - FIELD_HEIGHT : double
+        - LAST_LEVEL_NUMBER : int
+        + availableLevelNumbers() : List<Integer>
+        + createLevel(number : int) : Level
+    }
+}
+
+package model.movement {
+    interface MovementStrategy {
+        + resolveMove(currentPosition : Point2D, requestedPosition : Point2D) : Point2D
+    }
+
+    class FreeMovementStrategy {
+        + resolveMove(currentPosition : Point2D, requestedPosition : Point2D) : Point2D
+    }
+
+    class FixedMovementStrategy {
+        + resolveMove(currentPosition : Point2D, requestedPosition : Point2D) : Point2D
+    }
+
+    class HorizontalMovementStrategy {
+        + resolveMove(currentPosition : Point2D, requestedPosition : Point2D) : Point2D
+    }
+}
+
+MovementStrategy <|.. FreeMovementStrategy
+MovementStrategy <|.. FixedMovementStrategy
+MovementStrategy <|.. HorizontalMovementStrategy
+
+LevelFactory ..> FreeMovementStrategy : creates
+LevelFactory ..> FixedMovementStrategy : creates
+LevelFactory ..> HorizontalMovementStrategy : creates
+Level ..> MovementStrategy : passes map
+Scheme --> MovementStrategy : stores by node index
+Scheme *-- Node : creates
+Node --> MovementStrategy : delegates movement
+
+@enduml

@@ -1,0 +1,39 @@
+@startuml
+title Model sequence: winning move advances level
+
+actor Client
+participant "Scheme" as Scheme
+participant "Node" as Node
+participant "Edge" as Edge
+participant "Game" as Game
+participant "LevelFactory" as LevelFactory
+participant "Level" as Level
+
+Client -> Scheme : moveNode(node, solvedPosition)
+Scheme -> Node : resolveMove(solvedPosition)
+Node --> Scheme : resolvedDestination
+Scheme -> Node : moveDirectlyTo(resolvedDestination)
+Scheme -> Scheme : updateIncidentEdges(node)
+Scheme -> Scheme : updateIntersections()
+loop edge pairs
+    Scheme -> Edge : intersects(other)
+    Edge --> Scheme : false
+end
+Scheme -> Game : registerMove()
+Game -> Game : validateMove()
+Game -> Game : isWin()
+Game -> Scheme : hasIntersections()
+Scheme --> Game : false
+Game -> Game : completeCurrentLevel()
+Game -> Game : resetMoveCounter()
+Game -> Game : goToNextLevel()
+Game -> LevelFactory : createLevel(currentLevelNumber + 1)
+LevelFactory --> Game : nextLevel
+Game -> Game : loadLevel(nextLevel)
+Game -> Level : scheme()
+Level --> Game : scheme
+Game -> Scheme : bindGame(this)
+Game --> Scheme : level advanced
+Scheme --> Client : move completed
+
+@enduml

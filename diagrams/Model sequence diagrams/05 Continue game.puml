@@ -1,0 +1,29 @@
+@startuml
+title Model sequence: continue game
+
+actor Client
+participant "Game" as Game
+participant "LevelFactory" as LevelFactory
+participant "Level" as Level
+participant "Scheme" as Scheme
+
+Client -> Game : continueGame()
+Game -> Game : hasProgressToContinue()
+alt already started or no progress
+    Game --> Client : no changes
+else progress exists
+    Game -> Game : resetMoveCounter()
+    Game -> Game : continueLevelNumber()
+    Game -> Game : levelExists(nextUnlockedLevelNumber)
+    Game -> LevelFactory : createLevel(levelNumber)
+    LevelFactory --> Game : level
+    Game -> Game : loadLevel(level)
+    Game -> Level : number()
+    Level --> Game : number
+    Game -> Level : scheme()
+    Level --> Game : scheme
+    Game -> Scheme : bindGame(this)
+    Game --> Client : continued game
+end
+
+@enduml

@@ -1,0 +1,24 @@
+@startuml
+title Model extension sequence: build scheme with movement strategies
+
+participant "LevelFactory" as LevelFactory
+participant "FixedMovementStrategy" as FixedMovementStrategy
+participant "HorizontalMovementStrategy" as HorizontalMovementStrategy
+participant "Level" as Level
+participant "Scheme" as Scheme
+participant "Node" as Node
+
+LevelFactory -> FixedMovementStrategy : new FixedMovementStrategy()
+LevelFactory -> HorizontalMovementStrategy : new HorizontalMovementStrategy()
+LevelFactory -> Level : new Level(number, coordinates, connections, strategyMap, width, height)
+Level -> Scheme : create(coordinates, connections, strategyMap)
+create Scheme
+loop each coordinate
+    Scheme -> Scheme : nodeMovementStrategies.getOrDefault(index, DEFAULT_MOVEMENT_STRATEGY)
+    Scheme -> Node : new Node(coordinate, movementStrategy)
+    Node --> Scheme : node
+end
+Scheme --> Level : scheme
+Level --> LevelFactory : level
+
+@enduml

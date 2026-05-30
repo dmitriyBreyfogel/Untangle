@@ -1,0 +1,22 @@
+@startuml
+title Model extension sequence: horizontal movement strategy
+
+actor Client
+participant "Scheme" as Scheme
+participant "Node" as Node
+participant "HorizontalMovementStrategy" as HorizontalMovementStrategy
+participant "GameField" as GameField
+
+Client -> Scheme : moveNode(horizontalNode, destination)
+Scheme -> Node : resolveMove(destination)
+Node -> HorizontalMovementStrategy : resolveMove(currentPosition, requestedPosition)
+HorizontalMovementStrategy --> Node : Point2D(requestedX, currentY)
+Node --> Scheme : resolvedDestination
+Scheme -> GameField : canPlace(resolvedDestination)
+GameField --> Scheme : true
+Scheme -> Node : isAt(resolvedDestination)
+Node --> Scheme : false
+Scheme -> Node : moveDirectlyTo(resolvedDestination)
+Scheme --> Client : node moved horizontally
+
+@enduml

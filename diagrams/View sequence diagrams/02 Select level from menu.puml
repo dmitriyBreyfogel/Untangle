@@ -1,0 +1,26 @@
+@startuml
+title View sequence: select level from menu
+
+actor User
+participant "StartMenuWindow" as StartMenuWindow
+participant "GameSessionLauncher" as GameSessionLauncher
+participant "LevelSelectionDialog" as LevelSelectionDialog
+participant "GameWindow" as GameWindow
+
+User -> StartMenuWindow : click "Выбрать уровень"
+StartMenuWindow -> GameSessionLauncher : availableLevelNumbers()
+GameSessionLauncher --> StartMenuWindow : levelNumbers
+create LevelSelectionDialog
+StartMenuWindow -> LevelSelectionDialog : new LevelSelectionDialog(this, levelNumbers)
+StartMenuWindow -> LevelSelectionDialog : showDialog()
+User -> LevelSelectionDialog : click level button
+LevelSelectionDialog -> LevelSelectionDialog : selectLevel(levelNumber)
+LevelSelectionDialog --> StartMenuWindow : selectedLevelNumber
+StartMenuWindow -> GameSessionLauncher : gameAtLevel(selectedLevelNumber)
+GameSessionLauncher --> StartMenuWindow : game
+create GameWindow
+StartMenuWindow -> GameWindow : new GameWindow(game, returnToMenuAction)
+StartMenuWindow -> GameWindow : showWindow()
+StartMenuWindow -> StartMenuWindow : dispose()
+
+@enduml

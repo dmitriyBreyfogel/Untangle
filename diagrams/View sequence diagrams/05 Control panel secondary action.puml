@@ -1,0 +1,29 @@
+@startuml
+title View sequence: control panel secondary action
+
+actor User
+participant "GameControlPanel" as GameControlPanel
+participant "GameWindow" as GameWindow
+participant "Game" as Game
+participant "GameStatusPanel" as GameStatusPanel
+participant "GameFieldPanel" as GameFieldPanel
+
+User -> GameControlPanel : click secondary button
+GameControlPanel -> GameWindow : handleSecondaryAction()
+GameWindow -> Game : started()
+alt game is started
+    GameWindow -> GameWindow : restartCurrentLevel()
+    GameWindow -> Game : currentLevel()
+    Game --> GameWindow : level
+    GameWindow -> Game : restartCurrentLevel()
+else game is stopped
+    GameWindow -> GameWindow : continueGame()
+    GameWindow -> Game : continueGame()
+end
+GameWindow -> GameWindow : refreshView()
+GameWindow -> GameStatusPanel : refreshState()
+GameWindow -> GameFieldPanel : refreshField()
+GameWindow -> GameControlPanel : updateButtonAvailability(started, canContinue, continueLevelNumber)
+GameWindow --> User : updated view
+
+@enduml

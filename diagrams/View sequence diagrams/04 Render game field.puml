@@ -1,0 +1,30 @@
+@startuml
+title View sequence: render game field
+
+participant "GameFieldPanel" as GameFieldPanel
+participant "GameFieldRenderer" as GameFieldRenderer
+participant "BoardRenderer" as BoardRenderer
+participant "Game" as Game
+participant "GraphRenderer" as GraphRenderer
+participant "EdgeRenderer" as EdgeRenderer
+participant "NodeRenderer" as NodeRenderer
+
+GameFieldPanel -> GameFieldPanel : paintComponent(graphics)
+GameFieldPanel -> GameFieldRenderer : drawField(graphics, gameModel, selectedNode, previewPosition)
+GameFieldRenderer -> GameFieldRenderer : create graphicsCopy
+GameFieldRenderer -> BoardRenderer : draw(graphicsCopy, clipBounds, fieldParameters)
+BoardRenderer --> GameFieldRenderer : board drawn
+GameFieldRenderer -> Game : currentLevel()
+alt currentLevel is absent
+    GameFieldRenderer --> GameFieldPanel : only board drawn
+else currentLevel exists
+    GameFieldRenderer -> GraphRenderer : drawGraph(graphicsCopy, gameModel, selectedNode, previewPosition, colors)
+    GraphRenderer -> EdgeRenderer : drawEdges(graphics, gameModel, mapper, selectedNode, previewPosition, edgeColors)
+    EdgeRenderer --> GraphRenderer : edges drawn
+    GraphRenderer -> NodeRenderer : drawNodes(graphics, gameModel, mapper, selectedNode, previewPosition, nodeColors)
+    NodeRenderer --> GraphRenderer : nodes drawn
+    GraphRenderer --> GameFieldRenderer : graph drawn
+end
+GameFieldRenderer --> GameFieldPanel : field drawn
+
+@enduml

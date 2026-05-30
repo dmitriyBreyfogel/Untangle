@@ -1,0 +1,22 @@
+@startuml
+title View extension sequence: create default node render registry
+
+actor Client
+participant "NodeRenderStrategyRegistry" as Registry
+participant "DefaultNodeRenderStrategy" as DefaultStrategy
+participant "FixedNodeRenderStrategy" as FixedStrategy
+participant "HorizontalNodeRenderStrategy" as HorizontalStrategy
+
+Client -> Registry : createDefault()
+create Registry
+Registry -> DefaultStrategy : new DefaultNodeRenderStrategy()
+Registry -> Registry : new NodeRenderStrategyRegistry(defaultStrategy)
+Registry -> DefaultStrategy : new DefaultNodeRenderStrategy()
+Registry -> Registry : register(FreeMovementStrategy.class, defaultStrategy)
+Registry -> FixedStrategy : new FixedNodeRenderStrategy()
+Registry -> Registry : register(FixedMovementStrategy.class, fixedStrategy)
+Registry -> HorizontalStrategy : new HorizontalNodeRenderStrategy()
+Registry -> Registry : register(HorizontalMovementStrategy.class, horizontalStrategy)
+Registry --> Client : registry
+
+@enduml

@@ -1,0 +1,24 @@
+@startuml
+title View sequence: start menu new game
+
+actor User
+participant "StartMenuWindow" as StartMenuWindow
+participant "GameSessionLauncher" as GameSessionLauncher
+participant "Game" as Game
+participant "GameWindow" as GameWindow
+
+User -> StartMenuWindow : click "Новая игра"
+StartMenuWindow -> GameSessionLauncher : newGame()
+create Game
+GameSessionLauncher -> Game : new Game()
+GameSessionLauncher -> Game : start()
+Game --> GameSessionLauncher : started
+GameSessionLauncher --> StartMenuWindow : game
+StartMenuWindow -> StartMenuWindow : openGame(game)
+create GameWindow
+StartMenuWindow -> GameWindow : new GameWindow(game, returnToMenuAction)
+StartMenuWindow -> GameWindow : showWindow()
+StartMenuWindow -> StartMenuWindow : dispose()
+StartMenuWindow --> User : game window opened
+
+@enduml

@@ -1,0 +1,298 @@
+@startuml
+title Class Diagram (View)
+
+skinparam classAttributeIconSize 0
+hide circle
+
+package view.menu {
+    class StartMenuWindow <<JFrame>> {
+        - gameSessionLauncher : GameSessionLauncher
+        + StartMenuWindow()
+        ~ StartMenuWindow(gameSessionLauncher : GameSessionLauncher)
+        + showWindow() : void
+        - configureWindow() : void
+        - assembleLayout() : void
+        - chooseLevel() : void
+        - openGame(game : Game) : void
+        - exitApplication() : void
+    }
+
+    class LevelSelectionDialog <<JDialog>> {
+        - selectedLevelNumber : Integer
+        ~ LevelSelectionDialog(owner : Frame, levelNumbers : List<Integer>)
+        ~ showDialog() : Integer
+        - configureDialog() : void
+        - assembleLayout(levelNumbers : List<Integer>) : void
+        - createLevelButton(levelNumber : int) : JButton
+        - selectLevel(levelNumber : int) : void
+    }
+
+    class GameSessionLauncher {
+        - levelFactory : LevelFactory
+        ~ newGame() : Game
+        ~ gameAtLevel(levelNumber : int) : Game
+        ~ availableLevelNumbers() : List<Integer>
+    }
+}
+
+package view.game {
+    class GameWindow <<JFrame>> {
+        - gameModel : Game
+        - returnToMenuAction : Runnable
+        - gameStatusPanel : GameStatusPanel
+        - gameFieldPanel : GameFieldPanel
+        - gameControlPanel : GameControlPanel
+        + GameWindow(gameModel : Game)
+        + GameWindow(gameModel : Game, returnToMenuAction : Runnable)
+        + showWindow() : void
+        + refreshView() : void
+        ~ handleMoveResult(previousLevelNumber : int, previousMaxCompletedLevelNumber : int) : void
+        - configureWindow() : void
+        - assembleLayout() : void
+        - fitPackedWindowToScreen() : void
+        - bindControlActions() : void
+        - startNewGame() : void
+        - handleSecondaryAction() : void
+        - continueGame() : void
+        - restartCurrentLevel() : void
+        - finishGame() : void
+        - showVictoryMessage(completedLevelNumber : int, gameFinished : boolean) : void
+        - handleMoveResult(result : MoveResult) : void
+        - returnToStartMenu() : void
+    }
+
+    class GameFieldPanel <<JPanel>> {
+        - fieldParameters : FieldParameters
+        - gameModel : Game
+        - selectedNode : Node
+        - normalEdgeColor : Color
+        - intersectingEdgeColor : Color
+        - nodeColor : Color
+        - selectedNodeColor : Color
+        - gameFieldRenderer : GameFieldRenderer
+        - gameFieldNavigator : GameFieldNavigator
+        - moveResultHandler : Consumer<MoveResult>
+        - selectedNodePreviewPosition : Point2D
+        ~ GameFieldPanel(gameModel : Game)
+        ~ GameFieldPanel(gameModel : Game, moveResultHandler : Consumer<MoveResult>)
+        ~ refreshField() : void
+        # paintComponent(graphics : Graphics) : void
+        - configurePanel() : void
+        - attachMouseHandlers() : void
+        - handleMousePress(screenPoint : Point) : void
+        - handleMouseDrag(screenPoint : Point) : void
+        - handleMouseRelease() : void
+        - hasPendingMove() : boolean
+    }
+
+    class GameFieldNavigator {
+        - fieldParameters : FieldParameters
+        - gameModel : Game
+        - panelSizeSupplier : Supplier<Dimension>
+        - selectedNode : Node
+        ~ GameFieldNavigator(fieldParameters : FieldParameters, gameModel : Game, panelSizeSupplier : Supplier<Dimension>)
+        ~ findNodeAtScreenPoint(screenPoint : Point) : Node
+        ~ selectNode(screenPoint : Point) : void
+        ~ moveSelectedNode(screenPoint : Point) : void
+        ~ clearSelectedNode() : void
+        ~ convertToScreenCoordinates(modelPoint : Point2D) : Point
+        ~ convertToModelCoordinates(screenPoint : Point) : Point2D
+        ~ previewMove(node : Node, screenPoint : Point) : Point2D
+        ~ selectedNode() : Node
+        - currentMapper() : FieldCoordinateMapper
+        - currentPanelSize() : Dimension
+    }
+
+    class GameControlPanel <<JPanel>> {
+        - startGameButton : JButton
+        - restartLevelButton : JButton
+        - finishGameButton : JButton
+        - startGameAction : Runnable
+        - restartLevelAction : Runnable
+        - finishGameAction : Runnable
+        ~ GameControlPanel()
+        ~ setStartGameAction(startGameAction : Runnable) : void
+        ~ setRestartLevelAction(restartLevelAction : Runnable) : void
+        ~ setFinishGameAction(finishGameAction : Runnable) : void
+        ~ updateButtonAvailability(gameStarted : boolean) : void
+        ~ updateButtonAvailability(gameStarted : boolean, canContinue : boolean, continueLevelNumber : int) : void
+        - configurePanel() : void
+        - createButtons() : void
+        - connectButtonHandlers() : void
+        - handleStartGameClick() : void
+        - handleRestartLevelClick() : void
+        - handleFinishGameClick() : void
+        - configureButtonCopy(gameStarted : boolean, continueLevelNumber : int) : void
+        - formatLevelNumber(levelNumber : int) : String
+        - applyButtonState(button : JButton, enabledBackground : Color, enabledForeground : Color, enabledBorder : Color, disabledBackground : Color, disabledForeground : Color, disabledBorder : Color) : void
+    }
+
+    class GameStatusPanel <<JPanel>> {
+        - gameModel : Game
+        - levelNumberLabel : JLabel
+        - moveCountLabel : JLabel
+        - gameStatusLabel : JLabel
+        ~ GameStatusPanel(gameModel : Game)
+        ~ refreshState() : void
+        ~ showCompletedState() : void
+        - configurePanel() : void
+        - createLabels() : void
+        - refreshLevelNumber() : void
+        - refreshMoveCount() : void
+        - refreshStageLabel() : void
+        - getMomentText() : String
+        - formatNumber(value : int) : String
+        - applyStoppedStageStyle() : void
+        - applyUntanglingStageStyle() : void
+        - applySolvedStageStyle() : void
+        - styleMetricLabel(label : JLabel) : void
+        - styleStageLabel(label : JLabel) : void
+    }
+
+    class MoveResult <<record>> {
+        ~ previousLevelNumber : int
+        ~ previousMaxCompletedLevelNumber : int
+    }
+}
+
+package view.render {
+    class GameFieldRenderer {
+        - fieldParameters : FieldParameters
+        - normalEdgeColor : Color
+        - intersectingEdgeColor : Color
+        - nodeColor : Color
+        - selectedNodeColor : Color
+        - graphRenderer : GraphRenderer
+        - boardRenderer : BoardRenderer
+        + GameFieldRenderer(fieldParameters : FieldParameters, normalEdgeColor : Color, intersectingEdgeColor : Color, nodeColor : Color, selectedNodeColor : Color)
+        + GameFieldRenderer(fieldParameters : FieldParameters, normalEdgeColor : Color, intersectingEdgeColor : Color, nodeColor : Color, selectedNodeColor : Color, nodeRenderStrategyRegistry : NodeRenderStrategyRegistry)
+        + drawField(graphics : Graphics2D, gameModel : Game, selectedNode : Node) : void
+        + drawField(graphics : Graphics2D, gameModel : Game, selectedNode : Node, selectedNodePosition : Point2D) : void
+    }
+
+    class GraphRenderer {
+        - fieldParameters : FieldParameters
+        - edgeRenderer : EdgeRenderer
+        - nodeRenderer : NodeRenderer
+        ~ GraphRenderer(fieldParameters : FieldParameters)
+        ~ GraphRenderer(fieldParameters : FieldParameters, nodeRenderStrategyRegistry : NodeRenderStrategyRegistry)
+        ~ drawGraph(graphics : Graphics2D, gameModel : Game) : void
+        ~ drawGraph(graphics : Graphics2D, gameModel : Game, selectedNode : Node, selectedNodePosition : Point2D, normalEdgeColor : Color, intersectingEdgeColor : Color, nodeColor : Color, selectedNodeColor : Color) : void
+    }
+
+    class BoardRenderer {
+        ~ draw(graphics : Graphics2D, clipBounds : Rectangle, fieldParameters : FieldParameters) : void
+        - drawBackdrop(graphics : Graphics2D, clipBounds : Rectangle) : void
+        - drawBoardSurface(graphics : Graphics2D, padding : int, fieldWidth : int, fieldHeight : int) : void
+        - drawBoardTexture(graphics : Graphics2D, padding : int, fieldWidth : int, fieldHeight : int) : void
+    }
+
+    class EdgeRenderer {
+        - fieldParameters : FieldParameters
+        ~ EdgeRenderer(fieldParameters : FieldParameters)
+        ~ drawEdges(graphics : Graphics2D, gameModel : Game) : void
+        ~ drawEdges(graphics : Graphics2D, gameModel : Game, normalEdgeColor : Color, intersectingEdgeColor : Color) : void
+        ~ drawEdges(graphics : Graphics2D, gameModel : Game, selectedNode : Node, selectedNodePosition : Point2D, normalEdgeColor : Color, intersectingEdgeColor : Color) : void
+        ~ drawEdges(graphics : Graphics2D, gameModel : Game, mapper : FieldCoordinateMapper, selectedNode : Node, selectedNodePosition : Point2D, normalEdgeColor : Color, intersectingEdgeColor : Color) : void
+        - drawEdge(graphics : Graphics2D, mapper : FieldCoordinateMapper, edge : Edge, selectedNode : Node, selectedNodePosition : Point2D, color : Color, intersecting : boolean) : void
+        - withAlpha(color : Color, alpha : int) : Color
+        - toScreenPoint(mapper : FieldCoordinateMapper, node : Node, selectedNode : Node, selectedNodePosition : Point2D) : Point
+        - mapperFor(graphics : Graphics2D, gameModel : Game) : FieldCoordinateMapper
+    }
+
+    class NodeRenderer {
+        - fieldParameters : FieldParameters
+        - nodeRenderStrategyRegistry : NodeRenderStrategyRegistry
+        ~ NodeRenderer(fieldParameters : FieldParameters)
+        ~ NodeRenderer(fieldParameters : FieldParameters, nodeRenderStrategyRegistry : NodeRenderStrategyRegistry)
+        ~ drawNodes(graphics : Graphics2D, gameModel : Game) : void
+        ~ drawNodes(graphics : Graphics2D, gameModel : Game, selectedNode : Node, selectedNodePosition : Point2D, nodeColor : Color, selectedNodeColor : Color) : void
+        ~ drawNodes(graphics : Graphics2D, gameModel : Game, mapper : FieldCoordinateMapper, selectedNode : Node, selectedNodePosition : Point2D, nodeColor : Color, selectedNodeColor : Color) : void
+        - drawNode(graphics : Graphics2D, mapper : FieldCoordinateMapper, node : Node, selectedNode : Node, selectedNodePosition : Point2D, color : Color) : void
+        - toScreenPoint(mapper : FieldCoordinateMapper, node : Node, selectedNode : Node, selectedNodePosition : Point2D) : Point
+        - mapperFor(graphics : Graphics2D, gameModel : Game) : FieldCoordinateMapper
+    }
+
+    class FieldCoordinateMapper {
+        - DEFAULT_FIELD_WIDTH : double
+        - DEFAULT_FIELD_HEIGHT : double
+        - fieldParameters : FieldParameters
+        - panelSize : Dimension
+        - fieldWidth : double
+        - fieldHeight : double
+        + FieldCoordinateMapper(fieldParameters : FieldParameters, panelSize : Dimension, fieldWidth : double, fieldHeight : double)
+        + {static} fromPanel(fieldParameters : FieldParameters, panelSize : Dimension, gameModel : Game) : FieldCoordinateMapper
+        + {static} fromBounds(fieldParameters : FieldParameters, bounds : Rectangle, gameModel : Game) : FieldCoordinateMapper
+        + toScreenCoordinates(modelPoint : Point2D) : Point
+        + toModelCoordinates(screenPoint : Point) : Point2D
+        - drawableWidth() : int
+        - drawableHeight() : int
+    }
+
+    class FieldParameters <<record>> {
+        + nodeRadius() : int
+        + fieldPadding() : int
+    }
+}
+
+package view.ui {
+    class MenuButtonFactory {
+        - DISABLED_BACKGROUND : Color
+        - DISABLED_FOREGROUND : Color
+        - DISABLED_BORDER : Color
+        - MenuButtonFactory()
+        + {static} primary(text : String, width : int) : JButton
+        + {static} secondary(text : String, width : int) : JButton
+        + {static} danger(text : String, width : int) : JButton
+        + {static} applyState(button : JButton, background : Color, foreground : Color, border : Color, disabledBackground : Color, disabledForeground : Color, disabledBorder : Color) : void
+        + {static} applyState(button : JButton, background : Color, foreground : Color, border : Color) : void
+        - {static} create(text : String, width : int, background : Color, foreground : Color, border : Color) : RoundedButton
+    }
+
+    class RoundedButton <<JButton>> {
+        - ARC : int
+        - enabledBackground : Color
+        - enabledForeground : Color
+        - enabledBorder : Color
+        - disabledBackground : Color
+        - disabledForeground : Color
+        - disabledBorder : Color
+        ~ RoundedButton(text : String, width : int)
+        ~ applyPalette(background : Color, foreground : Color, border : Color) : void
+        ~ applyDisabledPalette(background : Color, foreground : Color, border : Color) : void
+        # paintComponent(graphics : Graphics) : void
+        # paintBorder(graphics : Graphics) : void
+        + contains(x : int, y : int) : boolean
+        - currentBackground() : Color
+        - currentBorder() : Color
+        - {static} shift(color : Color, delta : int) : Color
+        - {static} clamp(value : int) : int
+    }
+}
+
+StartMenuWindow o-- GameSessionLauncher
+StartMenuWindow ..> LevelSelectionDialog
+StartMenuWindow ..> GameWindow
+LevelSelectionDialog ..> MenuButtonFactory
+GameSessionLauncher ..> Game
+GameSessionLauncher ..> LevelFactory
+
+GameWindow *-- GameStatusPanel
+GameWindow *-- GameFieldPanel
+GameWindow *-- GameControlPanel
+GameWindow ..> MoveResult
+GameFieldPanel *-- GameFieldNavigator
+GameFieldPanel *-- GameFieldRenderer
+GameFieldPanel ..> MoveResult
+GameFieldNavigator ..> FieldCoordinateMapper
+GameControlPanel ..> MenuButtonFactory
+
+GameFieldRenderer *-- GraphRenderer
+GameFieldRenderer *-- BoardRenderer
+GraphRenderer *-- EdgeRenderer
+GraphRenderer *-- NodeRenderer
+EdgeRenderer ..> FieldCoordinateMapper
+NodeRenderer ..> FieldCoordinateMapper
+MenuButtonFactory ..> RoundedButton
+
+@enduml

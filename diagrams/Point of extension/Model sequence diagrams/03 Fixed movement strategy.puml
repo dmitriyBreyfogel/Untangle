@@ -1,0 +1,18 @@
+@startuml
+title Model extension sequence: fixed movement strategy
+
+actor Client
+participant "Scheme" as Scheme
+participant "Node" as Node
+participant "FixedMovementStrategy" as FixedMovementStrategy
+
+Client -> Scheme : moveNode(fixedNode, destination)
+Scheme -> Node : resolveMove(destination)
+Node -> FixedMovementStrategy : resolveMove(currentPosition, requestedPosition)
+FixedMovementStrategy --> Node : currentPosition
+Node --> Scheme : resolvedDestination
+Scheme -> Node : isAt(resolvedDestination)
+Node --> Scheme : true
+Scheme --> Client : movement ignored
+
+@enduml

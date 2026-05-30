@@ -1,0 +1,17 @@
+@startuml
+title View extension sequence: render node with default strategy
+
+participant "NodeRenderer" as NodeRenderer
+participant "NodeRenderStrategyRegistry" as Registry
+participant "Node" as Node
+participant "DefaultNodeRenderStrategy" as DefaultStrategy
+
+NodeRenderer -> NodeRenderer : drawNode(graphics, mapper, node, selectedNode, preview, color)
+NodeRenderer -> Registry : resolve(node)
+Registry -> Node : getMovementStrategy()
+Node --> Registry : FreeMovementStrategy
+Registry --> NodeRenderer : DefaultNodeRenderStrategy
+NodeRenderer -> DefaultStrategy : render(graphics, screenPoint, radius, color, selected)
+DefaultStrategy --> NodeRenderer : node painted
+
+@enduml

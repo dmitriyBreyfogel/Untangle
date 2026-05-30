@@ -1,0 +1,103 @@
+@startuml
+title Class Diagram (View): point of extension
+
+skinparam classAttributeIconSize 0
+hide circle
+
+package view.render {
+    class GameFieldRenderer {
+        - fieldParameters : FieldParameters
+        - normalEdgeColor : Color
+        - intersectingEdgeColor : Color
+        - nodeColor : Color
+        - selectedNodeColor : Color
+        - graphRenderer : GraphRenderer
+        - boardRenderer : BoardRenderer
+        + GameFieldRenderer(fieldParameters : FieldParameters, normalEdgeColor : Color, intersectingEdgeColor : Color, nodeColor : Color, selectedNodeColor : Color)
+        + GameFieldRenderer(fieldParameters : FieldParameters, normalEdgeColor : Color, intersectingEdgeColor : Color, nodeColor : Color, selectedNodeColor : Color, nodeRenderStrategyRegistry : NodeRenderStrategyRegistry)
+        + drawField(graphics : Graphics2D, gameModel : Game, selectedNode : Node) : void
+        + drawField(graphics : Graphics2D, gameModel : Game, selectedNode : Node, selectedNodePosition : Point2D) : void
+    }
+
+    class GraphRenderer {
+        - fieldParameters : FieldParameters
+        - edgeRenderer : EdgeRenderer
+        - nodeRenderer : NodeRenderer
+        ~ GraphRenderer(fieldParameters : FieldParameters)
+        ~ GraphRenderer(fieldParameters : FieldParameters, nodeRenderStrategyRegistry : NodeRenderStrategyRegistry)
+        ~ drawGraph(graphics : Graphics2D, gameModel : Game) : void
+        ~ drawGraph(graphics : Graphics2D, gameModel : Game, selectedNode : Node, selectedNodePosition : Point2D, normalEdgeColor : Color, intersectingEdgeColor : Color, nodeColor : Color, selectedNodeColor : Color) : void
+    }
+
+    class NodeRenderer {
+        - fieldParameters : FieldParameters
+        - nodeRenderStrategyRegistry : NodeRenderStrategyRegistry
+        ~ NodeRenderer(fieldParameters : FieldParameters)
+        ~ NodeRenderer(fieldParameters : FieldParameters, nodeRenderStrategyRegistry : NodeRenderStrategyRegistry)
+        ~ drawNodes(graphics : Graphics2D, gameModel : Game) : void
+        ~ drawNodes(graphics : Graphics2D, gameModel : Game, selectedNode : Node, selectedNodePosition : Point2D, nodeColor : Color, selectedNodeColor : Color) : void
+        ~ drawNodes(graphics : Graphics2D, gameModel : Game, mapper : FieldCoordinateMapper, selectedNode : Node, selectedNodePosition : Point2D, nodeColor : Color, selectedNodeColor : Color) : void
+        - drawNode(graphics : Graphics2D, mapper : FieldCoordinateMapper, node : Node, selectedNode : Node, selectedNodePosition : Point2D, color : Color) : void
+        - toScreenPoint(mapper : FieldCoordinateMapper, node : Node, selectedNode : Node, selectedNodePosition : Point2D) : Point
+    }
+
+    class FieldParameters <<record>> {
+        + nodeRadius() : int
+        + fieldPadding() : int
+    }
+
+    class FieldCoordinateMapper {
+        - fieldParameters : FieldParameters
+        - panelSize : Dimension
+        - fieldWidth : double
+        - fieldHeight : double
+        + toScreenCoordinates(modelPoint : Point2D) : Point
+        + toModelCoordinates(screenPoint : Point) : Point2D
+    }
+}
+
+package view.render.node {
+    interface NodeRenderStrategy {
+        + render(graphics : Graphics2D, center : Point, radius : int, color : Color, selected : boolean) : void
+    }
+
+    class NodeRenderStrategyRegistry {
+        - renderStrategies : Map<Class<? extends MovementStrategy>, NodeRenderStrategy>
+        - defaultRenderStrategy : NodeRenderStrategy
+        + NodeRenderStrategyRegistry(defaultRenderStrategy : NodeRenderStrategy)
+        + {static} createDefault() : NodeRenderStrategyRegistry
+        + register(movementStrategyType : Class<? extends MovementStrategy>, renderStrategy : NodeRenderStrategy) : void
+        + resolve(node : Node) : NodeRenderStrategy
+        + resolve(movementStrategy : MovementStrategy) : NodeRenderStrategy
+    }
+
+    class DefaultNodeRenderStrategy {
+        + render(graphics : Graphics2D, center : Point, radius : int, color : Color, selected : boolean) : void
+    }
+
+    class FixedNodeRenderStrategy {
+        - baseRenderStrategy : NodeRenderStrategy
+        + render(graphics : Graphics2D, center : Point, radius : int, color : Color, selected : boolean) : void
+    }
+
+    class HorizontalNodeRenderStrategy {
+        - baseRenderStrategy : NodeRenderStrategy
+        + render(graphics : Graphics2D, center : Point, radius : int, color : Color, selected : boolean) : void
+    }
+}
+
+NodeRenderStrategy <|.. DefaultNodeRenderStrategy
+NodeRenderStrategy <|.. FixedNodeRenderStrategy
+NodeRenderStrategy <|.. HorizontalNodeRenderStrategy
+FixedNodeRenderStrategy *-- NodeRenderStrategy : baseRenderStrategy
+HorizontalNodeRenderStrategy *-- NodeRenderStrategy : baseRenderStrategy
+NodeRenderStrategyRegistry o-- NodeRenderStrategy : defaultRenderStrategy
+NodeRenderStrategyRegistry --> NodeRenderStrategy : registered strategies
+GameFieldRenderer *-- GraphRenderer
+GraphRenderer *-- NodeRenderer
+NodeRenderer --> NodeRenderStrategyRegistry
+NodeRenderer ..> NodeRenderStrategy : resolve and render
+NodeRenderer ..> FieldCoordinateMapper
+NodeRenderer ..> FieldParameters
+
+@enduml

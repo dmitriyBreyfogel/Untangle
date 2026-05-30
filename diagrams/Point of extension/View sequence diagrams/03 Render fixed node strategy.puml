@@ -1,0 +1,20 @@
+@startuml
+title View extension sequence: render fixed node strategy
+
+participant "NodeRenderer" as NodeRenderer
+participant "NodeRenderStrategyRegistry" as Registry
+participant "Node" as Node
+participant "FixedNodeRenderStrategy" as FixedStrategy
+participant "DefaultNodeRenderStrategy" as DefaultStrategy
+
+NodeRenderer -> Registry : resolve(node)
+Registry -> Node : getMovementStrategy()
+Node --> Registry : FixedMovementStrategy
+Registry --> NodeRenderer : FixedNodeRenderStrategy
+NodeRenderer -> FixedStrategy : render(graphics, center, radius, color, selected)
+FixedStrategy -> DefaultStrategy : render(graphics, center, radius, color, selected)
+DefaultStrategy --> FixedStrategy : base node painted
+FixedStrategy -> FixedStrategy : draw lock marker
+FixedStrategy --> NodeRenderer : fixed node painted
+
+@enduml

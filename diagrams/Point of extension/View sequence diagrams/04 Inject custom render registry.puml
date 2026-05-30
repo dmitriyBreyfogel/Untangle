@@ -1,0 +1,24 @@
+@startuml
+title View extension sequence: inject custom render registry
+
+actor Client
+participant "NodeRenderStrategyRegistry" as Registry
+participant "GameFieldRenderer" as GameFieldRenderer
+participant "GraphRenderer" as GraphRenderer
+participant "NodeRenderer" as NodeRenderer
+participant "CustomNodeRenderStrategy" as CustomStrategy
+
+Client -> Registry : new NodeRenderStrategyRegistry(defaultStrategy)
+Client -> Registry : register(CustomMovementStrategy.class, customStrategy)
+Client -> GameFieldRenderer : new GameFieldRenderer(parameters, colors, registry)
+GameFieldRenderer -> GraphRenderer : new GraphRenderer(parameters, registry)
+GraphRenderer -> NodeRenderer : new NodeRenderer(parameters, registry)
+Client -> GameFieldRenderer : drawField(graphics, gameModel, selectedNode)
+GameFieldRenderer -> GraphRenderer : drawGraph(graphics, gameModel, selectedNode, preview, colors)
+GraphRenderer -> NodeRenderer : drawNodes(graphics, gameModel, mapper, selectedNode, preview, colors)
+NodeRenderer -> Registry : resolve(node)
+Registry --> NodeRenderer : CustomNodeRenderStrategy
+NodeRenderer -> CustomStrategy : render(graphics, center, radius, color, selected)
+CustomStrategy --> NodeRenderer : custom marker painted
+
+@enduml

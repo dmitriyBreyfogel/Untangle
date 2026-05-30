@@ -1,0 +1,35 @@
+@startuml
+title Model sequence: regular node move
+
+actor Client
+participant "Scheme" as Scheme
+participant "Node" as Node
+participant "GameField" as GameField
+participant "Edge" as Edge
+participant "Game" as Game
+
+Client -> Scheme : moveNode(node, destination)
+Scheme -> Scheme : verifyNodeBelongsToScheme(node)
+Scheme -> Node : resolveMove(destination)
+Node --> Scheme : resolvedDestination
+Scheme -> GameField : canPlace(resolvedDestination)
+GameField --> Scheme : true
+Scheme -> Node : isAt(resolvedDestination)
+Node --> Scheme : false
+Scheme -> Node : moveDirectlyTo(resolvedDestination)
+Scheme -> Scheme : updateIncidentEdges(node)
+loop incident edges
+    Scheme -> Edge : updateGeometry()
+end
+Scheme -> Scheme : updateIntersections()
+loop edge pairs
+    Scheme -> Edge : intersects(other)
+    Edge --> Scheme : result
+end
+Scheme -> Game : registerMove()
+Game -> Game : validateMove()
+Game -> Game : isWin()
+Game --> Scheme : move registered
+Scheme --> Client : node moved
+
+@enduml

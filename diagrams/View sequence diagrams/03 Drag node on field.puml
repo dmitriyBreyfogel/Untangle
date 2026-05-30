@@ -1,0 +1,37 @@
+@startuml
+title View sequence: drag node on field
+
+actor User
+participant "GameFieldPanel" as GameFieldPanel
+participant "GameFieldNavigator" as GameFieldNavigator
+participant "Game" as Game
+participant "Level" as Level
+participant "Scheme" as Scheme
+participant "GameWindow" as GameWindow
+
+User -> GameFieldPanel : mousePressed(point)
+GameFieldPanel -> GameFieldNavigator : selectNode(point)
+GameFieldNavigator -> GameFieldNavigator : findNodeAtScreenPoint(point)
+GameFieldNavigator --> GameFieldPanel : selectedNode()
+GameFieldPanel -> GameFieldPanel : refreshField()
+
+User -> GameFieldPanel : mouseDragged(point)
+GameFieldPanel -> Game : currentLevel()
+Game --> GameFieldPanel : level
+GameFieldPanel -> GameFieldNavigator : previewMove(selectedNode, point)
+GameFieldNavigator --> GameFieldPanel : selectedNodePreviewPosition
+GameFieldPanel -> GameFieldPanel : refreshField()
+
+User -> GameFieldPanel : mouseReleased()
+GameFieldPanel -> Game : currentLevel()
+Game --> GameFieldPanel : levelBeforeMove
+GameFieldPanel -> Level : scheme()
+Level --> GameFieldPanel : scheme
+GameFieldPanel -> Scheme : moveNode(selectedNode, selectedNodePreviewPosition)
+Scheme --> GameFieldPanel : moved
+GameFieldPanel -> GameFieldNavigator : clearSelectedNode()
+GameFieldPanel -> GameWindow : accept(new MoveResult(previousLevelNumber, previousMaxCompletedLevelNumber))
+GameWindow -> GameWindow : handleMoveResult(result)
+GameFieldPanel -> GameFieldPanel : refreshField()
+
+@enduml

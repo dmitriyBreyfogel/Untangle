@@ -94,11 +94,11 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Панель поля передаёт обработчику состояние до хода")
-    void moveResultHandlerReceivesPreviousState() {
+    @DisplayName("Панель поля передаёт обработчику прогресс уровней до хода")
+    void levelProgressHandlerReceivesStateBeforeMove() {
         Game game = startedGame();
-        AtomicReference<MoveResult> handledResult = new AtomicReference<>();
-        GameFieldPanel panel = SwingTestSupport.callOnEdt(() -> new GameFieldPanel(game, handledResult::set));
+        AtomicReference<LevelProgressBeforeMove> handledLevelProgress = new AtomicReference<>();
+        GameFieldPanel panel = SwingTestSupport.callOnEdt(() -> new GameFieldPanel(game, handledLevelProgress::set));
         SwingTestSupport.runOnEdt(() -> panel.setSize(400, 400));
         GameFieldNavigator navigator = SwingTestSupport.readField(panel, "gameFieldNavigator", GameFieldNavigator.class);
         Node node = game.currentLevel().scheme().getNodes().getFirst();
@@ -109,7 +109,7 @@ class GameFieldPanelTest {
         dispatch(panel, MouseEvent.MOUSE_DRAGGED, dragPoint);
         dispatch(panel, MouseEvent.MOUSE_RELEASED, dragPoint);
 
-        assertEquals(new MoveResult(1, 0), handledResult.get());
+        assertEquals(new LevelProgressBeforeMove(1, 0), handledLevelProgress.get());
     }
 
     @Test
@@ -119,8 +119,8 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Панель поля не принимает пустой обработчик результата хода")
-    void rejectsNullMoveResultHandler() {
+    @DisplayName("Панель поля не принимает пустой обработчик прогресса уровней")
+    void rejectsNullLevelProgressHandler() {
         assertThrows(NullPointerException.class, () -> new GameFieldPanel(new Game(), null));
     }
 

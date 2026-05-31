@@ -30,17 +30,17 @@ final class GameFieldPanel extends JPanel {
     private final Color selectedNodeColor;
     private final GameFieldRenderer gameFieldRenderer;
     private final GameFieldNavigator gameFieldNavigator;
-    private final Consumer<MoveResult> moveResultHandler;
+    private final Consumer<LevelProgressBeforeMove> levelProgressHandler;
     private Point2D selectedNodePreviewPosition;
 
     GameFieldPanel(Game gameModel) {
-        this(gameModel, result -> {
+        this(gameModel, levelProgress -> {
         });
     }
 
-    GameFieldPanel(Game gameModel, Consumer<MoveResult> moveResultHandler) {
+    GameFieldPanel(Game gameModel, Consumer<LevelProgressBeforeMove> levelProgressHandler) {
         this.gameModel = Objects.requireNonNull(gameModel, "gameModel");
-        this.moveResultHandler = Objects.requireNonNull(moveResultHandler, "moveResultHandler");
+        this.levelProgressHandler = Objects.requireNonNull(levelProgressHandler, "levelProgressHandler");
         fieldParameters = new FieldParameters(12, 28);
         normalEdgeColor = new Color(106, 126, 152);
         intersectingEdgeColor = new Color(226, 97, 76);
@@ -120,8 +120,8 @@ final class GameFieldPanel extends JPanel {
 
     private void handleMouseRelease() {
         Level levelBeforeMove = gameModel.currentLevel();
-        int previousLevelNumber = gameModel.currentLevelNumber();
-        int previousMaxCompletedLevelNumber = gameModel.maxCompletedLevelNumber();
+        int levelNumberBeforeMove = gameModel.currentLevelNumber();
+        int maxCompletedLevelNumberBeforeMove = gameModel.maxCompletedLevelNumber();
 
         if (levelBeforeMove != null && selectedNode != null && selectedNodePreviewPosition != null && hasPendingMove()) {
             levelBeforeMove.scheme().moveNode(selectedNode, selectedNodePreviewPosition);
@@ -131,7 +131,7 @@ final class GameFieldPanel extends JPanel {
         selectedNode = null;
         selectedNodePreviewPosition = null;
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        moveResultHandler.accept(new MoveResult(previousLevelNumber, previousMaxCompletedLevelNumber));
+        levelProgressHandler.accept(new LevelProgressBeforeMove(levelNumberBeforeMove, maxCompletedLevelNumberBeforeMove));
         refreshField();
     }
 

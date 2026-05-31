@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameTest {
@@ -45,8 +46,9 @@ class GameTest {
 
         Scheme scheme = game.currentLevel().scheme();
         Node node0 = scheme.getNodes().getFirst();
-        scheme.moveNode(node0, new Point2D.Double(-1, 0));
+        boolean moved = game.moveNode(node0, new Point2D.Double(-1, 0));
 
+        assertFalse(moved);
         assertEquals(0, game.moveCounter());
         assertEquals(10, node0.getX());
         assertEquals(10, node0.getY());
@@ -60,8 +62,9 @@ class GameTest {
 
         Scheme scheme = game.currentLevel().scheme();
         Node node1 = scheme.getNodes().get(1);
-        scheme.moveNode(node1, new Point2D.Double(90, 5));
+        boolean moved = game.moveNode(node1, new Point2D.Double(90, 5));
 
+        assertTrue(moved);
         assertEquals(2, game.currentLevelNumber());
         assertEquals(1, game.maxCompletedLevelNumber());
         assertEquals(0, game.moveCounter());
@@ -111,8 +114,9 @@ class GameTest {
         game.start();
 
         Scheme scheme = game.currentLevel().scheme();
-        scheme.moveNode(scheme.getNodes().getFirst(), new Point2D.Double(12, 12));
+        boolean moved = game.moveNode(scheme.getNodes().getFirst(), new Point2D.Double(12, 12));
 
+        assertTrue(moved);
         assertEquals(1, game.moveCounter());
         assertEquals(1, game.currentLevelNumber());
         assertEquals(0, game.maxCompletedLevelNumber());
@@ -126,7 +130,7 @@ class GameTest {
         game.start();
 
         Scheme scheme = game.currentLevel().scheme();
-        scheme.moveNode(scheme.getNodes().getFirst(), new Point2D.Double(12, 12));
+        game.moveNode(scheme.getNodes().getFirst(), new Point2D.Double(12, 12));
         assertEquals(1, game.moveCounter());
 
         game.start();
@@ -142,7 +146,7 @@ class GameTest {
         game.start();
 
         Scheme scheme = game.currentLevel().scheme();
-        scheme.moveNode(scheme.getNodes().getFirst(), new Point2D.Double(12, 12));
+        game.moveNode(scheme.getNodes().getFirst(), new Point2D.Double(12, 12));
 
         game.startAtLevel(5);
 
@@ -158,7 +162,7 @@ class GameTest {
         game.start();
 
         Scheme scheme = game.currentLevel().scheme();
-        scheme.moveNode(scheme.getNodes().get(1), new Point2D.Double(90, 5));
+        game.moveNode(scheme.getNodes().get(1), new Point2D.Double(90, 5));
         assertEquals(2, game.currentLevelNumber());
 
         game.finish();
@@ -176,7 +180,7 @@ class GameTest {
         game.start();
 
         Scheme scheme = game.currentLevel().scheme();
-        scheme.moveNode(scheme.getNodes().get(1), new Point2D.Double(90, 5));
+        game.moveNode(scheme.getNodes().get(1), new Point2D.Double(90, 5));
         game.finish();
 
         game.continueGame();
@@ -220,7 +224,7 @@ class GameTest {
         game.start();
 
         Scheme scheme = game.currentLevel().scheme();
-        scheme.moveNode(scheme.getNodes().getFirst(), new Point2D.Double(12, 12));
+        game.moveNode(scheme.getNodes().getFirst(), new Point2D.Double(12, 12));
         assertEquals(1, game.moveCounter());
 
         game.restartCurrentLevel();
@@ -269,6 +273,31 @@ class GameTest {
         assertEquals(2, game.maxCompletedLevelNumber());
     }
 
+    @Test
+    @DisplayName("Перемещение узла до старта игры ничего не меняет")
+    void moveNodeBeforeStartDoesNothing() {
+        Game game = new Game();
+        Node node = new Node(new Point2D.Double(0, 0));
+
+        boolean moved = game.moveNode(node, new Point2D.Double(1, 1));
+
+        assertFalse(moved);
+        assertEquals(0, game.moveCounter());
+        assertFalse(game.started());
+        assertNull(game.currentLevel());
+    }
+
+    @Test
+    @DisplayName("Игра не принимает пустые параметры перемещения")
+    void moveNodeRejectsNullArgs() {
+        Game game = new Game();
+        game.start();
+        Node node = game.currentLevel().scheme().getNodes().getFirst();
+
+        assertThrows(NullPointerException.class, () -> game.moveNode(null, new Point2D.Double(1, 1)));
+        assertThrows(NullPointerException.class, () -> game.moveNode(node, null));
+    }
+
     private static void solveCurrentLevel(Game game) {
         int levelNumber = game.currentLevelNumber();
         Scheme scheme = game.currentLevel().scheme();
@@ -276,7 +305,7 @@ class GameTest {
 
         for (int i = 0; i < positions.length && game.started() && game.currentLevelNumber() == levelNumber; i++) {
             Node node = scheme.getNodes().get(i);
-            scheme.moveNode(node, positions[i]);
+            game.moveNode(node, positions[i]);
             if (game.started() && game.currentLevelNumber() == levelNumber) {
                 assertEquals(levelNumber, game.currentLevelNumber());
                 assertTrue(game.currentLevel().scheme().hasIntersections());

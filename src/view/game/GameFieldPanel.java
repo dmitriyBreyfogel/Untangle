@@ -1,7 +1,6 @@
 package view.game;
 
 import model.core.Game;
-import model.level.Level;
 import model.core.Node;
 import view.render.FieldParameters;
 import view.render.GameFieldRenderer;
@@ -105,12 +104,11 @@ final class GameFieldPanel extends JPanel {
     }
 
     private void handleMouseRelease() {
-        Level levelBeforeMove = gameModel.currentLevel();
         int levelNumberBeforeMove = gameModel.currentLevelNumber();
         int maxCompletedLevelNumberBeforeMove = gameModel.maxCompletedLevelNumber();
 
-        if (levelBeforeMove != null && selectedNode != null && selectedNodePreviewPosition != null && hasPendingMove()) {
-            levelBeforeMove.scheme().moveNode(selectedNode, selectedNodePreviewPosition);
+        if (selectedNode != null && selectedNodePreviewPosition != null && hasPendingMove()) {
+            gameModel.moveNode(selectedNode, selectedNodePreviewPosition);
         }
 
         gameFieldNavigator.clearSelectedNode();

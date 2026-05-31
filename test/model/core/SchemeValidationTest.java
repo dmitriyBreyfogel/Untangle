@@ -134,16 +134,6 @@ class SchemeValidationTest {
     }
 
     @Test
-    @DisplayName("Схема не принимает пустую игру при привязке")
-    void bindRejectsNull() {
-        Scheme scheme = Scheme.create(
-                List.of(new Point2D.Double(0, 0), new Point2D.Double(1, 0), new Point2D.Double(0, 1)),
-                Map.of(0, List.of(1, 2), 1, List.of(2))
-        );
-        assertThrows(NullPointerException.class, () -> scheme.bindGame(null));
-    }
-
-    @Test
     @DisplayName("Схема не принимает пустые значения в перемещении узла")
     void moveNodeRejectsNullArgs() {
         Scheme scheme = Scheme.create(

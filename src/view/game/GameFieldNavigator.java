@@ -52,12 +52,11 @@ final class GameFieldNavigator {
 
     void moveSelectedNode(Point screenPoint) {
         Objects.requireNonNull(screenPoint, "screenPoint");
-        Level currentLevel = gameModel.currentLevel();
-        if (selectedNode == null || currentLevel == null) {
+        if (selectedNode == null) {
             return;
         }
         Point2D modelPoint = currentMapper().toModelCoordinates(screenPoint);
-        currentLevel.scheme().moveNode(selectedNode, modelPoint);
+        gameModel.moveNode(selectedNode, modelPoint);
     }
 
     void clearSelectedNode() {

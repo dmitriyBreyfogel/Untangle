@@ -3,6 +3,7 @@ package model.core;
 import model.level.Level;
 import model.level.LevelFactory;
 
+import java.awt.geom.Point2D;
 import java.util.Objects;
 
 public final class Game {
@@ -63,7 +64,6 @@ public final class Game {
     private void loadLevel(Level level) {
         currentLevel = Objects.requireNonNull(level, "level");
         currentLevelNumber = level.number();
-        currentLevel.scheme().bindGame(this);
     }
 
     private boolean isWin() {
@@ -81,7 +81,21 @@ public final class Game {
         loadLevel(currentLevelNumber);
     }
 
-    void registerMove() {
+    public boolean moveNode(Node node, Point2D destination) {
+        Objects.requireNonNull(node, "node");
+        Objects.requireNonNull(destination, "destination");
+        if (!started || currentLevel == null) {
+            return false;
+        }
+
+        boolean moved = currentLevel.scheme().moveNode(node, destination);
+        if (moved) {
+            registerMove();
+        }
+        return moved;
+    }
+
+    private void registerMove() {
         moveCounter++;
         validateMove();
     }

@@ -24,7 +24,6 @@ public final class Scheme {
     private final List<Edge> edges;
 
     private final GameField gameField;
-    private Game game;
 
     private Scheme(
             List<Point2D> initialNodeCoordinates,
@@ -89,26 +88,24 @@ public final class Scheme {
         updateIntersections();
     }
 
-    public void moveNode(Node node, Point2D destination) {
+    public boolean moveNode(Node node, Point2D destination) {
         Objects.requireNonNull(node, "node");
         Objects.requireNonNull(destination, "destination");
         verifyNodeBelongsToScheme(node);
 
         Point2D resolvedDestination = node.resolveMove(destination);
         if (gameField != null && !gameField.canPlace(resolvedDestination)) {
-            return;
+            return false;
         }
         if (node.isAt(resolvedDestination)) {
-            return;
+            return false;
         }
 
         node.moveDirectlyTo(resolvedDestination);
         updateIncidentEdges(node);
         updateIntersections();
 
-        if (game != null) {
-            game.registerMove();
-        }
+        return true;
     }
 
     public List<Edge> getIntersectingEdges() {
@@ -168,10 +165,6 @@ public final class Scheme {
 
     public List<Edge> getEdges() {
         return List.copyOf(edges);
-    }
-
-    void bindGame(Game game) {
-        this.game = Objects.requireNonNull(game, "game");
     }
 
     private void verifyNodeBelongsToScheme(Node node) {

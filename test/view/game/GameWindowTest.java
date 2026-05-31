@@ -57,7 +57,7 @@ class GameWindowTest {
 
         Game game = new Game();
         game.start();
-        game.currentLevel().scheme().moveNode(game.currentLevel().scheme().getNodes().get(1), new java.awt.geom.Point2D.Double(90, 5));
+        game.moveNode(game.currentLevel().scheme().getNodes().get(1), new java.awt.geom.Point2D.Double(90, 5));
         game.finish();
 
         window = createWindow(game);
@@ -184,7 +184,7 @@ class GameWindowTest {
 
         Game game = new Game();
         game.start();
-        game.currentLevel().scheme().moveNode(game.currentLevel().scheme().getNodes().getFirst(), new java.awt.geom.Point2D.Double(12, 12));
+        game.moveNode(game.currentLevel().scheme().getNodes().getFirst(), new java.awt.geom.Point2D.Double(12, 12));
         window = createWindow(game);
         SwingTestSupport.runOnEdt(window::refreshView);
 

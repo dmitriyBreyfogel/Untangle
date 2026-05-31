@@ -3,7 +3,6 @@ package view.game;
 import view.SwingTestSupport;
 
 import model.core.Game;
-import model.core.Scheme;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,8 +33,7 @@ class GameStatusPanelTest {
     void reflectsCurrentGameState() {
         Game game = new Game();
         game.start();
-        Scheme scheme = game.currentLevel().scheme();
-        scheme.moveNode(scheme.getNodes().getFirst(), new Point2D.Double(12, 12));
+        game.moveNode(game.currentLevel().scheme().getNodes().getFirst(), new Point2D.Double(12, 12));
 
         GameStatusPanel panel = SwingTestSupport.callOnEdt(() -> new GameStatusPanel(game));
         SwingTestSupport.runOnEdt(panel::refreshState);
@@ -79,7 +77,7 @@ class GameStatusPanelTest {
     void updatesAfterRestart() {
         Game game = new Game();
         game.start();
-        game.currentLevel().scheme().moveNode(game.currentLevel().scheme().getNodes().getFirst(), new Point2D.Double(12, 12));
+        game.moveNode(game.currentLevel().scheme().getNodes().getFirst(), new Point2D.Double(12, 12));
         GameStatusPanel panel = SwingTestSupport.callOnEdt(() -> new GameStatusPanel(game));
 
         game.restartCurrentLevel();
@@ -99,8 +97,7 @@ class GameStatusPanelTest {
     void showsSecondLevelAfterWinningMove() {
         Game game = new Game();
         game.start();
-        Scheme scheme = game.currentLevel().scheme();
-        scheme.moveNode(scheme.getNodes().get(1), new Point2D.Double(90, 5));
+        game.moveNode(game.currentLevel().scheme().getNodes().get(1), new Point2D.Double(90, 5));
         GameStatusPanel panel = SwingTestSupport.callOnEdt(() -> new GameStatusPanel(game));
 
         SwingTestSupport.runOnEdt(panel::refreshState);

@@ -54,8 +54,9 @@ class SchemeTest {
                 )
         );
         Node node1 = scheme.getNodes().get(1);
-        scheme.moveNode(node1, new Point2D.Double(90, 5));
+        boolean moved = scheme.moveNode(node1, new Point2D.Double(90, 5));
 
+        assertTrue(moved);
         assertFalse(scheme.hasIntersections());
         assertEquals(0, scheme.getIntersectingEdges().size());
     }
@@ -76,7 +77,7 @@ class SchemeTest {
                         1, List.of(3)
                 )
         );
-        scheme.moveNode(scheme.getNodes().get(1), new Point2D.Double(90, 5));
+        assertTrue(scheme.moveNode(scheme.getNodes().get(1), new Point2D.Double(90, 5)));
         assertFalse(scheme.hasIntersections());
 
         scheme.reset();
@@ -178,8 +179,9 @@ class SchemeTest {
         );
         Node node = scheme.getNodes().get(1);
 
-        scheme.moveNode(node, new Point2D.Double(1000, 5));
+        boolean moved = scheme.moveNode(node, new Point2D.Double(1000, 5));
 
+        assertTrue(moved);
         assertEquals(1000, node.getX());
         assertEquals(5, node.getY());
         assertFalse(scheme.hasIntersections());
@@ -203,9 +205,11 @@ class SchemeTest {
         Node fixedNode = scheme.getNodes().get(0);
         Node horizontalNode = scheme.getNodes().get(1);
 
-        scheme.moveNode(fixedNode, new Point2D.Double(30, 40));
-        scheme.moveNode(horizontalNode, new Point2D.Double(60, 70));
+        boolean fixedNodeMoved = scheme.moveNode(fixedNode, new Point2D.Double(30, 40));
+        boolean horizontalNodeMoved = scheme.moveNode(horizontalNode, new Point2D.Double(60, 70));
 
+        assertFalse(fixedNodeMoved);
+        assertTrue(horizontalNodeMoved);
         assertEquals(0, fixedNode.getX());
         assertEquals(0, fixedNode.getY());
         assertEquals(60, horizontalNode.getX());
@@ -227,8 +231,9 @@ class SchemeTest {
         );
         Node node = scheme.getNodes().get(1);
 
-        scheme.moveNode(node, new Point2D.Double(60, 200));
+        boolean moved = scheme.moveNode(node, new Point2D.Double(60, 200));
 
+        assertTrue(moved);
         assertEquals(60, node.getX());
         assertEquals(20, node.getY());
     }
@@ -247,7 +252,7 @@ class SchemeTest {
         );
         Node node = scheme.getNodes().get(1);
 
-        scheme.moveNode(node, new Point2D.Double(60, 70));
+        assertTrue(scheme.moveNode(node, new Point2D.Double(60, 70)));
         assertEquals(60, node.getX());
         assertEquals(20, node.getY());
 

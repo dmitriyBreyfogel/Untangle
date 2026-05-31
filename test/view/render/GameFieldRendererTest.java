@@ -61,7 +61,16 @@ class GameFieldRendererTest {
     @Test
     @DisplayName("Рендерер поля не принимает пустые параметры поля")
     void rejectsNullFieldParameters() {
+        assertThrows(NullPointerException.class, () -> new GameFieldRenderer(null));
         assertThrows(NullPointerException.class, () -> new GameFieldRenderer(null, Color.BLACK, Color.RED, Color.BLUE, Color.ORANGE));
+    }
+
+    @Test
+    @DisplayName("Рендерер поля не принимает пустой реестр стратегий отрисовки")
+    void rejectsNullNodeRenderStrategyRegistry() {
+        FieldParameters parameters = new FieldParameters(12, 28);
+
+        assertThrows(NullPointerException.class, () -> new GameFieldRenderer(parameters, null));
     }
 
     @Test

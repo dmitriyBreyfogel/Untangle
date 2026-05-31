@@ -24,10 +24,6 @@ final class GameFieldPanel extends JPanel {
     private final FieldParameters fieldParameters;
     private final Game gameModel;
     private Node selectedNode;
-    private final Color normalEdgeColor;
-    private final Color intersectingEdgeColor;
-    private final Color nodeColor;
-    private final Color selectedNodeColor;
     private final GameFieldRenderer gameFieldRenderer;
     private final GameFieldNavigator gameFieldNavigator;
     private final Consumer<LevelProgressBeforeMove> levelProgressHandler;
@@ -42,17 +38,7 @@ final class GameFieldPanel extends JPanel {
         this.gameModel = Objects.requireNonNull(gameModel, "gameModel");
         this.levelProgressHandler = Objects.requireNonNull(levelProgressHandler, "levelProgressHandler");
         fieldParameters = new FieldParameters(12, 28);
-        normalEdgeColor = new Color(106, 126, 152);
-        intersectingEdgeColor = new Color(226, 97, 76);
-        nodeColor = new Color(74, 163, 180);
-        selectedNodeColor = new Color(243, 188, 65);
-        gameFieldRenderer = new GameFieldRenderer(
-                fieldParameters,
-                normalEdgeColor,
-                intersectingEdgeColor,
-                nodeColor,
-                selectedNodeColor
-        );
+        gameFieldRenderer = new GameFieldRenderer(fieldParameters);
         gameFieldNavigator = new GameFieldNavigator(fieldParameters, gameModel, this::getSize);
         configurePanel();
         attachMouseHandlers();

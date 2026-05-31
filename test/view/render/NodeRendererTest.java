@@ -24,13 +24,13 @@ class NodeRendererTest {
     @Test
     @DisplayName("Рендерер узлов не принимает пустые параметры поля")
     void rejectsNullFieldParameters() {
-        assertThrows(NullPointerException.class, () -> new NodeRenderer(null));
+        assertThrows(NullPointerException.class, () -> new NodeRenderer(null, NodeRenderStrategyRegistry.createDefault()));
     }
 
     @Test
     @DisplayName("Рендерер узлов не принимает пустой графический контекст")
     void rejectsNullGraphics() {
-        assertThrows(NullPointerException.class, () -> new NodeRenderer(new FieldParameters(12, 28)).drawNodes(null, new Game()));
+        assertThrows(NullPointerException.class, () -> renderer(new FieldParameters(12, 28)).drawNodes(null, new Game()));
     }
 
     @Test
@@ -39,7 +39,7 @@ class NodeRendererTest {
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         try {
-            assertThrows(NullPointerException.class, () -> new NodeRenderer(new FieldParameters(12, 28)).drawNodes(graphics, null));
+            assertThrows(NullPointerException.class, () -> renderer(new FieldParameters(12, 28)).drawNodes(graphics, null));
         } finally {
             graphics.dispose();
         }
@@ -51,7 +51,7 @@ class NodeRendererTest {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
         Node node = game.currentLevel().scheme().getNodes().getFirst();
-        NodeRenderer renderer = new NodeRenderer(parameters);
+        NodeRenderer renderer = renderer(parameters);
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         Color nodeColor = new Color(40, 120, 190);
@@ -74,7 +74,7 @@ class NodeRendererTest {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
         Node node = game.currentLevel().scheme().getNodes().getFirst();
-        NodeRenderer renderer = new NodeRenderer(parameters);
+        NodeRenderer renderer = renderer(parameters);
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         Color nodeColor = new Color(40, 120, 190);
@@ -97,7 +97,7 @@ class NodeRendererTest {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
         Node node = game.currentLevel().scheme().getNodes().get(2);
-        NodeRenderer renderer = new NodeRenderer(parameters);
+        NodeRenderer renderer = renderer(parameters);
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         Color nodeColor = new Color(40, 120, 190);
@@ -119,7 +119,7 @@ class NodeRendererTest {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
         Node node = game.currentLevel().scheme().getNodes().get(3);
-        NodeRenderer renderer = new NodeRenderer(parameters);
+        NodeRenderer renderer = renderer(parameters);
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         Color nodeColor = new Color(40, 120, 190);
@@ -165,7 +165,7 @@ class NodeRendererTest {
     @DisplayName("Рендерер узлов не меняет изображение, когда игра не запущена")
     void leavesImageUnchangedWhenGameIsNotStarted() {
         Game game = new Game();
-        NodeRenderer renderer = new NodeRenderer(new FieldParameters(12, 28));
+        NodeRenderer renderer = renderer(new FieldParameters(12, 28));
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         try {
@@ -181,7 +181,7 @@ class NodeRendererTest {
     @DisplayName("Рендерер узлов может рисовать без явной области отсечения")
     void canDrawWithoutExplicitClip() {
         Game game = startedGame();
-        NodeRenderer renderer = new NodeRenderer(new FieldParameters(12, 28));
+        NodeRenderer renderer = renderer(new FieldParameters(12, 28));
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = image.createGraphics();
         try {
@@ -195,7 +195,7 @@ class NodeRendererTest {
     @DisplayName("Рендерер узлов не принимает пустую палитру")
     void rejectsNullPalette() {
         Game game = startedGame();
-        NodeRenderer renderer = new NodeRenderer(new FieldParameters(12, 28));
+        NodeRenderer renderer = renderer(new FieldParameters(12, 28));
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         try {
@@ -215,5 +215,9 @@ class NodeRendererTest {
         Game game = new Game();
         game.start();
         return game;
+    }
+
+    private static NodeRenderer renderer(FieldParameters parameters) {
+        return new NodeRenderer(parameters, NodeRenderStrategyRegistry.createDefault());
     }
 }

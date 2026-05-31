@@ -15,24 +15,12 @@ final class GraphRenderer {
     private final NodeRenderer nodeRenderer;
 
     GraphRenderer(FieldParameters fieldParameters) {
-        this(fieldParameters, GraphPalette.defaultPalette());
-    }
-
-    GraphRenderer(FieldParameters fieldParameters, GraphPalette graphPalette) {
-        this(fieldParameters, graphPalette, NodeRenderStrategyRegistry.createDefault());
+        this(fieldParameters, NodeRenderStrategyRegistry.createDefault());
     }
 
     GraphRenderer(FieldParameters fieldParameters, NodeRenderStrategyRegistry nodeRenderStrategyRegistry) {
-        this(fieldParameters, GraphPalette.defaultPalette(), nodeRenderStrategyRegistry);
-    }
-
-    GraphRenderer(
-            FieldParameters fieldParameters,
-            GraphPalette graphPalette,
-            NodeRenderStrategyRegistry nodeRenderStrategyRegistry
-    ) {
         this.fieldParameters = Objects.requireNonNull(fieldParameters, "fieldParameters");
-        this.graphPalette = Objects.requireNonNull(graphPalette, "graphPalette");
+        this.graphPalette = GraphPalette.defaultPalette();
         this.edgeRenderer = new EdgeRenderer(fieldParameters);
         this.nodeRenderer = new NodeRenderer(fieldParameters, nodeRenderStrategyRegistry);
     }

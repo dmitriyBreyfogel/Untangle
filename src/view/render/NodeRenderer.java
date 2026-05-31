@@ -15,11 +15,6 @@ final class NodeRenderer {
     private final FieldParameters fieldParameters;
     private final NodeRenderStrategyRegistry nodeRenderStrategyRegistry;
 
-    NodeRenderer(FieldParameters fieldParameters) {
-        this.fieldParameters = Objects.requireNonNull(fieldParameters, "fieldParameters");
-        this.nodeRenderStrategyRegistry = NodeRenderStrategyRegistry.createDefault();
-    }
-
     NodeRenderer(FieldParameters fieldParameters, NodeRenderStrategyRegistry nodeRenderStrategyRegistry) {
         this.fieldParameters = Objects.requireNonNull(fieldParameters, "fieldParameters");
         this.nodeRenderStrategyRegistry = Objects.requireNonNull(nodeRenderStrategyRegistry, "nodeRenderStrategyRegistry");

@@ -16,32 +16,16 @@ public final class GameFieldRenderer {
     private final BoardRenderer boardRenderer;
 
     public GameFieldRenderer(FieldParameters fieldParameters) {
-        this(fieldParameters, GraphPalette.defaultPalette());
+        this(fieldParameters, NodeRenderStrategyRegistry.createDefault());
     }
 
     public GameFieldRenderer(
             FieldParameters fieldParameters,
-            GraphPalette graphPalette
-    ) {
-        this(fieldParameters, graphPalette, NodeRenderStrategyRegistry.createDefault());
-    }
-
-    public GameFieldRenderer(
-            FieldParameters fieldParameters,
-            NodeRenderStrategyRegistry nodeRenderStrategyRegistry
-    ) {
-        this(fieldParameters, GraphPalette.defaultPalette(), nodeRenderStrategyRegistry);
-    }
-
-    public GameFieldRenderer(
-            FieldParameters fieldParameters,
-            GraphPalette graphPalette,
             NodeRenderStrategyRegistry nodeRenderStrategyRegistry
     ) {
         this.fieldParameters = Objects.requireNonNull(fieldParameters, "fieldParameters");
         graphRenderer = new GraphRenderer(
                 fieldParameters,
-                Objects.requireNonNull(graphPalette, "graphPalette"),
                 Objects.requireNonNull(nodeRenderStrategyRegistry, "nodeRenderStrategyRegistry")
         );
         boardRenderer = new BoardRenderer();

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import view.render.node.NodeRenderStrategyRegistry;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Point2D;
@@ -26,8 +25,8 @@ class GameFieldRendererTest {
         Game game = startedGame();
         Node selectedNode = game.currentLevel().scheme().getNodes().getFirst();
         FieldParameters parameters = new FieldParameters(12, 28);
-        Color selectedColor = new Color(230, 155, 44);
-        GameFieldRenderer renderer = renderer(parameters, selectedColor);
+        GraphPalette palette = GraphPalette.defaultPalette();
+        GameFieldRenderer renderer = renderer(parameters);
 
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
@@ -39,14 +38,14 @@ class GameFieldRendererTest {
 
         Point point = SwingTestSupport.toScreenPoint(parameters, game, selectedNode.getX(), selectedNode.getY(), image.getWidth(), image.getHeight());
 
-        assertEquals(selectedColor.getRGB(), image.getRGB(point.x, point.y));
+        assertEquals(palette.selectedNodeColor().getRGB(), image.getRGB(point.x, point.y));
     }
 
     @Test
     @DisplayName("Рендерер поля рисует поле, даже когда игра не запущена")
     void paintsFieldWhenGameIsStopped() {
         Game game = new Game();
-        GameFieldRenderer renderer = renderer(new FieldParameters(12, 28), new Color(230, 155, 44));
+        GameFieldRenderer renderer = renderer(new FieldParameters(12, 28));
 
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
@@ -63,7 +62,6 @@ class GameFieldRendererTest {
     @DisplayName("Рендерер поля не принимает пустые параметры поля")
     void rejectsNullFieldParameters() {
         assertThrows(NullPointerException.class, () -> new GameFieldRenderer(null));
-        assertThrows(NullPointerException.class, () -> new GameFieldRenderer(null, GraphPalette.defaultPalette()));
     }
 
     @Test
@@ -75,17 +73,9 @@ class GameFieldRendererTest {
     }
 
     @Test
-    @DisplayName("Рендерер поля не принимает пустую палитру графа")
-    void rejectsNullGraphPalette() {
-        FieldParameters parameters = new FieldParameters(12, 28);
-
-        assertThrows(NullPointerException.class, () -> new GameFieldRenderer(parameters, (GraphPalette) null));
-    }
-
-    @Test
     @DisplayName("Рендерер поля не принимает пустой графический контекст")
     void rejectsNullGraphics() {
-        assertThrows(NullPointerException.class, () -> renderer(new FieldParameters(12, 28), Color.ORANGE).drawField(null, new Game(), null));
+        assertThrows(NullPointerException.class, () -> renderer(new FieldParameters(12, 28)).drawField(null, new Game(), null));
     }
 
     @Test
@@ -94,7 +84,7 @@ class GameFieldRendererTest {
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         try {
-            assertThrows(NullPointerException.class, () -> renderer(new FieldParameters(12, 28), Color.ORANGE).drawField(graphics, null, null));
+            assertThrows(NullPointerException.class, () -> renderer(new FieldParameters(12, 28)).drawField(graphics, null, null));
         } finally {
             graphics.dispose();
         }
@@ -105,7 +95,7 @@ class GameFieldRendererTest {
     void paintsBackgroundAndBoardWithDifferentColors() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
-        GameFieldRenderer renderer = renderer(parameters, new Color(230, 155, 44));
+        GameFieldRenderer renderer = renderer(parameters);
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         try {
@@ -125,14 +115,8 @@ class GameFieldRendererTest {
     void usesRegularNodeColorForUnselectedNode() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
-        Color nodeColor = new Color(53, 111, 179);
-        GraphPalette palette = new GraphPalette(
-                new Color(66, 63, 60),
-                new Color(198, 59, 59),
-                nodeColor,
-                new Color(230, 155, 44)
-        );
-        GameFieldRenderer renderer = new GameFieldRenderer(parameters, palette);
+        GraphPalette palette = GraphPalette.defaultPalette();
+        GameFieldRenderer renderer = new GameFieldRenderer(parameters);
         Node node = game.currentLevel().scheme().getNodes().getFirst();
 
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
@@ -145,7 +129,7 @@ class GameFieldRendererTest {
 
         Point point = SwingTestSupport.toScreenPoint(parameters, game, node.getX(), node.getY(), image.getWidth(), image.getHeight());
 
-        assertEquals(nodeColor.getRGB(), image.getRGB(point.x, point.y));
+        assertEquals(palette.nodeColor().getRGB(), image.getRGB(point.x, point.y));
     }
 
     @Test
@@ -153,15 +137,8 @@ class GameFieldRendererTest {
     void updatesEdgeColorInPreviewBeforeMouseRelease() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
-        Color normalEdgeColor = new Color(66, 63, 60);
-        Color intersectingEdgeColor = new Color(198, 59, 59);
-        GraphPalette palette = new GraphPalette(
-                normalEdgeColor,
-                intersectingEdgeColor,
-                new Color(53, 111, 179),
-                new Color(230, 155, 44)
-        );
-        GameFieldRenderer renderer = new GameFieldRenderer(parameters, palette);
+        GraphPalette palette = GraphPalette.defaultPalette();
+        GameFieldRenderer renderer = new GameFieldRenderer(parameters);
         Node selectedNode = game.currentLevel().scheme().getNodes().get(1);
 
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
@@ -174,14 +151,14 @@ class GameFieldRendererTest {
 
         Point point = SwingTestSupport.toScreenPoint(parameters, game, 50, 7.5, image.getWidth(), image.getHeight());
 
-        assertEquals(normalEdgeColor.getRGB(), image.getRGB(point.x, point.y));
-        assertNotEquals(intersectingEdgeColor.getRGB(), image.getRGB(point.x, point.y));
+        assertEquals(palette.normalEdgeColor().getRGB(), image.getRGB(point.x, point.y));
+        assertNotEquals(palette.intersectingEdgeColor().getRGB(), image.getRGB(point.x, point.y));
     }
 
     @Test
     @DisplayName("Рендерер поля может рисовать без явной области отсечения")
     void canDrawWithoutExplicitClip() {
-        GameFieldRenderer renderer = renderer(new FieldParameters(12, 28), new Color(230, 155, 44));
+        GameFieldRenderer renderer = renderer(new FieldParameters(12, 28));
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = image.createGraphics();
         try {
@@ -197,15 +174,7 @@ class GameFieldRendererTest {
         return game;
     }
 
-    private static GameFieldRenderer renderer(FieldParameters parameters, Color selectedColor) {
-        return new GameFieldRenderer(
-                parameters,
-                new GraphPalette(
-                        new Color(66, 63, 60),
-                        new Color(198, 59, 59),
-                        new Color(53, 111, 179),
-                        selectedColor
-                )
-        );
+    private static GameFieldRenderer renderer(FieldParameters parameters) {
+        return new GameFieldRenderer(parameters);
     }
 }

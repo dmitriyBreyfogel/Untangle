@@ -56,8 +56,9 @@ class NodeRendererTest {
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         Color nodeColor = new Color(40, 120, 190);
         Color selectedColor = new Color(210, 140, 30);
+        GraphPalette palette = new GraphPalette(Color.BLACK, Color.RED, nodeColor, selectedColor);
         try {
-            renderer.drawNodes(graphics, game, null, null, nodeColor, selectedColor);
+            renderer.drawNodes(graphics, game, null, null, palette);
         } finally {
             graphics.dispose();
         }
@@ -78,8 +79,9 @@ class NodeRendererTest {
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         Color nodeColor = new Color(40, 120, 190);
         Color selectedColor = new Color(210, 140, 30);
+        GraphPalette palette = new GraphPalette(Color.BLACK, Color.RED, nodeColor, selectedColor);
         try {
-            renderer.drawNodes(graphics, game, node, null, nodeColor, selectedColor);
+            renderer.drawNodes(graphics, game, node, null, palette);
         } finally {
             graphics.dispose();
         }
@@ -99,8 +101,9 @@ class NodeRendererTest {
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         Color nodeColor = new Color(40, 120, 190);
+        GraphPalette palette = new GraphPalette(Color.BLACK, Color.RED, nodeColor, Color.ORANGE);
         try {
-            renderer.drawNodes(graphics, game, null, null, nodeColor, Color.ORANGE);
+            renderer.drawNodes(graphics, game, null, null, palette);
         } finally {
             graphics.dispose();
         }
@@ -120,8 +123,9 @@ class NodeRendererTest {
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         Color nodeColor = new Color(40, 120, 190);
+        GraphPalette palette = new GraphPalette(Color.BLACK, Color.RED, nodeColor, Color.ORANGE);
         try {
-            renderer.drawNodes(graphics, game, null, null, nodeColor, Color.ORANGE);
+            renderer.drawNodes(graphics, game, null, null, palette);
         } finally {
             graphics.dispose();
         }
@@ -145,8 +149,9 @@ class NodeRendererTest {
         NodeRenderer renderer = new NodeRenderer(parameters, registry);
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
+        GraphPalette palette = new GraphPalette(Color.BLACK, Color.RED, Color.BLUE, Color.ORANGE);
         try {
-            renderer.drawNodes(graphics, game, null, null, Color.BLUE, Color.ORANGE);
+            renderer.drawNodes(graphics, game, null, null, palette);
         } finally {
             graphics.dispose();
         }
@@ -187,15 +192,14 @@ class NodeRendererTest {
     }
 
     @Test
-    @DisplayName("Пакетный метод рендерера узлов не принимает пустые цвета")
-    void packageMethodRejectsNullColors() {
+    @DisplayName("Рендерер узлов не принимает пустую палитру")
+    void rejectsNullPalette() {
         Game game = startedGame();
         NodeRenderer renderer = new NodeRenderer(new FieldParameters(12, 28));
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         try {
-            assertThrows(NullPointerException.class, () -> renderer.drawNodes(graphics, game, null, null, null, Color.ORANGE));
-            assertThrows(NullPointerException.class, () -> renderer.drawNodes(graphics, game, null, null, Color.BLUE, null));
+            assertThrows(NullPointerException.class, () -> renderer.drawNodes(graphics, game, null, null, (GraphPalette) null));
         } finally {
             graphics.dispose();
         }

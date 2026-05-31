@@ -60,25 +60,29 @@ class GraphRendererTest {
         Point nodePoint = SwingTestSupport.toScreenPoint(parameters, game, node.getX(), node.getY(), image.getWidth(), image.getHeight());
         Point edgePoint = SwingTestSupport.toScreenPoint(parameters, game, 50, 50, image.getWidth(), image.getHeight());
 
-        assertEquals(new Color(52, 127, 196).getRGB(), image.getRGB(nodePoint.x, nodePoint.y));
-        assertEquals(new Color(210, 70, 70).getRGB(), image.getRGB(edgePoint.x, edgePoint.y));
+        GraphPalette palette = GraphPalette.defaultPalette();
+        assertEquals(palette.nodeColor().getRGB(), image.getRGB(nodePoint.x, nodePoint.y));
+        assertEquals(palette.intersectingEdgeColor().getRGB(), image.getRGB(edgePoint.x, edgePoint.y));
     }
 
     @Test
-    @DisplayName("Пакетный метод рендерера графа использует кастомные цвета")
-    void packageMethodUsesCustomColors() {
+    @DisplayName("Рендерер графа использует кастомную палитру")
+    void usesCustomPalette() {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
-        GraphRenderer renderer = new GraphRenderer(parameters);
-        BufferedImage image = SwingTestSupport.createCanvas(320, 320);
-        Graphics2D graphics = SwingTestSupport.createGraphics(image);
-        Node node = game.currentLevel().scheme().getNodes().getFirst();
         Color normalEdge = new Color(1, 2, 3);
         Color intersectingEdge = new Color(4, 5, 6);
         Color nodeColor = new Color(7, 8, 9);
         Color selectedColor = new Color(10, 11, 12);
+        GraphRenderer renderer = new GraphRenderer(
+                parameters,
+                new GraphPalette(normalEdge, intersectingEdge, nodeColor, selectedColor)
+        );
+        BufferedImage image = SwingTestSupport.createCanvas(320, 320);
+        Graphics2D graphics = SwingTestSupport.createGraphics(image);
+        Node node = game.currentLevel().scheme().getNodes().getFirst();
         try {
-            renderer.drawGraph(graphics, game, node, null, normalEdge, intersectingEdge, nodeColor, selectedColor);
+            renderer.drawGraph(graphics, game, node, null);
         } finally {
             graphics.dispose();
         }
@@ -102,6 +106,12 @@ class GraphRendererTest {
         } finally {
             graphics.dispose();
         }
+    }
+
+    @Test
+    @DisplayName("Рендерер графа не принимает пустую палитру")
+    void rejectsNullPalette() {
+        assertThrows(NullPointerException.class, () -> new GraphRenderer(new FieldParameters(12, 28), (GraphPalette) null));
     }
 
     private static Game startedGame() {

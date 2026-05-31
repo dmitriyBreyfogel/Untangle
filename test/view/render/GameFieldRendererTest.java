@@ -6,6 +6,7 @@ import model.core.Game;
 import model.core.Node;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import view.render.node.NodeRenderStrategyRegistry;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -62,7 +63,7 @@ class GameFieldRendererTest {
     @DisplayName("Рендерер поля не принимает пустые параметры поля")
     void rejectsNullFieldParameters() {
         assertThrows(NullPointerException.class, () -> new GameFieldRenderer(null));
-        assertThrows(NullPointerException.class, () -> new GameFieldRenderer(null, Color.BLACK, Color.RED, Color.BLUE, Color.ORANGE));
+        assertThrows(NullPointerException.class, () -> new GameFieldRenderer(null, GraphPalette.defaultPalette()));
     }
 
     @Test
@@ -70,17 +71,15 @@ class GameFieldRendererTest {
     void rejectsNullNodeRenderStrategyRegistry() {
         FieldParameters parameters = new FieldParameters(12, 28);
 
-        assertThrows(NullPointerException.class, () -> new GameFieldRenderer(parameters, null));
+        assertThrows(NullPointerException.class, () -> new GameFieldRenderer(parameters, (NodeRenderStrategyRegistry) null));
     }
 
     @Test
-    @DisplayName("Рендерер поля не принимает пустые цвета")
-    void rejectsNullColors() {
+    @DisplayName("Рендерер поля не принимает пустую палитру графа")
+    void rejectsNullGraphPalette() {
         FieldParameters parameters = new FieldParameters(12, 28);
-        assertThrows(NullPointerException.class, () -> new GameFieldRenderer(parameters, null, Color.RED, Color.BLUE, Color.ORANGE));
-        assertThrows(NullPointerException.class, () -> new GameFieldRenderer(parameters, Color.BLACK, null, Color.BLUE, Color.ORANGE));
-        assertThrows(NullPointerException.class, () -> new GameFieldRenderer(parameters, Color.BLACK, Color.RED, null, Color.ORANGE));
-        assertThrows(NullPointerException.class, () -> new GameFieldRenderer(parameters, Color.BLACK, Color.RED, Color.BLUE, null));
+
+        assertThrows(NullPointerException.class, () -> new GameFieldRenderer(parameters, (GraphPalette) null));
     }
 
     @Test
@@ -127,13 +126,13 @@ class GameFieldRendererTest {
         Game game = startedGame();
         FieldParameters parameters = new FieldParameters(12, 28);
         Color nodeColor = new Color(53, 111, 179);
-        GameFieldRenderer renderer = new GameFieldRenderer(
-                parameters,
+        GraphPalette palette = new GraphPalette(
                 new Color(66, 63, 60),
                 new Color(198, 59, 59),
                 nodeColor,
                 new Color(230, 155, 44)
         );
+        GameFieldRenderer renderer = new GameFieldRenderer(parameters, palette);
         Node node = game.currentLevel().scheme().getNodes().getFirst();
 
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
@@ -156,13 +155,13 @@ class GameFieldRendererTest {
         FieldParameters parameters = new FieldParameters(12, 28);
         Color normalEdgeColor = new Color(66, 63, 60);
         Color intersectingEdgeColor = new Color(198, 59, 59);
-        GameFieldRenderer renderer = new GameFieldRenderer(
-                parameters,
+        GraphPalette palette = new GraphPalette(
                 normalEdgeColor,
                 intersectingEdgeColor,
                 new Color(53, 111, 179),
                 new Color(230, 155, 44)
         );
+        GameFieldRenderer renderer = new GameFieldRenderer(parameters, palette);
         Node selectedNode = game.currentLevel().scheme().getNodes().get(1);
 
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
@@ -201,10 +200,12 @@ class GameFieldRendererTest {
     private static GameFieldRenderer renderer(FieldParameters parameters, Color selectedColor) {
         return new GameFieldRenderer(
                 parameters,
-                new Color(66, 63, 60),
-                new Color(198, 59, 59),
-                new Color(53, 111, 179),
-                selectedColor
+                new GraphPalette(
+                        new Color(66, 63, 60),
+                        new Color(198, 59, 59),
+                        new Color(53, 111, 179),
+                        selectedColor
+                )
         );
     }
 }

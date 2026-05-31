@@ -52,8 +52,9 @@ class EdgeRendererTest {
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         Color normal = new Color(10, 20, 30);
         Color intersecting = new Color(200, 30, 40);
+        GraphPalette palette = new GraphPalette(normal, intersecting, Color.BLUE, Color.ORANGE);
         try {
-            renderer.drawEdges(graphics, game, normal, intersecting);
+            renderer.drawEdges(graphics, game, palette);
         } finally {
             graphics.dispose();
         }
@@ -73,8 +74,9 @@ class EdgeRendererTest {
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         Color normal = new Color(10, 20, 30);
         Color intersecting = new Color(200, 30, 40);
+        GraphPalette palette = new GraphPalette(normal, intersecting, Color.BLUE, Color.ORANGE);
         try {
-            renderer.drawEdges(graphics, game, normal, intersecting);
+            renderer.drawEdges(graphics, game, palette);
         } finally {
             graphics.dispose();
         }
@@ -115,15 +117,14 @@ class EdgeRendererTest {
     }
 
     @Test
-    @DisplayName("Пакетный метод рендерера граней не принимает пустые цвета")
-    void packageMethodRejectsNullColors() {
+    @DisplayName("Рендерер граней не принимает пустую палитру")
+    void rejectsNullPalette() {
         Game game = startedGame();
         EdgeRenderer renderer = new EdgeRenderer(new FieldParameters(12, 28));
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);
         Graphics2D graphics = SwingTestSupport.createGraphics(image);
         try {
-            assertThrows(NullPointerException.class, () -> renderer.drawEdges(graphics, game, null, Color.RED));
-            assertThrows(NullPointerException.class, () -> renderer.drawEdges(graphics, game, Color.BLACK, null));
+            assertThrows(NullPointerException.class, () -> renderer.drawEdges(graphics, game, (GraphPalette) null));
         } finally {
             graphics.dispose();
         }

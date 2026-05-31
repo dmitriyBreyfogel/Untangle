@@ -24,11 +24,11 @@ final class EdgeRenderer {
     }
 
     void drawEdges(Graphics2D graphics, Game gameModel) {
-        drawEdges(graphics, gameModel, null, null, new Color(90, 90, 90), new Color(210, 70, 70));
+        drawEdges(graphics, gameModel, GraphPalette.defaultPalette());
     }
 
-    void drawEdges(Graphics2D graphics, Game gameModel, Color normalEdgeColor, Color intersectingEdgeColor) {
-        drawEdges(graphics, gameModel, null, null, normalEdgeColor, intersectingEdgeColor);
+    void drawEdges(Graphics2D graphics, Game gameModel, GraphPalette graphPalette) {
+        drawEdges(graphics, gameModel, null, null, graphPalette);
     }
 
     void drawEdges(
@@ -36,13 +36,11 @@ final class EdgeRenderer {
             Game gameModel,
             Node selectedNode,
             Point2D selectedNodePosition,
-            Color normalEdgeColor,
-            Color intersectingEdgeColor
+            GraphPalette graphPalette
     ) {
         Objects.requireNonNull(graphics, "graphics");
         Objects.requireNonNull(gameModel, "gameModel");
-        Objects.requireNonNull(normalEdgeColor, "normalEdgeColor");
-        Objects.requireNonNull(intersectingEdgeColor, "intersectingEdgeColor");
+        Objects.requireNonNull(graphPalette, "graphPalette");
 
         Level currentLevel = gameModel.currentLevel();
         if (currentLevel == null) {
@@ -50,7 +48,7 @@ final class EdgeRenderer {
         }
 
         FieldCoordinateMapper mapper = mapperFor(graphics, gameModel);
-        drawEdges(graphics, gameModel, mapper, selectedNode, selectedNodePosition, normalEdgeColor, intersectingEdgeColor);
+        drawEdges(graphics, gameModel, mapper, selectedNode, selectedNodePosition, graphPalette);
     }
 
     void drawEdges(
@@ -59,14 +57,12 @@ final class EdgeRenderer {
             FieldCoordinateMapper mapper,
             Node selectedNode,
             Point2D selectedNodePosition,
-            Color normalEdgeColor,
-            Color intersectingEdgeColor
+            GraphPalette graphPalette
     ) {
         Objects.requireNonNull(graphics, "graphics");
         Objects.requireNonNull(gameModel, "gameModel");
         Objects.requireNonNull(mapper, "mapper");
-        Objects.requireNonNull(normalEdgeColor, "normalEdgeColor");
-        Objects.requireNonNull(intersectingEdgeColor, "intersectingEdgeColor");
+        Objects.requireNonNull(graphPalette, "graphPalette");
 
         Level currentLevel = gameModel.currentLevel();
         if (currentLevel == null) {
@@ -88,7 +84,7 @@ final class EdgeRenderer {
                     edge,
                     selectedNode,
                     selectedNodePosition,
-                    intersecting ? intersectingEdgeColor : normalEdgeColor,
+                    intersecting ? graphPalette.intersectingEdgeColor() : graphPalette.normalEdgeColor(),
                     intersecting
             );
         }

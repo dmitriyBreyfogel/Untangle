@@ -5,76 +5,43 @@ import model.level.Level;
 import model.core.Node;
 import view.render.node.NodeRenderStrategyRegistry;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.util.Objects;
 
 public final class GameFieldRenderer {
-    private static final Color DEFAULT_NORMAL_EDGE_COLOR = new Color(106, 126, 152);
-    private static final Color DEFAULT_INTERSECTING_EDGE_COLOR = new Color(226, 97, 76);
-    private static final Color DEFAULT_NODE_COLOR = new Color(74, 163, 180);
-    private static final Color DEFAULT_SELECTED_NODE_COLOR = new Color(243, 188, 65);
-
     private final FieldParameters fieldParameters;
-    private final Color normalEdgeColor;
-    private final Color intersectingEdgeColor;
-    private final Color nodeColor;
-    private final Color selectedNodeColor;
     private final GraphRenderer graphRenderer;
     private final BoardRenderer boardRenderer;
 
     public GameFieldRenderer(FieldParameters fieldParameters) {
-        this(fieldParameters, NodeRenderStrategyRegistry.createDefault());
+        this(fieldParameters, GraphPalette.defaultPalette());
+    }
+
+    public GameFieldRenderer(
+            FieldParameters fieldParameters,
+            GraphPalette graphPalette
+    ) {
+        this(fieldParameters, graphPalette, NodeRenderStrategyRegistry.createDefault());
     }
 
     public GameFieldRenderer(
             FieldParameters fieldParameters,
             NodeRenderStrategyRegistry nodeRenderStrategyRegistry
     ) {
-        this(
-                fieldParameters,
-                DEFAULT_NORMAL_EDGE_COLOR,
-                DEFAULT_INTERSECTING_EDGE_COLOR,
-                DEFAULT_NODE_COLOR,
-                DEFAULT_SELECTED_NODE_COLOR,
-                nodeRenderStrategyRegistry
-        );
+        this(fieldParameters, GraphPalette.defaultPalette(), nodeRenderStrategyRegistry);
     }
 
     public GameFieldRenderer(
             FieldParameters fieldParameters,
-            Color normalEdgeColor,
-            Color intersectingEdgeColor,
-            Color nodeColor,
-            Color selectedNodeColor
-    ) {
-        this(
-                fieldParameters,
-                normalEdgeColor,
-                intersectingEdgeColor,
-                nodeColor,
-                selectedNodeColor,
-                NodeRenderStrategyRegistry.createDefault()
-        );
-    }
-
-    public GameFieldRenderer(
-            FieldParameters fieldParameters,
-            Color normalEdgeColor,
-            Color intersectingEdgeColor,
-            Color nodeColor,
-            Color selectedNodeColor,
+            GraphPalette graphPalette,
             NodeRenderStrategyRegistry nodeRenderStrategyRegistry
     ) {
         this.fieldParameters = Objects.requireNonNull(fieldParameters, "fieldParameters");
-        this.normalEdgeColor = Objects.requireNonNull(normalEdgeColor, "normalEdgeColor");
-        this.intersectingEdgeColor = Objects.requireNonNull(intersectingEdgeColor, "intersectingEdgeColor");
-        this.nodeColor = Objects.requireNonNull(nodeColor, "nodeColor");
-        this.selectedNodeColor = Objects.requireNonNull(selectedNodeColor, "selectedNodeColor");
         graphRenderer = new GraphRenderer(
                 fieldParameters,
+                Objects.requireNonNull(graphPalette, "graphPalette"),
                 Objects.requireNonNull(nodeRenderStrategyRegistry, "nodeRenderStrategyRegistry")
         );
         boardRenderer = new BoardRenderer();
@@ -103,16 +70,7 @@ public final class GameFieldRenderer {
             if (currentLevel == null) {
                 return;
             }
-            graphRenderer.drawGraph(
-                    graphicsCopy,
-                    gameModel,
-                    selectedNode,
-                    selectedNodePosition,
-                    normalEdgeColor,
-                    intersectingEdgeColor,
-                    nodeColor,
-                    selectedNodeColor
-            );
+            graphRenderer.drawGraph(graphicsCopy, gameModel, selectedNode, selectedNodePosition);
         } finally {
             graphicsCopy.dispose();
         }

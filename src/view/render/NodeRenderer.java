@@ -26,7 +26,11 @@ final class NodeRenderer {
     }
 
     void drawNodes(Graphics2D graphics, Game gameModel) {
-        drawNodes(graphics, gameModel, null, null, new Color(52, 127, 196), new Color(241, 166, 47));
+        drawNodes(graphics, gameModel, GraphPalette.defaultPalette());
+    }
+
+    void drawNodes(Graphics2D graphics, Game gameModel, GraphPalette graphPalette) {
+        drawNodes(graphics, gameModel, null, null, graphPalette);
     }
 
     void drawNodes(
@@ -34,13 +38,11 @@ final class NodeRenderer {
             Game gameModel,
             Node selectedNode,
             Point2D selectedNodePosition,
-            Color nodeColor,
-            Color selectedNodeColor
+            GraphPalette graphPalette
     ) {
         Objects.requireNonNull(graphics, "graphics");
         Objects.requireNonNull(gameModel, "gameModel");
-        Objects.requireNonNull(nodeColor, "nodeColor");
-        Objects.requireNonNull(selectedNodeColor, "selectedNodeColor");
+        Objects.requireNonNull(graphPalette, "graphPalette");
 
         Level currentLevel = gameModel.currentLevel();
         if (currentLevel == null) {
@@ -48,7 +50,7 @@ final class NodeRenderer {
         }
 
         FieldCoordinateMapper mapper = mapperFor(graphics, gameModel);
-        drawNodes(graphics, gameModel, mapper, selectedNode, selectedNodePosition, nodeColor, selectedNodeColor);
+        drawNodes(graphics, gameModel, mapper, selectedNode, selectedNodePosition, graphPalette);
     }
 
     void drawNodes(
@@ -57,14 +59,12 @@ final class NodeRenderer {
             FieldCoordinateMapper mapper,
             Node selectedNode,
             Point2D selectedNodePosition,
-            Color nodeColor,
-            Color selectedNodeColor
+            GraphPalette graphPalette
     ) {
         Objects.requireNonNull(graphics, "graphics");
         Objects.requireNonNull(gameModel, "gameModel");
         Objects.requireNonNull(mapper, "mapper");
-        Objects.requireNonNull(nodeColor, "nodeColor");
-        Objects.requireNonNull(selectedNodeColor, "selectedNodeColor");
+        Objects.requireNonNull(graphPalette, "graphPalette");
 
         Level currentLevel = gameModel.currentLevel();
         if (currentLevel == null) {
@@ -78,7 +78,7 @@ final class NodeRenderer {
                     node,
                     selectedNode,
                     selectedNodePosition,
-                    node == selectedNode ? selectedNodeColor : nodeColor
+                    node == selectedNode ? graphPalette.selectedNodeColor() : graphPalette.nodeColor()
             );
         }
     }

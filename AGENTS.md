@@ -22,11 +22,12 @@
 
 ## Команды
 
-- `mvn test` — скомпилировать проект и запустить все тесты.
-- `mvn compile` — собрать классы в `target/classes`.
-- `java -cp target/classes UntangleApplication` — запустить игру после компиляции.
+- Открыть папку проекта в IntelliJ IDEA — проект подхватывается через `Untangle.iml`.
+- Запустить `UntangleApplication` — основной запуск игры из IDE.
+- `javac --release 24 -encoding UTF-8 -d out/production/untangle <исходники>` — ручная компиляция production-кода при необходимости.
+- `java -cp out/production/untangle UntangleApplication` — запуск после ручной компиляции.
 
-Проект использует Java release 24 и Maven с нестандартными директориями `src` и `test`.
+Проект использует Java 24 и обычную IntelliJ IDEA структуру с директориями `src` и `test`. Maven-сборка больше не является основным способом запуска.
 
 ## Стиль кода
 
@@ -36,7 +37,7 @@
 
 ## Тестирование
 
-После значимых изменений запускай `mvn test`. Тесты называй `*Test.java`, методы — описательно, например `startLoadsFirstLevel`. Все значения в аннотациях `@DisplayName` должны быть строго на русском языке. Для Swing-проверок используй существующие test helpers из `test/view`.
+После значимых изменений компилируй production-код и запускай тесты из IntelliJ IDEA. Тесты называй `*Test.java`, методы — описательно, например `startLoadsFirstLevel`. Все значения в аннотациях `@DisplayName` должны быть строго на русском языке. Для Swing-проверок используй существующие test helpers из `test/view`.
 
 ## Git и коммиты
 

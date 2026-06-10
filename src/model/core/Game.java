@@ -1,9 +1,19 @@
 package model.core;
 
+import model.event.GameEvent;
+import model.event.GameEventListener;
+import model.event.GameFinishedEvent;
+import model.event.GameStartedEvent;
+import model.event.LevelCompletedEvent;
+import model.event.LevelRestartedEvent;
+import model.event.LevelStartedEvent;
+import model.event.NodeMovedEvent;
 import model.level.Level;
 import model.level.LevelFactory;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public final class Game {
@@ -13,6 +23,7 @@ public final class Game {
     private boolean started;
 
     private final LevelFactory levelFactory;
+    private final List<GameEventListener> eventListeners;
     private Level currentLevel;
 
     public Game() {
@@ -25,6 +36,15 @@ public final class Game {
         this.maxCompletedLevelNumber = 0;
         this.moveCounter = 0;
         this.started = false;
+        this.eventListeners = new ArrayList<>();
+    }
+
+    public void addEventListener(GameEventListener eventListener) {
+        eventListeners.add(Objects.requireNonNull(eventListener, "eventListener"));
+    }
+
+    public void removeEventListener(GameEventListener eventListener) {
+        eventListeners.remove(Objects.requireNonNull(eventListener, "eventListener"));
     }
 
     public void start() {
@@ -39,6 +59,8 @@ public final class Game {
         started = true;
         resetMoveCounter();
         loadLevel(level);
+        publish(new GameStartedEvent(currentLevelNumber));
+        publish(new LevelStartedEvent(currentLevelNumber));
     }
 
     public void continueGame() {
@@ -48,12 +70,18 @@ public final class Game {
         started = true;
         resetMoveCounter();
         loadLevel(continueLevelNumber());
+        publish(new GameStartedEvent(currentLevelNumber));
+        publish(new LevelStartedEvent(currentLevelNumber));
     }
 
     public void finish() {
+        if (!started && currentLevel == null) {
+            return;
+        }
         started = false;
         currentLevel = null;
         resetMoveCounter();
+        publish(new GameFinishedEvent(maxCompletedLevelNumber));
     }
 
     private void loadLevel(int levelNumber) {
@@ -66,19 +94,13 @@ public final class Game {
         currentLevelNumber = level.number();
     }
 
-    private boolean isWin() {
-        if (currentLevel == null) {
-            return false;
-        }
-        return !currentLevel.scheme().hasIntersections();
-    }
-
     public void restartCurrentLevel() {
         if (currentLevel == null) {
             return;
         }
         resetMoveCounter();
         loadLevel(currentLevelNumber);
+        publish(new LevelRestartedEvent(currentLevelNumber));
     }
 
     public boolean moveNode(Node node, Point2D destination) {
@@ -88,20 +110,31 @@ public final class Game {
             return false;
         }
 
+        Point2D previousPosition = new Point2D.Double(node.getX(), node.getY());
         boolean moved = currentLevel.scheme().moveNode(node, destination);
         if (moved) {
-            registerMove();
+            Point2D currentPosition = new Point2D.Double(node.getX(), node.getY());
+            registerMove(node, previousPosition, currentPosition);
         }
         return moved;
     }
 
-    private void registerMove() {
+    private void registerMove(Node node, Point2D previousPosition, Point2D currentPosition) {
         moveCounter++;
+        publish(new NodeMovedEvent(
+                currentLevelNumber,
+                node,
+                previousPosition.getX(),
+                previousPosition.getY(),
+                currentPosition.getX(),
+                currentPosition.getY(),
+                moveCounter
+        ));
         validateMove();
     }
 
     private void validateMove() {
-        if (!isWin()) {
+        if (currentLevel == null || !currentLevel.isCompleted()) {
             return;
         }
         completeCurrentLevel();
@@ -110,16 +143,23 @@ public final class Game {
     }
 
     private void completeCurrentLevel() {
+        int completedLevelNumber = currentLevelNumber;
         maxCompletedLevelNumber = Math.max(maxCompletedLevelNumber, currentLevelNumber);
+        publish(new LevelCompletedEvent(
+                completedLevelNumber,
+                maxCompletedLevelNumber,
+                !levelExists(completedLevelNumber + 1)
+        ));
     }
 
     private void goToNextLevel() {
         int next = currentLevelNumber + 1;
-        try {
-            loadLevel(next);
-        } catch (IllegalArgumentException e) {
+        if (!levelExists(next)) {
             finish();
+            return;
         }
+        loadLevel(next);
+        publish(new LevelStartedEvent(currentLevelNumber));
     }
 
     private void resetMoveCounter() {
@@ -161,11 +201,13 @@ public final class Game {
     }
 
     private boolean levelExists(int levelNumber) {
-        try {
-            levelFactory.createLevel(levelNumber);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
+        return levelFactory.availableLevelNumbers().contains(levelNumber);
+    }
+
+    private void publish(GameEvent event) {
+        List<GameEventListener> listenersSnapshot = List.copyOf(eventListeners);
+        for (GameEventListener eventListener : listenersSnapshot) {
+            eventListener.onGameEvent(event);
         }
     }
 }

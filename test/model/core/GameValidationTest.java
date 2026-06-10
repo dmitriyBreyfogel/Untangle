@@ -13,6 +13,15 @@ class GameValidationTest {
     }
 
     @Test
+    @DisplayName("Игра не принимает пустых слушателей событий")
+    void gameRejectsNullEventListeners() {
+        Game game = new Game();
+
+        assertThrows(NullPointerException.class, () -> game.addEventListener(null));
+        assertThrows(NullPointerException.class, () -> game.removeEventListener(null));
+    }
+
+    @Test
     @DisplayName("Загрузка неизвестного уровня бросает исключение")
     void loadUnknownLevelThrows() {
         Game game = new Game();

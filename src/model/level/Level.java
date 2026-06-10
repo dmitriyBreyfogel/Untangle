@@ -42,6 +42,10 @@ public final class Level {
         scheme.reset();
     }
 
+    public boolean isCompleted() {
+        return !scheme.hasIntersections();
+    }
+
     public int number() {
         return number;
     }

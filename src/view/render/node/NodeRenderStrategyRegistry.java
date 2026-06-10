@@ -3,6 +3,7 @@ package view.render.node;
 import model.movement.FixedMovementStrategy;
 import model.movement.FreeMovementStrategy;
 import model.movement.HorizontalMovementStrategy;
+import model.movement.MinimumDistanceMovementStrategy;
 import model.movement.MovementStrategy;
 import model.core.Node;
 
@@ -23,6 +24,7 @@ public final class NodeRenderStrategyRegistry {
         registry.register(FreeMovementStrategy.class, new DefaultNodeRenderStrategy());
         registry.register(FixedMovementStrategy.class, new FixedNodeRenderStrategy());
         registry.register(HorizontalMovementStrategy.class, new HorizontalNodeRenderStrategy());
+        registry.register(MinimumDistanceMovementStrategy.class, new MinimumDistanceNodeRenderStrategy());
         return registry;
     }
 

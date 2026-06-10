@@ -6,6 +6,7 @@ import model.core.Scheme;
 import model.movement.FixedMovementStrategy;
 import model.movement.FreeMovementStrategy;
 import model.movement.HorizontalMovementStrategy;
+import model.movement.MinimumDistanceMovementStrategy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,13 +65,14 @@ class LevelFactoryTest {
     void createsNodesWithDifferentMovementStrategies() {
         LevelFactory factory = new LevelFactory();
 
-        assertMovementStrategies(factory.createLevel(1), List.of(2), List.of(3));
-        assertMovementStrategies(factory.createLevel(5), List.of(), List.of(1));
-        assertMovementStrategies(factory.createLevel(6), List.of(4), List.of(6));
-        assertMovementStrategies(factory.createLevel(7), List.of(0, 8), List.of(6));
-        assertMovementStrategies(factory.createLevel(8), List.of(10), List.of(3));
-        assertMovementStrategies(factory.createLevel(9), List.of(), List.of(1, 4, 9));
-        assertMovementStrategies(factory.createLevel(10), List.of(12), List.of(2, 10));
+        assertMovementStrategies(factory.createLevel(1), List.of(2), List.of(3), List.of());
+        assertMovementStrategies(factory.createLevel(2), List.of(), List.of(), List.of(4));
+        assertMovementStrategies(factory.createLevel(5), List.of(), List.of(1), List.of());
+        assertMovementStrategies(factory.createLevel(6), List.of(4), List.of(6), List.of());
+        assertMovementStrategies(factory.createLevel(7), List.of(0, 8), List.of(6), List.of());
+        assertMovementStrategies(factory.createLevel(8), List.of(10), List.of(3), List.of());
+        assertMovementStrategies(factory.createLevel(9), List.of(), List.of(1, 4, 9), List.of());
+        assertMovementStrategies(factory.createLevel(10), List.of(12), List.of(2, 10), List.of());
     }
 
     @Test
@@ -85,13 +87,20 @@ class LevelFactoryTest {
         }
     }
 
-    private static void assertMovementStrategies(Level level, List<Integer> fixedNodeIndexes, List<Integer> horizontalNodeIndexes) {
+    private static void assertMovementStrategies(
+            Level level,
+            List<Integer> fixedNodeIndexes,
+            List<Integer> horizontalNodeIndexes,
+            List<Integer> minimumDistanceNodeIndexes
+    ) {
         List<Node> nodes = level.scheme().getNodes();
         for (int i = 0; i < nodes.size(); i++) {
             if (fixedNodeIndexes.contains(i)) {
                 assertInstanceOf(FixedMovementStrategy.class, nodes.get(i).getMovementStrategy());
             } else if (horizontalNodeIndexes.contains(i)) {
                 assertInstanceOf(HorizontalMovementStrategy.class, nodes.get(i).getMovementStrategy());
+            } else if (minimumDistanceNodeIndexes.contains(i)) {
+                assertInstanceOf(MinimumDistanceMovementStrategy.class, nodes.get(i).getMovementStrategy());
             } else {
                 assertInstanceOf(FreeMovementStrategy.class, nodes.get(i).getMovementStrategy());
             }

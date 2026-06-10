@@ -2,6 +2,7 @@ package model.core;
 
 import model.movement.FreeMovementStrategy;
 import model.movement.MovementStrategy;
+import model.movement.NodeAwareMovementStrategy;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public final class Scheme {
             MovementStrategy movementStrategy = this.nodeMovementStrategies.getOrDefault(i, DEFAULT_MOVEMENT_STRATEGY);
             nodes.add(new Node(this.initialNodeCoordinates.get(i), movementStrategy));
         }
+        configureNodeAwareMovementStrategies();
 
         this.edges = buildEdges();
 
@@ -286,6 +288,15 @@ public final class Scheme {
         for (int nodeIndex : nodeMovementStrategies.keySet()) {
             if (nodeIndex < 0 || nodeIndex >= nodeCount) {
                 throw new IllegalArgumentException("Индекс стратегии движения вышел из диапазона списка: " + nodeIndex);
+            }
+        }
+    }
+
+    private void configureNodeAwareMovementStrategies() {
+        Set<MovementStrategy> configuredStrategies = new HashSet<>();
+        for (MovementStrategy strategy : nodeMovementStrategies.values()) {
+            if (configuredStrategies.add(strategy) && strategy instanceof NodeAwareMovementStrategy awareStrategy) {
+                awareStrategy.setNodes(List.copyOf(nodes));
             }
         }
     }

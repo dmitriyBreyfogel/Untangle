@@ -2,6 +2,7 @@ package model.level;
 
 import model.movement.FixedMovementStrategy;
 import model.movement.HorizontalMovementStrategy;
+import model.movement.MinimumDistanceMovementStrategy;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -57,6 +58,9 @@ public final class LevelFactory {
                             Map.entry(1, List.of(2, 4)),
                             Map.entry(2, List.of(3, 4)),
                             Map.entry(3, List.of(4))
+                    ),
+                    Map.of(
+                            4, new MinimumDistanceMovementStrategy()
                     ),
                     FIELD_WIDTH,
                     FIELD_HEIGHT

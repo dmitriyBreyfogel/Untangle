@@ -161,6 +161,71 @@ class GameWindowTest {
     }
 
     @Test
+    @DisplayName("Окно игры обновляет кнопки по событию старта модели")
+    void modelStartEventRefreshesButtonsAutomatically() {
+        requireWindowEnvironment();
+
+        Game game = new Game();
+        window = createWindow(game);
+        GameControlPanel controlPanel = SwingTestSupport.readField(window, "gameControlPanel", GameControlPanel.class);
+        JButton startButton = SwingTestSupport.readField(controlPanel, "startGameButton", JButton.class);
+        JButton restartButton = SwingTestSupport.readField(controlPanel, "restartLevelButton", JButton.class);
+        JButton finishButton = SwingTestSupport.readField(controlPanel, "finishGameButton", JButton.class);
+
+        game.start();
+        SwingTestSupport.runOnEdt(() -> {
+        });
+
+        assertFalse(startButton.isEnabled());
+        assertTrue(restartButton.isEnabled());
+        assertTrue(finishButton.isEnabled());
+    }
+
+    @Test
+    @DisplayName("Закрытое окно игры отписывается от событий модели")
+    void disposedWindowStopsReactingToModelEvents() {
+        requireWindowEnvironment();
+
+        Game game = new Game();
+        window = createWindow(game);
+        GameControlPanel controlPanel = SwingTestSupport.readField(window, "gameControlPanel", GameControlPanel.class);
+        JButton startButton = SwingTestSupport.readField(controlPanel, "startGameButton", JButton.class);
+        JButton restartButton = SwingTestSupport.readField(controlPanel, "restartLevelButton", JButton.class);
+        JButton finishButton = SwingTestSupport.readField(controlPanel, "finishGameButton", JButton.class);
+
+        SwingTestSupport.runOnEdt(window::dispose);
+        window = null;
+        game.start();
+        SwingTestSupport.runOnEdt(() -> {
+        });
+
+        assertTrue(startButton.isEnabled());
+        assertFalse(restartButton.isEnabled());
+        assertFalse(finishButton.isEnabled());
+    }
+
+    @Test
+    @DisplayName("Окно игры возвращается в меню по событию завершения модели")
+    void modelFinishEventRunsReturnToMenuAction() {
+        requireWindowEnvironment();
+
+        Game game = new Game();
+        AtomicInteger returnCounter = new AtomicInteger();
+        window = SwingTestSupport.callOnEdt(() -> new GameWindow(game, returnCounter::incrementAndGet));
+
+        game.start();
+        SwingTestSupport.runOnEdt(() -> {
+        });
+        game.finish();
+        SwingTestSupport.runOnEdt(() -> {
+        });
+
+        assertEquals(1, returnCounter.get());
+        assertFalse(window.isDisplayable());
+        window = null;
+    }
+
+    @Test
     @DisplayName("Окно игры обновляет метку статуса при обновлении")
     void refreshUpdatesStatusLabels() {
         requireWindowEnvironment();

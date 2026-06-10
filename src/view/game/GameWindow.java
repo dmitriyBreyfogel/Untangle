@@ -1,11 +1,16 @@
 package view.game;
 
 import model.core.Game;
+import model.event.GameEvent;
+import model.event.GameEventListener;
+import model.event.GameFinishedEvent;
+import model.event.LevelCompletedEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,6 +21,7 @@ import java.util.Objects;
 public final class GameWindow extends JFrame {
     private final Game gameModel;
     private final Runnable returnToMenuAction;
+    private final GameEventListener gameEventListener;
     private GameStatusPanel gameStatusPanel;
     private GameFieldPanel gameFieldPanel;
     private GameControlPanel gameControlPanel;
@@ -28,9 +34,11 @@ public final class GameWindow extends JFrame {
     public GameWindow(Game gameModel, Runnable returnToMenuAction) {
         this.gameModel = Objects.requireNonNull(gameModel, "gameModel");
         this.returnToMenuAction = Objects.requireNonNull(returnToMenuAction, "returnToMenuAction");
+        this.gameEventListener = this::handleGameEvent;
         configureWindow();
         assembleLayout();
         bindControlActions();
+        this.gameModel.addEventListener(gameEventListener);
         refreshView();
     }
 
@@ -38,19 +46,13 @@ public final class GameWindow extends JFrame {
         setVisible(true);
     }
 
-    public void refreshView() {
+    void refreshView() {
         gameStatusPanel.refreshState();
         gameFieldPanel.refreshField();
         gameControlPanel.updateButtonAvailability(
                 gameModel.started(),
                 gameModel.hasProgressToContinue(),
                 gameModel.continueLevelNumber()
-        );
-    }
-
-    void handleLevelProgressBeforeMove(int levelNumberBeforeMove, int maxCompletedLevelNumberBeforeMove) {
-        handleLevelProgressBeforeMove(
-                new LevelProgressBeforeMove(levelNumberBeforeMove, maxCompletedLevelNumberBeforeMove)
         );
     }
 
@@ -68,7 +70,7 @@ public final class GameWindow extends JFrame {
 
     private void assembleLayout() {
         gameStatusPanel = new GameStatusPanel(gameModel);
-        gameFieldPanel = new GameFieldPanel(gameModel, this::handleLevelProgressBeforeMove);
+        gameFieldPanel = new GameFieldPanel(gameModel);
         gameControlPanel = new GameControlPanel();
         add(gameStatusPanel, BorderLayout.NORTH);
         add(gameFieldPanel, BorderLayout.CENTER);
@@ -100,7 +102,6 @@ public final class GameWindow extends JFrame {
 
     private void startNewGame() {
         gameModel.start();
-        refreshView();
     }
 
     private void handleSecondaryAction() {
@@ -113,7 +114,6 @@ public final class GameWindow extends JFrame {
 
     private void continueGame() {
         gameModel.continueGame();
-        refreshView();
     }
 
     private void restartCurrentLevel() {
@@ -122,12 +122,10 @@ public final class GameWindow extends JFrame {
             return;
         }
         gameModel.restartCurrentLevel();
-        refreshView();
     }
 
     private void finishGame() {
         gameModel.finish();
-        returnToStartMenu();
     }
 
     private void showVictoryMessage(int completedLevelNumber, boolean gameFinished) {
@@ -141,16 +139,24 @@ public final class GameWindow extends JFrame {
         JOptionPane.showMessageDialog(this, message, "Победа", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private void handleLevelProgressBeforeMove(LevelProgressBeforeMove levelProgressBeforeMove) {
-        if (gameModel.maxCompletedLevelNumber() > levelProgressBeforeMove.maxCompletedLevelNumberBeforeMove()) {
+    private void handleGameEvent(GameEvent event) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(() -> handleGameEvent(event));
+            return;
+        }
+
+        if (event instanceof LevelCompletedEvent levelCompletedEvent) {
             gameStatusPanel.showCompletedState();
             gameStatusPanel.paintImmediately(gameStatusPanel.getVisibleRect());
-            showVictoryMessage(levelProgressBeforeMove.levelNumberBeforeMove(), !gameModel.started());
-            if (!gameModel.started()) {
-                returnToStartMenu();
-                return;
-            }
+            showVictoryMessage(levelCompletedEvent.levelNumber(), levelCompletedEvent.lastLevel());
+            return;
         }
+        if (event instanceof GameFinishedEvent) {
+            refreshView();
+            returnToStartMenu();
+            return;
+        }
+
         refreshView();
     }
 
@@ -159,5 +165,11 @@ public final class GameWindow extends JFrame {
             returnToMenuAction.run();
         }
         dispose();
+    }
+
+    @Override
+    public void dispose() {
+        gameModel.removeEventListener(gameEventListener);
+        super.dispose();
     }
 }

@@ -17,7 +17,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 final class GameFieldPanel extends JPanel {
     private final FieldParameters fieldParameters;
@@ -25,17 +24,10 @@ final class GameFieldPanel extends JPanel {
     private Node selectedNode;
     private final GameFieldRenderer gameFieldRenderer;
     private final GameFieldNavigator gameFieldNavigator;
-    private final Consumer<LevelProgressBeforeMove> levelProgressHandler;
     private Point2D selectedNodePreviewPosition;
 
     GameFieldPanel(Game gameModel) {
-        this(gameModel, levelProgress -> {
-        });
-    }
-
-    GameFieldPanel(Game gameModel, Consumer<LevelProgressBeforeMove> levelProgressHandler) {
         this.gameModel = Objects.requireNonNull(gameModel, "gameModel");
-        this.levelProgressHandler = Objects.requireNonNull(levelProgressHandler, "levelProgressHandler");
         fieldParameters = new FieldParameters(12, 28);
         gameFieldRenderer = new GameFieldRenderer(fieldParameters);
         gameFieldNavigator = new GameFieldNavigator(fieldParameters, gameModel, this::getSize);
@@ -104,9 +96,6 @@ final class GameFieldPanel extends JPanel {
     }
 
     private void handleMouseRelease() {
-        int levelNumberBeforeMove = gameModel.currentLevelNumber();
-        int maxCompletedLevelNumberBeforeMove = gameModel.maxCompletedLevelNumber();
-
         if (selectedNode != null && selectedNodePreviewPosition != null && hasPendingMove()) {
             gameModel.moveNode(selectedNode, selectedNodePreviewPosition);
         }
@@ -115,7 +104,6 @@ final class GameFieldPanel extends JPanel {
         selectedNode = null;
         selectedNodePreviewPosition = null;
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        levelProgressHandler.accept(new LevelProgressBeforeMove(levelNumberBeforeMove, maxCompletedLevelNumberBeforeMove));
         refreshField();
     }
 

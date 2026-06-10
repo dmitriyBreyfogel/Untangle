@@ -19,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GameFieldNavigatorTest {
     @Test
-    @DisplayName("Навигатор выбирает, перемещает и очищает узел")
-    void selectsMovesAndClearsNode() {
+    @DisplayName("Навигатор выбирает, предпросчитывает и очищает узел")
+    void selectsPreviewsAndClearsNode() {
         Game game = startedGame();
         GameFieldNavigator navigator = navigator(game, 400, 400);
         Node node = game.currentLevel().scheme().getNodes().getFirst();
@@ -30,11 +30,12 @@ class GameFieldNavigatorTest {
         assertSame(node, navigator.selectedNode());
 
         Point targetPoint = navigator.convertToScreenCoordinates(new Point2D.Double(20, 20));
-        navigator.moveSelectedNode(targetPoint);
+        Point2D previewPosition = navigator.previewMove(node, targetPoint);
 
-        assertEquals(20, node.getX(), 1.0);
-        assertEquals(20, node.getY(), 1.0);
-        assertEquals(1, game.moveCounter());
+        assertEquals(20, previewPosition.getX(), 1.0);
+        assertEquals(20, previewPosition.getY(), 1.0);
+        assertEquals(10, node.getX(), 0.001);
+        assertEquals(10, node.getY(), 0.001);
 
         navigator.clearSelectedNode();
         assertNull(navigator.selectedNode());
@@ -116,32 +117,18 @@ class GameFieldNavigatorTest {
     }
 
     @Test
-    @DisplayName("Навигатор ничего не перемещает без выбранного узла")
-    void moveWithoutSelectedNodeDoesNothing() {
-        Game game = startedGame();
-        Node node = game.currentLevel().scheme().getNodes().getFirst();
-        GameFieldNavigator navigator = navigator(game, 400, 400);
-
-        navigator.moveSelectedNode(new Point(200, 200));
-
-        assertEquals(10, node.getX(), 0.001);
-        assertEquals(10, node.getY(), 0.001);
-        assertEquals(0, game.moveCounter());
-    }
-
-    @Test
-    @DisplayName("Навигатор ничего не перемещает после завершения игры")
-    void moveAfterFinishDoesNothing() {
+    @DisplayName("Навигатор возвращает текущую позицию предпросмотра после завершения игры")
+    void previewAfterFinishReturnsCurrentPosition() {
         Game game = startedGame();
         Node node = game.currentLevel().scheme().getNodes().getFirst();
         GameFieldNavigator navigator = navigator(game, 400, 400);
         navigator.selectNode(navigator.convertToScreenCoordinates(new Point2D.Double(node.getX(), node.getY())));
 
         game.finish();
-        navigator.moveSelectedNode(new Point(200, 200));
+        Point2D previewPosition = navigator.previewMove(node, new Point(200, 200));
 
-        assertEquals(10, node.getX(), 0.001);
-        assertEquals(10, node.getY(), 0.001);
+        assertEquals(10, previewPosition.getX(), 0.001);
+        assertEquals(10, previewPosition.getY(), 0.001);
     }
 
     @Test

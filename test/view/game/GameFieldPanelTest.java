@@ -17,7 +17,6 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -94,34 +93,9 @@ class GameFieldPanelTest {
     }
 
     @Test
-    @DisplayName("Панель поля передаёт обработчику прогресс уровней до хода")
-    void levelProgressHandlerReceivesStateBeforeMove() {
-        Game game = startedGame();
-        AtomicReference<LevelProgressBeforeMove> handledLevelProgress = new AtomicReference<>();
-        GameFieldPanel panel = SwingTestSupport.callOnEdt(() -> new GameFieldPanel(game, handledLevelProgress::set));
-        SwingTestSupport.runOnEdt(() -> panel.setSize(400, 400));
-        GameFieldNavigator navigator = SwingTestSupport.readField(panel, "gameFieldNavigator", GameFieldNavigator.class);
-        Node node = game.currentLevel().scheme().getNodes().getFirst();
-        Point pressPoint = navigator.convertToScreenCoordinates(new Point2D.Double(node.getX(), node.getY()));
-        Point dragPoint = navigator.convertToScreenCoordinates(new Point2D.Double(20, 20));
-
-        dispatch(panel, MouseEvent.MOUSE_PRESSED, pressPoint);
-        dispatch(panel, MouseEvent.MOUSE_DRAGGED, dragPoint);
-        dispatch(panel, MouseEvent.MOUSE_RELEASED, dragPoint);
-
-        assertEquals(new LevelProgressBeforeMove(1, 0), handledLevelProgress.get());
-    }
-
-    @Test
     @DisplayName("Панель поля не принимает пустую игру")
     void rejectsNullGame() {
         assertThrows(NullPointerException.class, () -> new GameFieldPanel(null));
-    }
-
-    @Test
-    @DisplayName("Панель поля не принимает пустой обработчик прогресса уровней")
-    void rejectsNullLevelProgressHandler() {
-        assertThrows(NullPointerException.class, () -> new GameFieldPanel(new Game(), null));
     }
 
     @Test

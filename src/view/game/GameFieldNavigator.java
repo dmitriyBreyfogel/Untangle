@@ -50,15 +50,6 @@ final class GameFieldNavigator {
         selectedNode = findNodeAtScreenPoint(screenPoint);
     }
 
-    void moveSelectedNode(Point screenPoint) {
-        Objects.requireNonNull(screenPoint, "screenPoint");
-        if (selectedNode == null) {
-            return;
-        }
-        Point2D modelPoint = currentMapper().toModelCoordinates(screenPoint);
-        gameModel.moveNode(selectedNode, modelPoint);
-    }
-
     void clearSelectedNode() {
         selectedNode = null;
     }
@@ -74,7 +65,11 @@ final class GameFieldNavigator {
     Point2D previewMove(Node node, Point screenPoint) {
         Objects.requireNonNull(node, "node");
         Objects.requireNonNull(screenPoint, "screenPoint");
-        return node.resolveMove(convertToModelCoordinates(screenPoint));
+        Level currentLevel = gameModel.currentLevel();
+        if (currentLevel == null) {
+            return new Point2D.Double(node.getX(), node.getY());
+        }
+        return currentLevel.scheme().previewMove(node, convertToModelCoordinates(screenPoint));
     }
 
     Node selectedNode() {

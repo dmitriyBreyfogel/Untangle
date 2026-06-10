@@ -8,6 +8,7 @@ import model.core.Node;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import view.render.node.DefaultNodeRenderStrategy;
+import view.render.node.NodeRenderStrategy;
 import view.render.node.NodeRenderStrategyRegistry;
 
 import java.awt.Color;
@@ -142,9 +143,12 @@ class NodeRendererTest {
         FieldParameters parameters = new FieldParameters(12, 28);
         Node node = game.currentLevel().scheme().getNodes().getFirst();
         NodeRenderStrategyRegistry registry = new NodeRenderStrategyRegistry(new DefaultNodeRenderStrategy());
-        registry.register(FreeMovementStrategy.class, (graphics, center, radius, color, selected) -> {
-            graphics.setColor(Color.MAGENTA);
-            graphics.fillRect(center.x, center.y, 1, 1);
+        registry.register(FreeMovementStrategy.class, new NodeRenderStrategy() {
+            @Override
+            protected void renderValidated(Graphics2D graphics, Point center, int radius, Color color, boolean selected) {
+                graphics.setColor(Color.MAGENTA);
+                graphics.fillRect(center.x, center.y, 1, 1);
+            }
         });
         NodeRenderer renderer = new NodeRenderer(parameters, registry);
         BufferedImage image = SwingTestSupport.createCanvas(320, 320);

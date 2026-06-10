@@ -96,8 +96,8 @@ class LevelTest {
                 100
         );
 
-        assertInstanceOf(FixedMovementStrategy.class, level.scheme().getNodes().get(0).getMovementStrategy());
-        assertInstanceOf(HorizontalMovementStrategy.class, level.scheme().getNodes().get(1).getMovementStrategy());
-        assertInstanceOf(FreeMovementStrategy.class, level.scheme().getNodes().get(2).getMovementStrategy());
+        assertEquals(FixedMovementStrategy.class, level.scheme().getNodes().get(0).movementStrategyType());
+        assertEquals(HorizontalMovementStrategy.class, level.scheme().getNodes().get(1).movementStrategyType());
+        assertEquals(FreeMovementStrategy.class, level.scheme().getNodes().get(2).movementStrategyType());
     }
 }

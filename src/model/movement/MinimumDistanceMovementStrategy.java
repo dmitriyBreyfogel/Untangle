@@ -1,81 +1,47 @@
 package model.movement;
 
-import model.core.Node;
-
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public final class MinimumDistanceMovementStrategy implements NodeAwareMovementStrategy {
+public final class MinimumDistanceMovementStrategy extends MovementStrategy {
     private static final double EPS = 1e-9;
-    private static double minimumDistance = 10.0;
+    private static final double DEFAULT_MINIMUM_DISTANCE = 10.0;
 
-    private final List<Point2D> staticNodePositions;
-    private List<Node> nodes;
+    private final double minimumDistance;
 
     public MinimumDistanceMovementStrategy() {
-        this(List.of());
+        this(DEFAULT_MINIMUM_DISTANCE);
     }
 
-    public MinimumDistanceMovementStrategy(List<Point2D> nodePositions) {
-        Objects.requireNonNull(nodePositions, "nodePositions");
-        for (Point2D nodePosition : nodePositions) {
-            Objects.requireNonNull(nodePosition, "nodePosition");
+    public MinimumDistanceMovementStrategy(double minimumDistance) {
+        if (!Double.isFinite(minimumDistance) || minimumDistance <= 0) {
+            throw new IllegalArgumentException("Минимальная дистанция должна быть положительной конечной величиной");
         }
-        this.staticNodePositions = List.copyOf(nodePositions);
-        this.nodes = List.of();
+        this.minimumDistance = minimumDistance;
     }
 
-    @Override
-    public void setNodes(List<Node> nodes) {
-        Objects.requireNonNull(nodes, "nodes");
-        for (Node node : nodes) {
-            Objects.requireNonNull(node, "node");
-        }
-        this.nodes = List.copyOf(nodes);
-    }
-
-    public static double getMinimumDistance() {
+    public double minimumDistance() {
         return minimumDistance;
     }
 
-    public static void setMinimumDistance(double newMinimumDistance) {
-        if (!Double.isFinite(newMinimumDistance) || newMinimumDistance <= 0) {
-            throw new IllegalArgumentException("Минимальная дистанция должна быть положительной конечной величиной");
-        }
-
-        minimumDistance = newMinimumDistance;
-    }
-
     @Override
-    public Point2D resolveMove(Point2D currentPosition, Point2D requestedPosition) {
-        Point2D current = copyOf(currentPosition, "currentPosition");
-        Point2D requested = copyOf(requestedPosition, "requestedPosition");
-        List<Point2D> nodePositions = currentNodePositions();
+    protected Point2D resolveValidatedMove(MovementContext context) {
+        Point2D currentPosition = context.currentPosition();
+        Point2D requestedPosition = context.requestedPosition();
+        List<Point2D> otherNodePositions = context.otherNodePositions();
 
-        if (!isInsideForbiddenArea(requested, current, nodePositions)) {
-            return requested;
+        if (!isInsideForbiddenArea(requestedPosition, otherNodePositions)) {
+            return requestedPosition;
         }
 
-        Point2D boundaryPosition = projectToForbiddenAreaBoundary(requested, current, nodePositions);
-        return boundaryPosition == null ? current : boundaryPosition;
+        Point2D boundaryPosition = projectToForbiddenAreaBoundary(requestedPosition, currentPosition, otherNodePositions);
+        return boundaryPosition == null ? currentPosition : boundaryPosition;
     }
 
-    private List<Point2D> currentNodePositions() {
-        List<Point2D> positions = new ArrayList<>(staticNodePositions.size() + nodes.size());
-        positions.addAll(staticNodePositions);
-        for (Node node : nodes) {
-            positions.add(new Point2D.Double(node.getX(), node.getY()));
-        }
-        return positions;
-    }
-
-    private boolean isInsideForbiddenArea(Point2D position, Point2D currentPosition, List<Point2D> nodePositions) {
-        for (Point2D rawNodePosition : nodePositions) {
-            Point2D nodePosition = copyOf(rawNodePosition, "nodePosition");
-            if (!isSamePoint(currentPosition, nodePosition)
-                    && position.distance(nodePosition) < minimumDistance - EPS) {
+    private boolean isInsideForbiddenArea(Point2D position, List<Point2D> otherNodePositions) {
+        for (Point2D nodePosition : otherNodePositions) {
+            if (position.distance(nodePosition) < minimumDistance - EPS) {
                 return true;
             }
         }
@@ -85,27 +51,19 @@ public final class MinimumDistanceMovementStrategy implements NodeAwareMovementS
     private Point2D projectToForbiddenAreaBoundary(
             Point2D requestedPosition,
             Point2D currentPosition,
-            List<Point2D> nodePositions
+            List<Point2D> otherNodePositions
     ) {
         List<Point2D> candidates = new ArrayList<>();
-        for (Point2D rawNodePosition : nodePositions) {
-            Point2D nodePosition = copyOf(rawNodePosition, "nodePosition");
-            if (!isSamePoint(currentPosition, nodePosition)
-                    && requestedPosition.distance(nodePosition) < minimumDistance - EPS) {
+        for (Point2D nodePosition : otherNodePositions) {
+            if (requestedPosition.distance(nodePosition) < minimumDistance - EPS) {
                 candidates.add(projectToCircleBoundary(requestedPosition, nodePosition, currentPosition));
             }
         }
 
-        for (int i = 0; i < nodePositions.size(); i++) {
-            Point2D first = copyOf(nodePositions.get(i), "nodePosition");
-            if (isSamePoint(currentPosition, first)) {
-                continue;
-            }
-            for (int j = i + 1; j < nodePositions.size(); j++) {
-                Point2D second = copyOf(nodePositions.get(j), "nodePosition");
-                if (isSamePoint(currentPosition, second)) {
-                    continue;
-                }
+        for (int i = 0; i < otherNodePositions.size(); i++) {
+            Point2D first = otherNodePositions.get(i);
+            for (int j = i + 1; j < otherNodePositions.size(); j++) {
+                Point2D second = otherNodePositions.get(j);
                 candidates.addAll(circleIntersections(first, second));
             }
         }
@@ -113,7 +71,7 @@ public final class MinimumDistanceMovementStrategy implements NodeAwareMovementS
         Point2D bestCandidate = null;
         double bestDistance = Double.POSITIVE_INFINITY;
         for (Point2D candidate : candidates) {
-            if (!isOutsideForbiddenAreas(candidate, currentPosition, nodePositions)) {
+            if (!isOutsideForbiddenAreas(candidate, otherNodePositions)) {
                 continue;
             }
 
@@ -177,28 +135,12 @@ public final class MinimumDistanceMovementStrategy implements NodeAwareMovementS
         );
     }
 
-    private boolean isOutsideForbiddenAreas(Point2D point, Point2D currentPosition, List<Point2D> nodePositions) {
-        for (Point2D rawNodePosition : nodePositions) {
-            Point2D nodePosition = copyOf(rawNodePosition, "nodePosition");
-            if (!isSamePoint(currentPosition, nodePosition)
-                    && point.distance(nodePosition) < minimumDistance - EPS) {
+    private boolean isOutsideForbiddenAreas(Point2D point, List<Point2D> otherNodePositions) {
+        for (Point2D nodePosition : otherNodePositions) {
+            if (point.distance(nodePosition) < minimumDistance - EPS) {
                 return false;
             }
         }
         return true;
-    }
-
-    private static Point2D.Double copyOf(Point2D point, String paramName) {
-        Objects.requireNonNull(point, paramName);
-        double x = point.getX();
-        double y = point.getY();
-        if (!Double.isFinite(x) || !Double.isFinite(y)) {
-            throw new IllegalArgumentException(paramName + " должен иметь конечное значение");
-        }
-        return new Point2D.Double(x, y);
-    }
-
-    private boolean isSamePoint(Point2D first, Point2D second) {
-        return first.distance(second) <= EPS;
     }
 }

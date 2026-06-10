@@ -3,16 +3,17 @@ package model.core;
 import model.movement.FixedMovementStrategy;
 import model.movement.FreeMovementStrategy;
 import model.movement.HorizontalMovementStrategy;
+import model.movement.MovementContext;
 import model.movement.MovementStrategy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.awt.geom.Point2D;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class NodeTest {
@@ -23,7 +24,7 @@ class NodeTest {
         node.moveDirectlyTo(new Point2D.Double(20, 30));
         assertEquals(20, node.getX());
         assertEquals(30, node.getY());
-        assertInstanceOf(FreeMovementStrategy.class, node.getMovementStrategy());
+        assertEquals(FreeMovementStrategy.class, node.movementStrategyType());
     }
 
     @Test
@@ -32,7 +33,7 @@ class NodeTest {
         MovementStrategy movementStrategy = new HorizontalMovementStrategy();
         Node node = new Node(new Point2D.Double(10, 10), movementStrategy);
 
-        assertSame(movementStrategy, node.getMovementStrategy());
+        assertEquals(HorizontalMovementStrategy.class, node.movementStrategyType());
     }
 
     @Test
@@ -40,7 +41,7 @@ class NodeTest {
     void fixedStrategyKeepsNodeInPlace() {
         Node node = new Node(new Point2D.Double(10, 10), new FixedMovementStrategy());
 
-        Point2D resolvedPosition = node.resolveMove(new Point2D.Double(20, 30));
+        Point2D resolvedPosition = node.resolveMove(context(node, new Point2D.Double(20, 30)));
 
         assertEquals(10, resolvedPosition.getX());
         assertEquals(10, resolvedPosition.getY());
@@ -51,7 +52,7 @@ class NodeTest {
     void horizontalStrategyMovesOnlyHorizontally() {
         Node node = new Node(new Point2D.Double(10, 10), new HorizontalMovementStrategy());
 
-        Point2D resolvedPosition = node.resolveMove(new Point2D.Double(20, 30));
+        Point2D resolvedPosition = node.resolveMove(context(node, new Point2D.Double(20, 30)));
 
         assertEquals(20, resolvedPosition.getX());
         assertEquals(10, resolvedPosition.getY());
@@ -62,7 +63,7 @@ class NodeTest {
     void nodeRejectsNaN() {
         assertThrows(IllegalArgumentException.class, () -> new Node(new Point2D.Double(Double.NaN, 0)));
         Node node = new Node(new Point2D.Double(0, 0));
-        assertThrows(IllegalArgumentException.class, () -> node.resolveMove(new Point2D.Double(0, Double.NaN)));
+        assertThrows(IllegalArgumentException.class, () -> node.resolveMove(context(node, new Point2D.Double(0, Double.NaN))));
     }
 
     @Test
@@ -70,7 +71,7 @@ class NodeTest {
     void nodeRejectsInfinity() {
         assertThrows(IllegalArgumentException.class, () -> new Node(new Point2D.Double(Double.POSITIVE_INFINITY, 0)));
         Node node = new Node(new Point2D.Double(0, 0));
-        assertThrows(IllegalArgumentException.class, () -> node.resolveMove(new Point2D.Double(0, Double.NEGATIVE_INFINITY)));
+        assertThrows(IllegalArgumentException.class, () -> node.resolveMove(context(node, new Point2D.Double(0, Double.NEGATIVE_INFINITY))));
     }
 
     @Test
@@ -98,5 +99,9 @@ class NodeTest {
 
         assertEquals(20, node.getX());
         assertEquals(30, node.getY());
+    }
+
+    private static MovementContext context(Node node, Point2D requestedPosition) {
+        return new MovementContext(new Point2D.Double(node.getX(), node.getY()), requestedPosition, List.of());
     }
 }

@@ -4,9 +4,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.awt.geom.Point2D;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MovementStrategyTest {
@@ -16,9 +17,11 @@ class MovementStrategyTest {
         Point2D currentPosition = new Point2D.Double(10, 10);
         Point2D requestedPosition = new Point2D.Double(20, 30);
 
-        Point2D resolvedPosition = new FreeMovementStrategy().resolveMove(currentPosition, requestedPosition);
+        Point2D resolvedPosition = new FreeMovementStrategy().resolveMove(context(currentPosition, requestedPosition));
 
-        assertSame(requestedPosition, resolvedPosition);
+        assertEquals(20, resolvedPosition.getX());
+        assertEquals(30, resolvedPosition.getY());
+        assertNotSame(requestedPosition, resolvedPosition);
     }
 
     @Test
@@ -26,7 +29,7 @@ class MovementStrategyTest {
     void fixedStrategyReturnsCurrentPosition() {
         Point2D currentPosition = new Point2D.Double(10, 10);
 
-        Point2D resolvedPosition = new FixedMovementStrategy().resolveMove(currentPosition, new Point2D.Double(20, 30));
+        Point2D resolvedPosition = new FixedMovementStrategy().resolveMove(context(currentPosition, new Point2D.Double(20, 30)));
 
         assertEquals(10, resolvedPosition.getX());
         assertEquals(10, resolvedPosition.getY());
@@ -37,7 +40,7 @@ class MovementStrategyTest {
     void horizontalStrategyKeepsCurrentY() {
         Point2D currentPosition = new Point2D.Double(10, 10);
 
-        Point2D resolvedPosition = new HorizontalMovementStrategy().resolveMove(currentPosition, new Point2D.Double(20, 30));
+        Point2D resolvedPosition = new HorizontalMovementStrategy().resolveMove(context(currentPosition, new Point2D.Double(20, 30)));
 
         assertEquals(20, resolvedPosition.getX());
         assertEquals(10, resolvedPosition.getY());
@@ -46,14 +49,12 @@ class MovementStrategyTest {
     @Test
     @DisplayName("Стратегии движения не принимают пустые параметры")
     void strategiesRejectNullArgs() {
-        Point2D currentPosition = new Point2D.Double(10, 10);
-        Point2D requestedPosition = new Point2D.Double(20, 30);
+        assertThrows(NullPointerException.class, () -> new FreeMovementStrategy().resolveMove(null));
+        assertThrows(NullPointerException.class, () -> new FixedMovementStrategy().resolveMove(null));
+        assertThrows(NullPointerException.class, () -> new HorizontalMovementStrategy().resolveMove(null));
+    }
 
-        assertThrows(NullPointerException.class, () -> new FreeMovementStrategy().resolveMove(null, requestedPosition));
-        assertThrows(NullPointerException.class, () -> new FreeMovementStrategy().resolveMove(currentPosition, null));
-        assertThrows(NullPointerException.class, () -> new FixedMovementStrategy().resolveMove(null, requestedPosition));
-        assertThrows(NullPointerException.class, () -> new FixedMovementStrategy().resolveMove(currentPosition, null));
-        assertThrows(NullPointerException.class, () -> new HorizontalMovementStrategy().resolveMove(null, requestedPosition));
-        assertThrows(NullPointerException.class, () -> new HorizontalMovementStrategy().resolveMove(currentPosition, null));
+    private static MovementContext context(Point2D currentPosition, Point2D requestedPosition) {
+        return new MovementContext(currentPosition, requestedPosition, List.of());
     }
 }

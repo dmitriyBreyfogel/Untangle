@@ -10,7 +10,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -110,7 +109,7 @@ class MinimumDistanceNodeRenderStrategyTest {
 
         assertInstanceOf(
                 MinimumDistanceNodeRenderStrategy.class,
-                registry.resolve(new MinimumDistanceMovementStrategy(List.of()))
+                registry.resolve(MinimumDistanceMovementStrategy.class)
         );
     }
 

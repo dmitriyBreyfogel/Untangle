@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -96,13 +95,13 @@ class LevelFactoryTest {
         List<Node> nodes = level.scheme().getNodes();
         for (int i = 0; i < nodes.size(); i++) {
             if (fixedNodeIndexes.contains(i)) {
-                assertInstanceOf(FixedMovementStrategy.class, nodes.get(i).getMovementStrategy());
+                assertEquals(FixedMovementStrategy.class, nodes.get(i).movementStrategyType());
             } else if (horizontalNodeIndexes.contains(i)) {
-                assertInstanceOf(HorizontalMovementStrategy.class, nodes.get(i).getMovementStrategy());
+                assertEquals(HorizontalMovementStrategy.class, nodes.get(i).movementStrategyType());
             } else if (minimumDistanceNodeIndexes.contains(i)) {
-                assertInstanceOf(MinimumDistanceMovementStrategy.class, nodes.get(i).getMovementStrategy());
+                assertEquals(MinimumDistanceMovementStrategy.class, nodes.get(i).movementStrategyType());
             } else {
-                assertInstanceOf(FreeMovementStrategy.class, nodes.get(i).getMovementStrategy());
+                assertEquals(FreeMovementStrategy.class, nodes.get(i).movementStrategyType());
             }
         }
     }

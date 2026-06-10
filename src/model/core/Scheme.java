@@ -1,8 +1,8 @@
 package model.core;
 
 import model.movement.FreeMovementStrategy;
+import model.movement.MovementContext;
 import model.movement.MovementStrategy;
-import model.movement.NodeAwareMovementStrategy;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public final class Scheme {
         this.gameField = gameField;
 
         if (this.initialNodeCoordinates.size() < 3) {
-            throw new IllegalArgumentException("Смеха должна состоять минимум из трёх узлов");
+            throw new IllegalArgumentException("Схема должна состоять минимум из трёх узлов");
         }
         verifyMovementStrategyIndexes();
 
@@ -52,7 +52,6 @@ public final class Scheme {
             MovementStrategy movementStrategy = this.nodeMovementStrategies.getOrDefault(i, DEFAULT_MOVEMENT_STRATEGY);
             nodes.add(new Node(this.initialNodeCoordinates.get(i), movementStrategy));
         }
-        configureNodeAwareMovementStrategies();
 
         this.edges = buildEdges();
 
@@ -95,7 +94,7 @@ public final class Scheme {
         Objects.requireNonNull(destination, "destination");
         verifyNodeBelongsToScheme(node);
 
-        Point2D resolvedDestination = node.resolveMove(destination);
+        Point2D resolvedDestination = previewMove(node, destination);
         if (gameField != null && !gameField.canPlace(resolvedDestination)) {
             return false;
         }
@@ -108,6 +107,18 @@ public final class Scheme {
         updateIntersections();
 
         return true;
+    }
+
+    public Point2D previewMove(Node node, Point2D destination) {
+        Objects.requireNonNull(node, "node");
+        Objects.requireNonNull(destination, "destination");
+        verifyNodeBelongsToScheme(node);
+
+        return node.resolveMove(new MovementContext(
+                new Point2D.Double(node.getX(), node.getY()),
+                destination,
+                otherNodePositionsOf(node)
+        ));
     }
 
     public List<Edge> getIntersectingEdges() {
@@ -292,21 +303,22 @@ public final class Scheme {
         }
     }
 
-    private void configureNodeAwareMovementStrategies() {
-        Set<MovementStrategy> configuredStrategies = new HashSet<>();
-        for (MovementStrategy strategy : nodeMovementStrategies.values()) {
-            if (configuredStrategies.add(strategy) && strategy instanceof NodeAwareMovementStrategy awareStrategy) {
-                awareStrategy.setNodes(List.copyOf(nodes));
-            }
-        }
-    }
-
     private static Map<Integer, List<Integer>> deepCopy(Map<Integer, List<Integer>> map) {
         Map<Integer, List<Integer>> copy = new HashMap<>();
         for (Map.Entry<Integer, List<Integer>> entry : map.entrySet()) {
             copy.put(entry.getKey(), List.copyOf(entry.getValue()));
         }
         return Map.copyOf(copy);
+    }
+
+    private List<Point2D> otherNodePositionsOf(Node selectedNode) {
+        List<Point2D> positions = new ArrayList<>();
+        for (Node node : nodes) {
+            if (node != selectedNode) {
+                positions.add(new Point2D.Double(node.getX(), node.getY()));
+            }
+        }
+        return List.copyOf(positions);
     }
 
     private static Point2D.Double copyOf(Point2D p, String paramName) {

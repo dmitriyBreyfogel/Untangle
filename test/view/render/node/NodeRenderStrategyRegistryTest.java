@@ -4,6 +4,7 @@ import model.movement.FixedMovementStrategy;
 import model.movement.FreeMovementStrategy;
 import model.core.Game;
 import model.movement.HorizontalMovementStrategy;
+import model.movement.MovementContext;
 import model.movement.MovementStrategy;
 import model.core.Node;
 import org.junit.jupiter.api.DisplayName;
@@ -19,9 +20,9 @@ class NodeRenderStrategyRegistryTest {
     void resolvesDefaultMovementStrategies() {
         NodeRenderStrategyRegistry registry = NodeRenderStrategyRegistry.createDefault();
 
-        assertInstanceOf(DefaultNodeRenderStrategy.class, registry.resolve(new FreeMovementStrategy()));
-        assertInstanceOf(FixedNodeRenderStrategy.class, registry.resolve(new FixedMovementStrategy()));
-        assertInstanceOf(HorizontalNodeRenderStrategy.class, registry.resolve(new HorizontalMovementStrategy()));
+        assertInstanceOf(DefaultNodeRenderStrategy.class, registry.resolve(FreeMovementStrategy.class));
+        assertInstanceOf(FixedNodeRenderStrategy.class, registry.resolve(FixedMovementStrategy.class));
+        assertInstanceOf(HorizontalNodeRenderStrategy.class, registry.resolve(HorizontalMovementStrategy.class));
     }
 
     @Test
@@ -30,31 +31,29 @@ class NodeRenderStrategyRegistryTest {
         NodeRenderStrategy defaultStrategy = new DefaultNodeRenderStrategy();
         NodeRenderStrategyRegistry registry = new NodeRenderStrategyRegistry(defaultStrategy);
 
-        assertSame(defaultStrategy, registry.resolve(new CustomMovementStrategy()));
+        assertSame(defaultStrategy, registry.resolve(CustomMovementStrategy.class));
     }
 
     @Test
     @DisplayName("Реестр поддерживает регистрацию кастомной стратегии движения")
     void supportsCustomRegistration() {
         NodeRenderStrategyRegistry registry = new NodeRenderStrategyRegistry(new DefaultNodeRenderStrategy());
-        NodeRenderStrategy renderStrategy = (graphics, center, radius, color, selected) -> {
-        };
+        NodeRenderStrategy renderStrategy = new EmptyNodeRenderStrategy();
 
         registry.register(CustomMovementStrategy.class, renderStrategy);
 
-        assertSame(renderStrategy, registry.resolve(new CustomMovementStrategy()));
+        assertSame(renderStrategy, registry.resolve(CustomMovementStrategy.class));
     }
 
     @Test
     @DisplayName("Реестр находит стратегию рендера по родительскому типу движения")
     void resolvesAssignableMovementStrategy() {
         NodeRenderStrategyRegistry registry = new NodeRenderStrategyRegistry(new DefaultNodeRenderStrategy());
-        NodeRenderStrategy renderStrategy = (graphics, center, radius, color, selected) -> {
-        };
+        NodeRenderStrategy renderStrategy = new EmptyNodeRenderStrategy();
 
         registry.register(MovementStrategy.class, renderStrategy);
 
-        assertSame(renderStrategy, registry.resolve(new CustomMovementStrategy()));
+        assertSame(renderStrategy, registry.resolve(CustomMovementStrategy.class));
     }
 
     @Test
@@ -76,14 +75,26 @@ class NodeRenderStrategyRegistryTest {
         assertThrows(NullPointerException.class, () -> new NodeRenderStrategyRegistry(null));
         assertThrows(NullPointerException.class, () -> registry.register(null, new DefaultNodeRenderStrategy()));
         assertThrows(NullPointerException.class, () -> registry.register(CustomMovementStrategy.class, null));
-        assertThrows(NullPointerException.class, () -> registry.resolve((MovementStrategy) null));
+        assertThrows(NullPointerException.class, () -> registry.resolve((Class<? extends MovementStrategy>) null));
         assertThrows(NullPointerException.class, () -> registry.resolve((Node) null));
     }
 
-    private static final class CustomMovementStrategy implements MovementStrategy {
+    private static final class CustomMovementStrategy extends MovementStrategy {
         @Override
-        public java.awt.geom.Point2D resolveMove(java.awt.geom.Point2D currentPosition, java.awt.geom.Point2D requestedPosition) {
-            return requestedPosition;
+        protected java.awt.geom.Point2D resolveValidatedMove(MovementContext context) {
+            return context.requestedPosition();
+        }
+    }
+
+    private static final class EmptyNodeRenderStrategy extends NodeRenderStrategy {
+        @Override
+        protected void renderValidated(
+                java.awt.Graphics2D graphics,
+                java.awt.Point center,
+                int radius,
+                java.awt.Color color,
+                boolean selected
+        ) {
         }
     }
 }

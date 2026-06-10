@@ -4,16 +4,13 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.util.Objects;
 
-public final class HorizontalNodeRenderStrategy implements NodeRenderStrategy {
+public final class HorizontalNodeRenderStrategy extends NodeRenderStrategy {
     private final NodeRenderStrategy baseRenderStrategy = new DefaultNodeRenderStrategy();
 
     @Override
-    public void render(Graphics2D graphics, Point center, int radius, Color color, boolean selected) {
-        Objects.requireNonNull(graphics, "graphics");
-        Objects.requireNonNull(center, "center");
-        baseRenderStrategy.render(graphics, center, radius, Objects.requireNonNull(color, "color"), selected);
+    protected void renderValidated(Graphics2D graphics, Point center, int radius, Color color, boolean selected) {
+        baseRenderStrategy.render(graphics, center, radius, color, selected);
 
         int halfWidth = Math.max(7, radius - 3);
         int arrow = Math.max(4, radius / 3);

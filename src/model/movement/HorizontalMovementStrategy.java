@@ -1,13 +1,12 @@
 package model.movement;
 
 import java.awt.geom.Point2D;
-import java.util.Objects;
 
-public final class HorizontalMovementStrategy implements MovementStrategy {
+public final class HorizontalMovementStrategy extends MovementStrategy {
     @Override
-    public Point2D resolveMove(Point2D currentPosition, Point2D requestedPosition) {
-        Objects.requireNonNull(currentPosition, "currentPosition");
-        Objects.requireNonNull(requestedPosition, "requestedPosition");
+    protected Point2D resolveValidatedMove(MovementContext context) {
+        Point2D currentPosition = context.currentPosition();
+        Point2D requestedPosition = context.requestedPosition();
         return new Point2D.Double(requestedPosition.getX(), currentPosition.getY());
     }
 }

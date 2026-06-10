@@ -4,18 +4,10 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.util.Objects;
 
-public final class DefaultNodeRenderStrategy implements NodeRenderStrategy {
+public final class DefaultNodeRenderStrategy extends NodeRenderStrategy {
     @Override
-    public void render(Graphics2D graphics, Point center, int radius, Color color, boolean selected) {
-        Objects.requireNonNull(graphics, "graphics");
-        Objects.requireNonNull(center, "center");
-        Objects.requireNonNull(color, "color");
-        if (radius <= 0) {
-            throw new IllegalArgumentException("Радиус узла должен быть положительным");
-        }
-
+    protected void renderValidated(Graphics2D graphics, Point center, int radius, Color color, boolean selected) {
         int diameter = radius * 2;
         graphics.setColor(new Color(4, 10, 18, 56));
         graphics.fillOval(center.x - radius + 2, center.y - radius + 4, diameter, diameter);

@@ -1,6 +1,7 @@
 package model.core;
 
 import model.movement.FreeMovementStrategy;
+import model.movement.MovementContext;
 import model.movement.MovementStrategy;
 
 import java.awt.geom.Point2D;
@@ -29,19 +30,16 @@ public final class Node {
         return position.getY();
     }
 
-    public Point2D resolveMove(Point2D destination) {
-        Point2D requestedPosition = copyOf(destination, "destination");
-        Point2D currentPosition = copyOf(position, "currentPosition");
-        Point2D resolvedPosition = movementStrategy.resolveMove(currentPosition, requestedPosition);
-        return copyOf(resolvedPosition, "resolvedPosition");
-    }
-
-    public MovementStrategy getMovementStrategy() {
-        return movementStrategy;
+    public Class<? extends MovementStrategy> movementStrategyType() {
+        return movementStrategy.getClass();
     }
 
     Point2D getPosition() {
-        return position;
+        return copyOf(position, "position");
+    }
+
+    Point2D resolveMove(MovementContext movementContext) {
+        return movementStrategy.resolveMove(movementContext);
     }
 
     void moveDirectlyTo(Point2D destination) {

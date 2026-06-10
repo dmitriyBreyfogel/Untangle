@@ -37,18 +37,18 @@ public final class NodeRenderStrategyRegistry {
 
     public NodeRenderStrategy resolve(Node node) {
         Objects.requireNonNull(node, "node");
-        return resolve(node.getMovementStrategy());
+        return resolve(node.movementStrategyType());
     }
 
-    public NodeRenderStrategy resolve(MovementStrategy movementStrategy) {
-        Objects.requireNonNull(movementStrategy, "movementStrategy");
-        NodeRenderStrategy exactStrategy = renderStrategies.get(movementStrategy.getClass());
+    public NodeRenderStrategy resolve(Class<? extends MovementStrategy> movementStrategyType) {
+        Objects.requireNonNull(movementStrategyType, "movementStrategyType");
+        NodeRenderStrategy exactStrategy = renderStrategies.get(movementStrategyType);
         if (exactStrategy != null) {
             return exactStrategy;
         }
 
         for (Map.Entry<Class<? extends MovementStrategy>, NodeRenderStrategy> entry : renderStrategies.entrySet()) {
-            if (entry.getKey().isAssignableFrom(movementStrategy.getClass())) {
+            if (entry.getKey().isAssignableFrom(movementStrategyType)) {
                 return entry.getValue();
             }
         }
